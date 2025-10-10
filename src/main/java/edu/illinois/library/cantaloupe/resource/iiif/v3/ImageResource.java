@@ -14,9 +14,9 @@ import edu.illinois.library.cantaloupe.operation.Scale;
 import edu.illinois.library.cantaloupe.operation.ValidationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.resource.IllegalClientArgumentException;
+import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.Route;
 import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
-import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.iiif.SizeRestrictedException;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import org.slf4j.Logger;
@@ -133,13 +133,13 @@ public class ImageResource extends IIIF3Resource {
             }
         }
 
-        try (ImageRequestHandler handler = ImageRequestHandler.builder()
-                .withOperationList(ops)
-                .withBypassingCache(getRequest().isBypassingCache())
-                .withBypassingCacheRead(getRequest().isBypassingCacheRead())
-                .optionallyWithDelegateProxy(getDelegateProxy(), getRequestContext())
-                .withCallback(new CustomCallback())
-                .build()) {
+        try (ImageRequestHandler handler = new ImageRequestHandler(
+                ops,
+                getDelegateProxy(),
+                getRequestContext(),
+                new CustomCallback(),
+                getRequest().isBypassingCache(),
+                getRequest().isBypassingCacheRead())) {
             handler.handle(getResponse().getOutputStream());
         }
     }
