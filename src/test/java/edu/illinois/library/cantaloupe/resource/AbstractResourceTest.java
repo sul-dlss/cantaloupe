@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class AbstractResourceTest extends BaseTest {
             }
         };
 
-        Request mockRequest = new Request(new MockHttpServletRequest());
+        Request mockRequest = new Request(new MockHttpServletRequest(), Collections.emptyList());
         instance.setRequest(mockRequest);
         instance.setResponse(new MockHttpServletResponse());
     }
