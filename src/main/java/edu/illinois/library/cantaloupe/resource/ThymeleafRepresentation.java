@@ -1,0 +1,81 @@
+package edu.illinois.library.cantaloupe.resource;
+
+import edu.illinois.library.cantaloupe.util.StringUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Map;
+
+/**
+ * Representation for Thymeleaf HTML templates.
+ */
+public class ThymeleafRepresentation implements Representation {
+
+    private static final TemplateEngine templateEngine;
+    private String templateName;
+    private Map<String, Object> templateVars;
+
+    static {
+        // HTML template resolver
+        ClassLoaderTemplateResolver htmlResolver = new ClassLoaderTemplateResolver();
+        htmlResolver.setTemplateMode(TemplateMode.HTML);
+        htmlResolver.setPrefix("/");
+        htmlResolver.setSuffix(".html");
+        htmlResolver.setCacheable(true);
+        htmlResolver.setCharacterEncoding("UTF-8");
+
+        templateEngine = new TemplateEngine();
+        templateEngine.addTemplateResolver(htmlResolver);
+    }
+
+    /**
+     * @param templateName Template pathname, with leading slash.
+     */
+    public ThymeleafRepresentation(String templateName) {
+        this.templateName = templateName;
+    }
+
+    /**
+     * @param templateName Template pathname, with leading slash.
+     * @param templateVars Template variables.
+     */
+    public ThymeleafRepresentation(String templateName,
+                                   Map<String, Object> templateVars) {
+        this(templateName);
+        this.templateVars = escapeTemplateVars(templateVars);
+    }
+
+    private Map<String, Object> escapeTemplateVars(Map<String, Object> templateVars) {
+        for (Map.Entry<String, Object> entry : templateVars.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                entry.setValue(StringUtils.escapeHTML((String) entry.getValue()));
+            }
+        }
+        return templateVars;
+    }
+
+    @Override
+    public void write(OutputStream outputStream) throws IOException {
+        Context context = new Context();
+        if (templateVars != null) {
+            for (Map.Entry<String, Object> entry : templateVars.entrySet()) {
+                context.setVariable(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // Keep the original template name with extension for proper resolver matching
+        String thymeleafTemplateName = templateName;
+        if (thymeleafTemplateName.startsWith("/")) {
+            thymeleafTemplateName = thymeleafTemplateName.substring(1);
+        }
+
+        try (OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8")) {
+            templateEngine.process(thymeleafTemplateName, context, writer);
+        }
+    }
+}
