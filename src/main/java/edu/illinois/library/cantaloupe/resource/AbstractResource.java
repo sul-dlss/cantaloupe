@@ -425,7 +425,7 @@ public abstract class AbstractResource {
      */
     protected MetaIdentifier getMetaIdentifier() {
         if (metaIdentifier == null) {
-            String pathComponent = getRequest().getIdentifierPathComponent();
+            String pathComponent = ((IIIFRequest) getRequest()).getIdentifierPathComponent();
             if (pathComponent != null) {
                 metaIdentifier = MetaIdentifier.fromURIPathComponent(
                         pathComponent, getDelegateProxy());
@@ -488,7 +488,7 @@ public abstract class AbstractResource {
         final Reference publicRef         = new Reference(getPublicReference());
         final List<String> pathComponents = publicRef.getPathComponents();
         final int identifierIndex         = pathComponents.indexOf(
-                getRequest().getIdentifierPathComponent());
+                ((IIIFRequest) getRequest()).getIdentifierPathComponent());
 
         final String newMetaIdentifierString =
                 newMetaIdentifier.toURIPathComponent(getDelegateProxy());
@@ -552,7 +552,7 @@ public abstract class AbstractResource {
     /**
      * @return Request being handled.
      */
-    protected final Request getRequest() {
+    protected Request getRequest() {
         return request;
     }
 

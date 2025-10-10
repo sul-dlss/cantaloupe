@@ -19,6 +19,7 @@ import edu.illinois.library.cantaloupe.resource.RequestContext;
 import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.resource.StringRepresentation;
 import edu.illinois.library.cantaloupe.util.TimeUtils;
+import edu.illinois.library.cantaloupe.resource.IIIFRequest;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -65,6 +66,11 @@ public abstract class IIIFResource extends AbstractResource {
             }
         }
         addHeaders();
+    }
+
+    @Override
+    protected IIIFRequest getRequest() {
+        return (IIIFRequest) super.getRequest();
     }
 
     private void addHeaders() {
