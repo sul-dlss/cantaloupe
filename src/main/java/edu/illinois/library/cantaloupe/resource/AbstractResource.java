@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * <p>Unlike {@link jakarta.servlet.http.HttpServlet}s, instances are only used
  * once and not shared across threads.</p>
  */
-public abstract class AbstractResource {
+public abstract class AbstractResource implements Handler {
 
     private Request request;
     private HttpServletResponse response;
