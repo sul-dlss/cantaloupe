@@ -91,9 +91,6 @@ public class HandlerServlet extends HttpServlet {
                         // or if the request method is supported
                         supportedMethods.contains(Method.valueOf(request.getMethod()))) {
                     switch (request.getMethod()) {
-                        case "DELETE":
-                            resource.doDELETE();
-                            break;
                         case "GET":
                             resource.doGET();
                             break;
