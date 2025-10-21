@@ -1,25 +1,13 @@
 package edu.illinois.library.cantaloupe.resource;
 
-import edu.illinois.library.cantaloupe.Application;
-
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.http.Method;
-import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.http.Status;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.util.StringUtils;
 import org.slf4j.Logger;
 
 import jakarta.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -44,12 +32,6 @@ public abstract class AbstractResource {
      * <p>Overrides must call {@code super}.</p>
      */
     public void doInit() throws Exception {
-        final Configuration config = Configuration.getInstance();
-        // Only show the x-powered-by header if configured to do so.
-        if (config.getBoolean(Key.HEADERS_POWERED_BY_DISPLAY, true)) {
-          response.setHeader("X-Powered-By",
-                  Application.getName() + "/" + Application.getVersion());
-        }
         logRequestStart();
     }
 
