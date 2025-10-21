@@ -17,15 +17,18 @@ import edu.illinois.library.cantaloupe.resource.IllegalClientArgumentException;
 import edu.illinois.library.cantaloupe.resource.Route;
 import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
+import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.resource.iiif.SizeRestrictedException;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import edu.illinois.library.cantaloupe.resource.iiif.ImageDisposition;
+import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
 import edu.illinois.library.cantaloupe.resource.iiif.ScaleValidator;
 import  edu.illinois.library.cantaloupe.resource.iiif.SizeConstrainer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,13 +87,15 @@ public class ImageResource extends IIIF3Resource {
 
         class CustomCallback implements ImageRequestHandler.Callback {
             @Override
-            public boolean preAuthorize() throws Exception {
-                return ImageResource.this.preAuthorize();
+            public boolean preAuthorize() throws IOException, ResourceException, Exception {
+                return IIIFAuth.preAuthorize(ImageResource.this.getRequest(),
+                                             ImageResource.this.getResponse());
             }
 
             @Override
-            public boolean authorize() throws Exception {
-                return ImageResource.this.authorize();
+            public boolean authorize() throws IOException, ResourceException, Exception{
+                return IIIFAuth.authorize(ImageResource.this.getRequest(),
+                                          ImageResource.this.getResponse());
             }
 
             @Override
