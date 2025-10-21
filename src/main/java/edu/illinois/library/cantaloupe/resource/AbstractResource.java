@@ -125,7 +125,10 @@ public abstract class AbstractResource {
           response.setHeader("X-Powered-By",
                   Application.getName() + "/" + Application.getVersion());
         }
-        // Log request info.
+        logRequestStart();
+    }
+
+    protected void logRequestStart() {
         getLogger().info("Handling {} {}",
                 request.getMethod(), request.getReference().getPath());
         getLogger().debug("Request headers: {}",
