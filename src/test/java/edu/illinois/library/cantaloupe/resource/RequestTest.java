@@ -2,7 +2,6 @@ package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.http.Cookies;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Reference;
