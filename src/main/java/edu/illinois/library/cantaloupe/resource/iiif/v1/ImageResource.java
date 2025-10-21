@@ -13,6 +13,7 @@ import edu.illinois.library.cantaloupe.operation.Scale;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.ResourceException;
+import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
@@ -66,7 +67,7 @@ public class ImageResource extends IIIF1Resource {
      * not really possible using current API.</p>
      */
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws IOException, ResourceException {
         if (redirectToNormalizedScaleConstraint()) {
             return;
         }
@@ -75,13 +76,13 @@ public class ImageResource extends IIIF1Resource {
 
         class CustomCallback implements ImageRequestHandler.Callback {
             @Override
-            public boolean preAuthorize() throws IOException, ResourceException, Exception {
+            public boolean preAuthorize() throws IOException, ResourceException {
                 return IIIFAuth.preAuthorize(ImageResource.this.getRequest(),
                                              ImageResource.this.getResponse());
             }
 
             @Override
-            public boolean authorize() throws IOException, ResourceException, Exception{
+            public boolean authorize() throws IOException, ResourceException{
                 return IIIFAuth.authorize(ImageResource.this.getRequest(),
                                           ImageResource.this.getResponse());
             }
@@ -104,7 +105,7 @@ public class ImageResource extends IIIF1Resource {
 
             @Override
             public void willProcessImage(Processor processor,
-                                         Info info) throws Exception {
+                                         Info info) throws ScaleRestrictedException{
                 final Dimension fullSize = info.getSize(getPageIndex());
                 ScaleValidator.validateScale(info.getMetadata().getOrientation().adjustedSize(fullSize),
                         (Scale) opList.getFirst(Scale.class),

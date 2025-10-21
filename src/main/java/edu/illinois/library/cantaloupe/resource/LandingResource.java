@@ -1,6 +1,9 @@
 package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.http.Method;
+
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +26,7 @@ public class LandingResource extends AbstractResource {
     }
 
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws IOException {
         addHeaders();
         new ThymeleafRepresentation("/landing.html", TemplateVariables.getDefault(getRequest()))
                 .write(getResponse().getOutputStream());

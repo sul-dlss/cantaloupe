@@ -10,7 +10,7 @@ import edu.illinois.library.cantaloupe.resource.iiif.IIIFResource;
 abstract class IIIF1Resource extends IIIFResource {
 
     @Override
-    public void doInit() throws Exception {
+    public void doInit() throws ResourceException {
         super.doInit();
 
         // 6.2: http://iiif.io/api/image/1.1/#server-responses-error

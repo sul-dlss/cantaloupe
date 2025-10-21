@@ -16,6 +16,11 @@ public class ResourceException extends Exception {
         this.status = status;
     }
 
+    public ResourceException(Throwable rootCause) {
+        super(rootCause);
+        this.status = Status.INTERNAL_SERVER_ERROR;
+    }
+
     public Status getStatus() {
         return status;
     }

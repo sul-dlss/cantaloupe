@@ -87,17 +87,21 @@ public final class ProcessorFactory {
      * @param sourceFormat Source format for which to retrieve a processor.
      * @return             Instance suitable for handling the given source
      *                     format, based on configuration settings.
+     * @throws ProcessorException 
      */
     public Processor newProcessor(final Format sourceFormat)
-            throws SourceFormatException,
-            InitializationException,
-            ReflectiveOperationException {
+            throws SourceFormatException, ProcessorException {
         final List<Class<? extends Processor>> candidates =
                 selectionStrategy.getPreferredProcessors(sourceFormat);
 
         String errorMsg = null;
         for (Class<? extends Processor> class_ : candidates) {
-            Processor candidate = class_.getDeclaredConstructor().newInstance();
+            Processor candidate;
+            try {
+                candidate = class_.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                throw new ProcessorException(e);
+            }
             errorMsg = candidate.getInitializationError();
             if (errorMsg == null) {
                 try {

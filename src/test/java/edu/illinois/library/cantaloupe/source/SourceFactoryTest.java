@@ -81,7 +81,7 @@ public class SourceFactoryTest extends BaseTest {
         config.setProperty(Key.SOURCE_STATIC, "BogusSource");
 
         Identifier identifier = new Identifier("cats");
-        assertThrows(ClassNotFoundException.class,
+        assertThrows(SourceException.class,
                 () -> instance.newSource(identifier, null));
     }
 

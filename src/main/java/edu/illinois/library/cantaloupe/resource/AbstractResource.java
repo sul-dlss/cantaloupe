@@ -6,6 +6,8 @@ import edu.illinois.library.cantaloupe.http.Status;
 import org.slf4j.Logger;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +33,7 @@ public abstract class AbstractResource {
      *
      * <p>Overrides must call {@code super}.</p>
      */
-    public void doInit() throws Exception {
+    public void doInit() throws ResourceException {
         logRequestStart();
     }
 
@@ -50,7 +52,7 @@ public abstract class AbstractResource {
      *
      * <p>Overrides must not call {@code super}.</p>
      */
-    public void doGET() throws Exception {
+    public void doGET() throws ResourceException, IOException {
         response.setStatus(Status.METHOD_NOT_ALLOWED.getCode());
     }
 
@@ -59,7 +61,7 @@ public abstract class AbstractResource {
      * overridden, this may also be overridden in order to set headers only and
      * not compute a response body.
      */
-    public void doHEAD() throws Exception {
+    public void doHEAD() throws ResourceException, IOException {
         doGET();
     }
 
@@ -84,7 +86,7 @@ public abstract class AbstractResource {
      *
      * <p>Overrides must not call {@code super}.</p>
      */
-    public void doPOST() throws Exception {
+    public void doPOST() throws ResourceException, IOException {
         response.setStatus(Status.METHOD_NOT_ALLOWED.getCode());
     }
 
@@ -93,7 +95,7 @@ public abstract class AbstractResource {
      *
      * <p>Overrides must not call {@code super}.</p>
      */
-    public void doPUT() throws Exception {
+    public void doPUT() throws ResourceException, IOException {
         response.setStatus(Status.METHOD_NOT_ALLOWED.getCode());
     }
 

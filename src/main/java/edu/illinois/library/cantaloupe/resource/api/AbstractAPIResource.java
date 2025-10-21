@@ -5,6 +5,7 @@ import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
 import edu.illinois.library.cantaloupe.resource.EndpointDisabledException;
+import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.auth.BasicAuth;
 
 abstract class AbstractAPIResource extends AbstractResource {
@@ -12,7 +13,7 @@ abstract class AbstractAPIResource extends AbstractResource {
     static final String BASIC_REALM = Application.getName() + " API Realm";
 
     @Override
-    public void doInit() throws Exception {
+    public void doInit() throws ResourceException {
         super.doInit();
 
         getResponse().setHeader("Cache-Control", "no-cache");

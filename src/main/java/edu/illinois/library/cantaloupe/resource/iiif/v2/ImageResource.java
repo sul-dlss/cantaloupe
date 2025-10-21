@@ -63,7 +63,7 @@ public class ImageResource extends IIIF2Resource {
      * Responds to image requests.
      */
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws ResourceException, IOException {
         if (redirectToNormalizedScaleConstraint()) {
             return;
         }
@@ -84,13 +84,13 @@ public class ImageResource extends IIIF2Resource {
 
         class CustomCallback implements ImageRequestHandler.Callback {
             @Override
-            public boolean preAuthorize() throws IOException, ResourceException, Exception {
+            public boolean preAuthorize() throws IOException, ResourceException {
                 return IIIFAuth.preAuthorize(ImageResource.this.getRequest(),
                                              ImageResource.this.getResponse());
             }
 
             @Override
-            public boolean authorize() throws IOException, ResourceException, Exception{
+            public boolean authorize() throws IOException, ResourceException {
                 return IIIFAuth.authorize(ImageResource.this.getRequest(),
                                           ImageResource.this.getResponse());
             }
@@ -125,7 +125,7 @@ public class ImageResource extends IIIF2Resource {
 
             @Override
             public void willProcessImage(Processor processor,
-                                         Info info) throws Exception {
+                                         Info info) throws ResourceException {
                 final Metadata metadata       = info.getMetadata();
                 final Orientation orientation = (metadata != null) ?
                         metadata.getOrientation() : Orientation.ROTATE_0;

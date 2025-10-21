@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -64,9 +65,11 @@ public class InformationResource extends IIIF1Resource {
 
     /**
      * Writes a JSON-serialized {@link Information} instance to the response.
+     * @throws IOException 
+     * @throws ResourceException 
      */
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws IOException, ResourceException  {
         if (redirectToNormalizedScaleConstraint()) {
             return;
         }
@@ -74,7 +77,7 @@ public class InformationResource extends IIIF1Resource {
 
         class CustomCallback implements InformationRequestHandler.Callback {
             @Override
-            public boolean authorize() throws Exception {
+            public boolean authorize() throws ResourceException, IOException {
                 return IIIFAuth.preAuthorize(InformationResource.this.getRequest(),
                                              InformationResource.this.getResponse());
             }

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -19,6 +20,7 @@ import edu.illinois.library.cantaloupe.resource.Route;
 import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
 import edu.illinois.library.cantaloupe.resource.InformationRequestHandler;
 import edu.illinois.library.cantaloupe.source.StatResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +70,7 @@ public class InformationResource extends IIIF3Resource {
      * Writes a JSON-serialized {@link Information} instance to the response.
      */
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws IOException, ResourceException {
         if (redirectToNormalizedScaleConstraint()) {
             return;
         }
@@ -80,7 +82,7 @@ public class InformationResource extends IIIF3Resource {
 
         class CustomCallback implements InformationRequestHandler.Callback {
             @Override
-            public boolean authorize() throws Exception {
+            public boolean authorize() throws IOException, ResourceException {
                 return IIIFAuth.preAuthorize(InformationResource.this.getRequest(),
                                              InformationResource.this.getResponse());
             }
@@ -168,7 +170,7 @@ public class InformationResource extends IIIF3Resource {
 
     private JacksonRepresentation newHTTP4xxRepresentation(
             Status status,
-            String message) throws ScriptException {
+            String message) throws ResourceException  {
         final Map<String,Object> map = new LinkedHashMap<>(); // preserves key order
         map.put("@context", "http://iiif.io/api/image/3/context.json");
         map.put("id", getImageURI());
@@ -177,7 +179,11 @@ public class InformationResource extends IIIF3Resource {
         map.put("profile", "level2");
         map.put("status", status.getCode());
         map.put("message", message);
-        map.putAll(getRequest().getDelegateProxy().getExtraIIIF3InformationResponseKeys());
+        try {
+            map.putAll(getRequest().getDelegateProxy().getExtraIIIF3InformationResponseKeys());
+        } catch (ScriptException e) {
+            throw new ResourceException(e);
+        }
         return new JacksonRepresentation(map);
     }
 

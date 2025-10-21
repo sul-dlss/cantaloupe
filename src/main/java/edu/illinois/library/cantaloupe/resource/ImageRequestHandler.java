@@ -1,8 +1,10 @@
 package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.cache.CacheDisabledException;
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -12,11 +14,13 @@ import edu.illinois.library.cantaloupe.image.MediaType;
 import edu.illinois.library.cantaloupe.operation.OperationList;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.processor.ProcessorConnector;
+import edu.illinois.library.cantaloupe.processor.ProcessorException;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import edu.illinois.library.cantaloupe.status.HealthChecker;
 import edu.illinois.library.cantaloupe.source.Source;
+import edu.illinois.library.cantaloupe.source.SourceException;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +70,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
          *
          * @return Authorization result.
          */
-        boolean preAuthorize() throws Exception;
+        boolean preAuthorize() throws IOException, ResourceException;
 
         /**
          * <p>Performs authorization using an {@link
@@ -77,7 +81,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
          *
          * @return Authorization result.
          */
-        boolean authorize() throws Exception;
+        boolean authorize() throws IOException, ResourceException;
 
         /**
          * Called immediately after the source image has first been accessed.
@@ -93,7 +97,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
          *
          * @param info Efficiently obtained instance.
          */
-        void infoAvailable(Info info) throws Exception;
+        void infoAvailable(Info info);
 
         /**
          * <p>Called when a hit is found in the derivative cache. In this case,
@@ -106,7 +110,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
          * <p>This method tends to be called relatively early. No other
          * callback methods will be called after this one.</p>
          */
-        void willStreamImageFromDerivativeCache() throws Exception;
+        void willStreamImageFromDerivativeCache();
 
         /**
          * <p>All setup is complete and processing will begin very soon after
@@ -117,7 +121,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
          * @param processor Instance that will do the processing.
          * @param info      Efficiently obtained instance.
          */
-        void willProcessImage(Processor processor, Info info) throws Exception;
+        void willProcessImage(Processor processor, Info info) throws ResourceException;
 
     }
 
@@ -176,7 +180,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
      * @param outputStream Stream to write the resulting image to. Will not be
      *                     closed.
      */
-    public void handle(OutputStream outputStream) throws Exception {
+    public void handle(OutputStream outputStream) throws IOException, ResourceException {
         if (!callback.preAuthorize()) {
             return;
         }
@@ -222,9 +226,12 @@ public class ImageRequestHandler extends AbstractRequestHandler
                 }
             }
         }
-
-        final Source source = new SourceFactory().newSource(
-                identifier, delegateProxy);
+        final Source source;
+        try {
+            source = new SourceFactory().newSource(identifier, delegateProxy);
+        } catch (SourceException | ConfigurationException e) {
+            throw new ResourceException(e);
+        }
 
         // If we are resolving first, or if the source image is not present in
         // the source cache (if enabled), check access to it in preparation for
@@ -312,6 +319,9 @@ public class ImageRequestHandler extends AbstractRequestHandler
                                 "supplied by {} ({}) for {}; trying again",
                         processorName, source.getClass().getSimpleName(),
                         format, identifier);
+            } catch (ProcessorException | CacheDisabledException |
+                     ConfigurationException | InterruptedException e) {
+                throw new ResourceException(e);
             }
         }
         if (config.getBoolean(Key.PROCESSOR_PURGE_INCOMPATIBLE_FROM_SOURCE_CACHE, false)) {
