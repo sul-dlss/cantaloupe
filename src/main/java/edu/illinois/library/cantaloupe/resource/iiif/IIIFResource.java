@@ -6,6 +6,7 @@ import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.image.MetaIdentifier;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
 import edu.illinois.library.cantaloupe.resource.RequestContextDecorator;
+import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.resource.StringRepresentation;
 import edu.illinois.library.cantaloupe.util.TimeUtils;
 import edu.illinois.library.cantaloupe.resource.IIIFRequest;
@@ -24,7 +25,7 @@ public abstract class IIIFResource extends AbstractResource {
     private static final String TIME_QUERY_ARG        = "time";
 
     @Override
-    public void doInit() throws Exception {
+    public void doInit() throws ResourceException {
         super.doInit();
         RequestContextDecorator.decorateRequestContext(getRequest());
         addHeaders();

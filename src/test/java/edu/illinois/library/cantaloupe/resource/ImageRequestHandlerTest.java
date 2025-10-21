@@ -9,7 +9,6 @@ import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.*;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.ValidationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
 import edu.illinois.library.cantaloupe.source.StatResult;
@@ -476,7 +475,7 @@ class ImageRequestHandlerTest extends BaseTest {
                 request,
                 callback);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            assertThrows(ValidationException.class, () ->
+            assertThrows(ResourceException.class, () ->
                     handler.handle(outputStream));
         }
     }

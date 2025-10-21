@@ -2,9 +2,11 @@ package edu.illinois.library.cantaloupe.resource.api;
 
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.resource.JacksonRepresentation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.UUID;
 
@@ -32,7 +34,7 @@ public class TaskResource extends AbstractAPIResource {
     /**
      * Writes a JSON task representation to the response output stream.
      */
-    public void doGET() throws Exception {
+    public void doGET() throws IOException {
         final String uuidStr = getRequest().getPathArguments().get(0);
         try {
             final UUID uuid = UUID.fromString(uuidStr);

@@ -9,10 +9,11 @@ import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
 import edu.illinois.library.cantaloupe.image.MetaIdentifierTransformerFactory;
 import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.processor.InitializationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
+import edu.illinois.library.cantaloupe.processor.ProcessorException;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
+import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.resource.Route;
 import edu.illinois.library.cantaloupe.resource.TemplateVariables;
 import edu.illinois.library.cantaloupe.resource.ThymeleafRepresentation;
@@ -22,7 +23,9 @@ import edu.illinois.library.cantaloupe.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
@@ -143,7 +146,7 @@ public class AdminResource extends AbstractAdminResource {
     }
 
     @Override
-    public void doGET() throws Exception {
+    public void doGET() throws ResourceException, IOException {
         getResponse().setHeader("Content-Type", "text/html;charset=UTF-8");
 
         new ThymeleafRepresentation("/admin.html", getTemplateVars())
@@ -239,9 +242,7 @@ public class AdminResource extends AbstractAdminResource {
         for (Format format : Format.all()) {
             try (Processor proc = new ProcessorFactory().newProcessor(format)) {
                 assignments.put(new FormatProxy(format), new ProcessorProxy(proc));
-            } catch (SourceFormatException |
-                    InitializationException |
-                    ReflectiveOperationException e) {
+            } catch (SourceFormatException | ProcessorException e) {
                 // nothing we can do
             }
         }

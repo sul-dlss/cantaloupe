@@ -7,6 +7,7 @@ import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
 import edu.illinois.library.cantaloupe.resource.EndpointDisabledException;
 import edu.illinois.library.cantaloupe.resource.JacksonRepresentation;
+import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.status.Health;
 import edu.illinois.library.cantaloupe.status.HealthChecker;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class HealthResource extends AbstractResource {
             Map.of(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
 
     @Override
-    public void doInit() throws Exception {
+    public void doInit() throws ResourceException {
         super.doInit();
         getResponse().setHeader("Cache-Control", "no-cache");
 

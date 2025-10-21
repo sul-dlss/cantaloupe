@@ -6,7 +6,6 @@ import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Status;
 import edu.illinois.library.cantaloupe.operation.IllegalScaleException;
 import edu.illinois.library.cantaloupe.operation.IllegalSizeException;
-import edu.illinois.library.cantaloupe.operation.ValidationException;
 import edu.illinois.library.cantaloupe.processor.OutputFormatException;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
 import edu.illinois.library.cantaloupe.resource.iiif.FormatException;
@@ -27,8 +26,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.NoSuchFileException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Translates a {@link Throwable} to an HTTP 4xx or 5xx-level response.
@@ -65,7 +62,7 @@ class ErrorResource {
                 t instanceof IllegalScaleException ||
                 t instanceof AccessDeniedException) {
             status = Status.FORBIDDEN;
-        } else if (t instanceof ValidationException ||
+        } else if (
                 t instanceof IllegalClientArgumentException ||
                 t instanceof UnsupportedEncodingException) {
             status = Status.BAD_REQUEST;

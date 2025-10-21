@@ -1,9 +1,11 @@
 package edu.illinois.library.cantaloupe.operation;
 
+import edu.illinois.library.cantaloupe.http.Status;
+
 public class IllegalScaleException extends ValidationException {
 
     IllegalScaleException() {
-        super("Access denied for the requested scale.");
+        super(Status.FORBIDDEN, "Access denied for the requested scale.");
     }
 
 }

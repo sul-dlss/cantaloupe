@@ -11,6 +11,7 @@ import edu.illinois.library.cantaloupe.resource.Route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 /**
@@ -42,7 +43,7 @@ public class TasksResource extends AbstractAPIResource {
      * {@link APITask}.
      */
     @Override
-    public void doPOST() throws Exception {
+    public void doPOST() throws IOException {
         // N.B.: ObjectMapper will deserialize into the correct subclass.
         ObjectReader reader = new ObjectMapper().readerFor(Command.class);
 

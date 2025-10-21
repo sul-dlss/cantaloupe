@@ -1,7 +1,9 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import edu.illinois.library.cantaloupe.cache.CacheDisabledException;
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -9,10 +11,11 @@ import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.MediaType;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.processor.ProcessorConnector;
+import edu.illinois.library.cantaloupe.processor.ProcessorException;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.source.Source;
+import edu.illinois.library.cantaloupe.source.SourceException;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import org.slf4j.Logger;
@@ -66,7 +69,7 @@ public class InformationRequestHandler extends AbstractRequestHandler
          *
          * @return Authorization result.
          */
-        boolean authorize() throws Exception;
+        boolean authorize() throws ResourceException, IOException;
 
         /**
          * Called immediately after a source image has been accessed.
@@ -144,7 +147,7 @@ public class InformationRequestHandler extends AbstractRequestHandler
     /**
      * Handles an information request.
      */
-    public Info handle() throws Exception {
+    public Info handle() throws IOException, ResourceException {
         if (!callback.authorize()) {
             return null;
         }
@@ -175,8 +178,12 @@ public class InformationRequestHandler extends AbstractRequestHandler
             }
         }
 
-        final Source source = new SourceFactory().newSource(
-                identifier, delegateProxy);
+        final Source source;
+        try {
+            source = new SourceFactory().newSource(identifier, delegateProxy);
+        } catch (SourceException | ConfigurationException e) {
+            throw new ResourceException(e);
+        }
 
         // If we are resolving first, or if the source image is not present in
         // the source cache (if enabled), check access to it in preparation for
@@ -232,6 +239,9 @@ public class InformationRequestHandler extends AbstractRequestHandler
                                 "supplied by {} ({}) for {}; trying again",
                         processorName, source.getClass().getSimpleName(),
                         format, identifier);
+            } catch (ProcessorException | CacheDisabledException |
+                    ConfigurationException | InterruptedException e) {
+                throw new ResourceException(e);
             }
         }
         throw new SourceFormatException();

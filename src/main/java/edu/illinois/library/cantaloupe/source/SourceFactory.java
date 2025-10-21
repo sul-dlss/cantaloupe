@@ -108,7 +108,7 @@ public final class SourceFactory {
      *                                  SelectionStrategy#DELEGATE_SCRIPT}.
      */
     public Source newSource(Identifier identifier,
-                            DelegateProxy proxy) throws Exception {
+                            DelegateProxy proxy) throws SourceException, ConfigurationException{
         switch (getSelectionStrategy()) {
             case DELEGATE_SCRIPT:
                 if (proxy == null) {
@@ -146,18 +146,22 @@ public final class SourceFactory {
 
     private Source newSource(String name,
                              Identifier identifier,
-                             DelegateProxy proxy) throws Exception {
+                             DelegateProxy proxy) throws SourceException {
         // If the name contains a dot, assume it's a  full class name,
         // including package. Otherwise, assume it's a simple class name in
         // this package.
         String fullName = name.contains(".") ?
                 name : SourceFactory.class.getPackage().getName() + "." + name;
-        Class<?> class_ = Class.forName(fullName);
-
-        Source source = (Source) class_.getDeclaredConstructor().newInstance();
-        source.setIdentifier(identifier);
-        source.setDelegateProxy(proxy);
-        return source;
+        try {
+            Class<?> class_ = Class.forName(fullName);
+            Source source = (Source) class_.getDeclaredConstructor().newInstance();
+            source.setIdentifier(identifier);
+            source.setDelegateProxy(proxy);
+            return source;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | 
+                    IllegalAccessException | InvocationTargetException e) {
+            throw new SourceException(e);
+        }
     }
 
     /**
@@ -170,8 +174,13 @@ public final class SourceFactory {
      * @throws ScriptException if the delegate method failed to execute.
      */
     private Source newDynamicSource(Identifier identifier,
-                                    DelegateProxy proxy) throws Exception {
-        return newSource(proxy.getSource(), identifier, proxy);
+                                    DelegateProxy proxy) throws SourceException {
+        try {
+            String sourceName = proxy.getSource();
+            return newSource(sourceName, identifier, proxy);
+        } catch (ScriptException e) {
+            throw new SourceException(e);
+        }
     }
 
 }
