@@ -15,6 +15,7 @@ import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.source.StatResult;
 import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.resource.iiif.ScaleValidator;
+import edu.illinois.library.cantaloupe.resource.iiif.ImageDisposition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,8 @@ public class ImageResource extends IIIF1Resource {
                         Status.FORBIDDEN,
                         getRequest().getMetaIdentifier());
 
-                final String disposition = getRepresentationDisposition(
+                final String disposition = ImageDisposition.getRepresentationDisposition(
+                    getRequest(),
                         getRequest().getMetaIdentifier().toString(),
                         opList.getOutputFormat());
                 addHeaders(processor.getAvailableOutputFormats(),
