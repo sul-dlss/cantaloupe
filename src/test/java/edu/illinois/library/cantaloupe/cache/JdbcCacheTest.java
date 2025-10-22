@@ -1,22 +1,10 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.operation.CropByPixels;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.Rotate;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
-import edu.illinois.library.cantaloupe.operation.ScaleByPixels;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.apache.commons.lang.SystemUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.nio.file.Files;
 import java.sql.Connection;
@@ -28,8 +16,25 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import org.apache.commons.lang.SystemUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.CropByPixels;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.Rotate;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
+import edu.illinois.library.cantaloupe.operation.ScaleByPixels;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class JdbcCacheTest extends AbstractCacheTest {
 
@@ -61,7 +66,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
     }
 
     private void configure() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         // use an in-memory H2 database
         config.setProperty(Key.JDBCCACHE_JDBC_URL, "jdbc:h2:mem:test");
         config.setProperty(Key.JDBCCACHE_USER, "sa");
@@ -98,7 +103,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
     }
 
     private void seed(Connection connection) throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         // persist some derivative images
         OperationList ops = new OperationList();
@@ -168,7 +173,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
 
     @Test
     void testEarliestValidDate() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         // ttl = 0
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 0);
@@ -187,7 +192,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetImageInfoUpdatesLastAccessedTime() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         final Identifier identifier = new Identifier("cats");
 
@@ -236,7 +241,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
     @Test
     void testNewDerivativeImageInputStreamUpdatesLastAccessedTime()
             throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         final OperationList opList = new OperationList();
 
@@ -290,7 +295,7 @@ public class JdbcCacheTest extends AbstractCacheTest {
 
     @Test
     void testPutSetsLastAccessedTime() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         Identifier identifier = new Identifier("birds");
         Info info = new Info();

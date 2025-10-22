@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.png;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.processor.codec.AbstractImageReaderTest;
@@ -58,7 +59,7 @@ public class PNGImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(PNGImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((PNGImageReader) instance).
@@ -78,7 +79,7 @@ public class PNGImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(PNGImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((PNGImageReader) instance).getUserPreferredIIOImplementation());

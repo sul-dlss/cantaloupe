@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.source;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -108,14 +109,14 @@ abstract class HttpSourceTest extends AbstractSourceTest {
 
     @Override
     void useBasicLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                 "BasicLookupStrategy");
     }
 
     @Override
     void useScriptLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                 "ScriptLookupStrategy");
     }
@@ -297,7 +298,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
         // TODO; write this
 
         // Set up HttpSource
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_HOST, "127.0.0.1");
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_PORT, proxyPort);
 
@@ -360,7 +361,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
     void testStatWithMalformedURI() throws Exception {
         server.start();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX, "");
 
         Identifier identifier = new Identifier(
@@ -423,7 +424,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
     @Test
     void testGetRequestInfoUsingBasicLookupStrategyWithPrefix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX,
                 getScheme() + "://example.org/prefix/");
 
@@ -437,7 +438,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
     @Test
     void testGetRequestInfoUsingBasicLookupStrategyWithPrefixAndSuffix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX,
                 getScheme() + "://example.org/prefix/");
         config.setProperty(Key.HTTPSOURCE_URL_SUFFIX, "/suffix");
@@ -452,7 +453,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
     @Test
     void testGetRequestInfoUsingBasicLookupStrategyWithoutPrefixOrSuffix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX, "");
         config.setProperty(Key.HTTPSOURCE_URL_SUFFIX, "");
 
@@ -545,7 +546,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
     @Test
     void testNewStreamFactoryUsingBasicLookupStrategyWithValidAuthentication()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_BASIC_AUTH_USERNAME,
                 WebServer.BASIC_USER);
         config.setProperty(Key.HTTPSOURCE_BASIC_AUTH_SECRET,
@@ -631,7 +632,7 @@ abstract class HttpSourceTest extends AbstractSourceTest {
      */
     @Test
     void testNoUnnecessaryRequestsWithHEADRequestsDisabled() throws Exception {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_SEND_HEAD_REQUESTS, false);
 
         final RequestCountingHandler handler = new RequestCountingHandler();

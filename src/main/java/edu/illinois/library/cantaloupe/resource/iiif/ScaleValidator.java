@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource.iiif;
 
 import java.util.Arrays;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Status;
@@ -35,7 +36,7 @@ public class ScaleValidator {
                     scale.getResultingScales(virtualSize, scaleConstraint))
                     .max().orElse(1);
         }
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final double maxScale      = config.getDouble(Key.MAX_SCALE, 1.0);
         if (maxScale > 0.0001 && scalePct > maxScale) {
             throw new ScaleRestrictedException(invalidStatus, maxScale);

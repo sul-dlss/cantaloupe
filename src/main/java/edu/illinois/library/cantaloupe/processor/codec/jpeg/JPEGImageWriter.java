@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.jpeg;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Metadata;
 import edu.illinois.library.cantaloupe.operation.Color;
@@ -101,7 +102,7 @@ public final class JPEGImageWriter extends AbstractIIOImageWriter
 
     @Override
     protected String getUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         return config.getString(IMAGEIO_PLUGIN_CONFIG_KEY);
     }
 

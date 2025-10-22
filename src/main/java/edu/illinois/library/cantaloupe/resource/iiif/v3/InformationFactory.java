@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -54,7 +55,7 @@ final class InformationFactory {
     private int minSize, minTileSize;
 
     InformationFactory() {
-        var config  = Configuration.getInstance();
+        var config  = ConfigurationAccessor.getConfiguration();
         maxPixels   = config.getInt(Key.MAX_PIXELS, 0);
         maxScale    = config.getDouble(Key.MAX_SCALE, Double.MAX_VALUE);
         minSize     = config.getInt(Key.IIIF_MIN_SIZE, DEFAULT_MIN_SIZE);

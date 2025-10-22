@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.jpeg;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Metadata;
@@ -44,7 +45,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(JPEGImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((JPEGImageWriter) instance).getUserPreferredIIOImplementation();
@@ -62,7 +63,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(JPEGImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((JPEGImageWriter) instance).getUserPreferredIIOImplementation());

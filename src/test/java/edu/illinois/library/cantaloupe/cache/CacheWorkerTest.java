@@ -1,12 +1,14 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.config.Configuration;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class CacheWorkerTest extends BaseTest {
 
@@ -16,7 +18,7 @@ public class CacheWorkerTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE, MockCache.class.getName());
         config.setProperty(Key.SOURCE_CACHE, MockCache.class.getName());

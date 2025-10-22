@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.resource;
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.cache.CacheFactory;
 import edu.illinois.library.cantaloupe.cache.DerivativeCache;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -59,7 +60,7 @@ abstract class AbstractRequestHandler {
      * Resolving first is safer but slower.
      */
     boolean verifyExistenceBeforeReturningCachedValue() {
-        return Configuration.getInstance().
+        return ConfigurationAccessor.getConfiguration().
                 getBoolean(Key.CACHE_SERVER_RESOLVE_FIRST, true);
     }
 

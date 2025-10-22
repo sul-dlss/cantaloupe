@@ -6,6 +6,7 @@ import com.microsoft.azure.storage.SharedAccessAccountResourceType;
 import com.microsoft.azure.storage.SharedAccessAccountService;
 import com.microsoft.azure.storage.SharedAccessProtocols;
 import com.microsoft.azure.storage.StorageException;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -50,7 +51,7 @@ public class AzureStorageSourceTest extends AbstractSourceTest {
     }
 
     private static void clearConfig() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.AZURESTORAGESOURCE_CONTAINER_NAME, "");
         config.setProperty(Key.AZURESTORAGESOURCE_ACCOUNT_NAME, "");
         config.setProperty(Key.AZURESTORAGESOURCE_ACCOUNT_KEY, "");
@@ -131,7 +132,7 @@ public class AzureStorageSourceTest extends AbstractSourceTest {
 
     @Override
     void useBasicLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.AZURESTORAGESOURCE_CONTAINER_NAME,
                 getContainer());
         config.setProperty(Key.AZURESTORAGESOURCE_ACCOUNT_NAME,
@@ -145,7 +146,7 @@ public class AzureStorageSourceTest extends AbstractSourceTest {
     @Override
     void useScriptLookupStrategy() {
         try {
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.AZURESTORAGESOURCE_LOOKUP_STRATEGY,
                     "ScriptLookupStrategy");
 

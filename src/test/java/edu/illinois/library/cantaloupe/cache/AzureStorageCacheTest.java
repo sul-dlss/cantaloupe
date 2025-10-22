@@ -1,16 +1,18 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
-import edu.illinois.library.cantaloupe.test.TestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class AzureStorageCacheTest extends AbstractCacheTest {
 
@@ -51,7 +53,7 @@ public class AzureStorageCacheTest extends AbstractCacheTest {
 
     @Override
     AzureStorageCache newInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.AZURESTORAGECACHE_OBJECT_KEY_PREFIX, "test/");
         config.setProperty(Key.AZURESTORAGECACHE_ACCOUNT_NAME, getAccountName());
         config.setProperty(Key.AZURESTORAGECACHE_ACCOUNT_KEY, getAccountKey());
@@ -65,7 +67,7 @@ public class AzureStorageCacheTest extends AbstractCacheTest {
     @Test
     void testGetContainerName() {
         assertEquals(
-                Configuration.getInstance().getString(Key.AZURESTORAGECACHE_CONTAINER_NAME),
+                ConfigurationAccessor.getConfiguration().getString(Key.AZURESTORAGECACHE_CONTAINER_NAME),
                 AzureStorageCache.getContainerName());
     }
 
@@ -92,7 +94,7 @@ public class AzureStorageCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetObjectKeyPrefix() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
 
         config.setProperty(Key.AZURESTORAGECACHE_OBJECT_KEY_PREFIX, "");
         assertEquals("", instance.getObjectKeyPrefix());

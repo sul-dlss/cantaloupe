@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.tiff;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -132,7 +133,7 @@ public class TIFFImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(TIFFImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((TIFFImageReader) instance).
@@ -152,7 +153,7 @@ public class TIFFImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(TIFFImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((TIFFImageReader) instance).getUserPreferredIIOImplementation());

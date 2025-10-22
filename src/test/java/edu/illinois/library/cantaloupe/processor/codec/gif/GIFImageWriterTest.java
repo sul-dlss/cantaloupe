@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.gif;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Metadata;
@@ -92,7 +93,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(GIFImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((GIFImageWriter) instance).getUserPreferredIIOImplementation();
@@ -110,7 +111,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(GIFImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((GIFImageWriter) instance).getUserPreferredIIOImplementation());

@@ -1,12 +1,16 @@
 package edu.illinois.library.cantaloupe.test;
 
-import edu.illinois.library.cantaloupe.Application;
-import edu.illinois.library.cantaloupe.cache.CacheFacade;
-import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.cache.CacheFacade;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
+import edu.illinois.library.cantaloupe.config.SpringConfiguration;
 
 /**
  * Base class for all tests.
@@ -23,6 +27,10 @@ public abstract class BaseTest {
 
     @BeforeAll
     public static void beforeClass() throws Exception {
+
+        System.out.println("Setup");
+        ApplicationContext appContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+
         ConfigurationFactory.clearInstance();
         System.setProperty(ConfigurationFactory.CONFIG_VM_ARGUMENT, "memory");
     }

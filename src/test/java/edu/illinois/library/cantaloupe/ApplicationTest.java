@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.test.BaseTest;
@@ -17,7 +18,7 @@ public class ApplicationTest extends BaseTest {
     @Test
     void testGetTempPathSetInConfiguration() throws IOException {
         Path expectedDir = Files.createTempDirectory("test");
-        Configuration.getInstance().setProperty(Key.TEMP_PATHNAME, expectedDir);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.TEMP_PATHNAME, expectedDir);
 
         Path actualDir = Application.getTempPath();
         assertEquals(expectedDir, actualDir);
@@ -26,7 +27,7 @@ public class ApplicationTest extends BaseTest {
     @Test
     void testGetTempPathFallsBackToDefault() {
         Path expectedDir = Paths.get(System.getProperty("java.io.tmpdir"));
-        Configuration.getInstance().clearProperty(Key.TEMP_PATHNAME);
+        ConfigurationAccessor.getConfiguration().clearProperty(Key.TEMP_PATHNAME);
 
         Path actualDir = Application.getTempPath();
         assertEquals(expectedDir, actualDir);
@@ -36,7 +37,7 @@ public class ApplicationTest extends BaseTest {
     void testGetTempPathCreatesDirectory() {
         Path expectedDir = Paths.get(System.getProperty("java.io.tmpdir"),
                 "cats", "cats", "cats");
-        Configuration.getInstance().setProperty(Key.TEMP_PATHNAME, expectedDir);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.TEMP_PATHNAME, expectedDir);
 
         Application.getTempPath();
         assertTrue(Files.exists(expectedDir));

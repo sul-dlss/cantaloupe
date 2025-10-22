@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.processor;
 import edu.illinois.library.cantaloupe.Application;
 import edu.illinois.library.cantaloupe.async.TaskQueue;
 import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -143,7 +144,7 @@ class GrokProcessor  extends AbstractProcessor implements FileProcessor {
     private Path sourceSymlink;
 
     private static String getPath() {
-        String searchPath = Configuration.getInstance().
+        String searchPath = ConfigurationAccessor.getConfiguration().
                 getString(Key.GROKPROCESSOR_PATH_TO_BINARIES);
         return CommandLocator.locate(GRK_DECOMPRESS_NAME, searchPath);
     }

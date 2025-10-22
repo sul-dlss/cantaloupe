@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -28,7 +29,7 @@ public class RasterizationHelperTest extends BaseTest {
     @Test
     void testConstructor() {
         final int baseDPI = 200;
-        Configuration.getInstance().setProperty(Key.PROCESSOR_DPI, baseDPI);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.PROCESSOR_DPI, baseDPI);
         instance = new RasterizationHelper();
     }
 

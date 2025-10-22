@@ -3,14 +3,15 @@ package edu.illinois.library.cantaloupe.resource.iiif;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
 import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.resource.Request;
 import edu.illinois.library.cantaloupe.resource.MockHttpServletRequest;
-import java.util.Collections;
+import edu.illinois.library.cantaloupe.resource.Request;
 public class ImageDispositionTest {
     @BeforeAll
     public static void beforeClass() throws Exception {

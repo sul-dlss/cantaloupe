@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.cache;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ public final class CacheFactory {
         DerivativeCache cache = null;
 
         if (isDerivativeCacheEnabled()) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             final String unqualifiedName = config.getString(Key.DERIVATIVE_CACHE, "");
 
             if (!unqualifiedName.isEmpty()) {
@@ -118,7 +119,7 @@ public final class CacheFactory {
     public static Optional<SourceCache> getSourceCache() {
         SourceCache cache = null;
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final String unqualifiedName = config.getString(Key.SOURCE_CACHE, "");
 
         if (!unqualifiedName.isEmpty()) {
@@ -161,7 +162,7 @@ public final class CacheFactory {
     }
 
     private static boolean isDerivativeCacheEnabled() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         return config.getBoolean(Key.DERIVATIVE_CACHE_ENABLED, false);
     }
 

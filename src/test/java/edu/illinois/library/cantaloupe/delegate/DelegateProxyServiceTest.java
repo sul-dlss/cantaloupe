@@ -1,18 +1,24 @@
 package edu.illinois.library.cantaloupe.delegate;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.resource.RequestContext;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.resource.RequestContext;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 class DelegateProxyServiceTest extends BaseTest {
 
@@ -25,7 +31,7 @@ class DelegateProxyServiceTest extends BaseTest {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 TestUtil.getFixture("delegates.rb").toString());
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, true);
         config.clearProperty(Key.DELEGATE_SCRIPT_PATHNAME);
 
@@ -56,7 +62,7 @@ class DelegateProxyServiceTest extends BaseTest {
 
     @Test
     void isDelegateAvailableWithNoJavaDelegateAndScriptDisabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, false);
         assertFalse(DelegateProxyService.isDelegateAvailable());
     }
@@ -65,7 +71,7 @@ class DelegateProxyServiceTest extends BaseTest {
 
     @Test
     void isScriptEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, false);
         assertFalse(DelegateProxyService.isScriptEnabled());
 
@@ -78,7 +84,7 @@ class DelegateProxyServiceTest extends BaseTest {
     @Test
     void getScriptFileWithValidScriptInVMArgumentAndConfiguration()
             throws Exception {
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("delegates.rb").toString());
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -88,7 +94,7 @@ class DelegateProxyServiceTest extends BaseTest {
     @Test
     void getScriptFileWithValidScriptInVMArgumentAndInvalidScriptInConfiguration()
             throws Exception {
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getImage("txt"));
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -98,7 +104,7 @@ class DelegateProxyServiceTest extends BaseTest {
     @Test
     void getScriptFileWithValidScriptInVMArgumentAndMissingScriptInConfiguration()
             throws Exception {
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 "/bogus/bogus/bogus");
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -110,7 +116,7 @@ class DelegateProxyServiceTest extends BaseTest {
             throws Exception {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 TestUtil.getImage("txt").toString());
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("delegates.rb").toString());
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -122,7 +128,7 @@ class DelegateProxyServiceTest extends BaseTest {
             throws Exception {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 TestUtil.getImage("txt").toString());
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getImage("txt").toString());
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -135,7 +141,7 @@ class DelegateProxyServiceTest extends BaseTest {
         final Path invalidScript = TestUtil.getImage("txt");
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 invalidScript.toString());
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 "/bogus/bogus/bogus");
 
         Path actual = DelegateProxyService.getScriptFile();
@@ -146,7 +152,7 @@ class DelegateProxyServiceTest extends BaseTest {
     void getScriptFileWithMissingScriptInVMArgumentAndValidScriptConfiguration() {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 "/bogus/bogus/bogus");
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("delegates.rb").toString());
 
         assertThrows(NoSuchFileException.class,
@@ -157,7 +163,7 @@ class DelegateProxyServiceTest extends BaseTest {
     void getScriptFileWithMissingScriptInVMArgumentAndInvalidScriptInConfiguration() {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 "/bogus/bogus/bogus");
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("txt").toString());
 
         assertThrows(NoSuchFileException.class,
@@ -168,7 +174,7 @@ class DelegateProxyServiceTest extends BaseTest {
     void getScriptFileWithMissingScriptInVMArgumentAndConfiguration() {
         System.setProperty(DelegateProxyService.DELEGATE_SCRIPT_VM_ARGUMENT,
                 "/bogus/bogus/bogus");
-        Configuration.getInstance().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 "/bogus/bogus/bogus");
 
         assertThrows(NoSuchFileException.class,
@@ -193,7 +199,7 @@ class DelegateProxyServiceTest extends BaseTest {
 
     @Test
     void newDelegateProxyWithDelegateScriptDisabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, false);
 
         RequestContext context = new RequestContext();

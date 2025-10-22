@@ -1,16 +1,18 @@
 package edu.illinois.library.cantaloupe.cache;
 
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
 
 public class RedisCacheTest extends AbstractCacheTest {
 
     @Override
     RedisCache newInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         org.apache.commons.configuration.Configuration testConfig =
                 TestUtil.getTestConfig();
         config.setProperty(Key.REDISCACHE_HOST,

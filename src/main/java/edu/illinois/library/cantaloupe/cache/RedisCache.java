@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -199,7 +200,7 @@ class RedisCache implements DerivativeCache {
 
     private static synchronized StatefulRedisConnection<String, byte[]> getConnection() {
         if (connection == null) {
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             RedisURI redisUri =
                     RedisURI.Builder.redis(config.getString(Key.REDISCACHE_HOST)).
                             withPort(config.getInt(Key.REDISCACHE_PORT, 6379)).

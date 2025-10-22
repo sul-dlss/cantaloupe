@@ -1,14 +1,16 @@
 package edu.illinois.library.cantaloupe.operation.overlay;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.ConfigurationException;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import edu.illinois.library.cantaloupe.image.Dimension;
 
 /**
  * Provides access to {@link Overlay} instances.
@@ -41,7 +43,7 @@ public final class OverlayFactory {
 
     private OverlayService newOverlayService(DelegateProxy delegateProxy)
             throws ConfigurationException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         OverlayService instance = null;
         switch (getStrategy()) {
             case BASIC:
@@ -92,7 +94,7 @@ public final class OverlayFactory {
     }
 
     private void readStrategy() throws ConfigurationException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final String configValue = config.getString(
                 Key.OVERLAY_STRATEGY, "BasicStrategy");
         switch (configValue) {

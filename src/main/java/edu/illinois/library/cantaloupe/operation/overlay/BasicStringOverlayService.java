@@ -1,13 +1,14 @@
 package edu.illinois.library.cantaloupe.operation.overlay;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.ConfigurationException;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.operation.Color;
-
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.util.Map;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.operation.Color;
 
 class BasicStringOverlayService extends BasicOverlayService
         implements OverlayService {
@@ -33,7 +34,7 @@ class BasicStringOverlayService extends BasicOverlayService
     }
 
     private void readConfig() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         // Background color
         backgroundColor = Color.fromString(

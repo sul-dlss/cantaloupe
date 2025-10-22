@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.cache;
 
 import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -319,7 +320,7 @@ class FilesystemCache implements SourceCache, DerivativeCache {
             digest.update(uniqueString.getBytes(StandardCharsets.UTF_8));
             final String sum = Hex.encodeHexString(digest.digest());
 
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             final int depth = config.getInt(Key.FILESYSTEMCACHE_DIRECTORY_DEPTH, 3);
             final int nameLength =
                     config.getInt(Key.FILESYSTEMCACHE_DIRECTORY_NAME_LENGTH, 2);
@@ -345,7 +346,7 @@ class FilesystemCache implements SourceCache, DerivativeCache {
      * @return Whether the given file is expired.
      */
     static boolean isExpired(Path file) throws IOException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         final long ttlSec = file.startsWith(rootSourceImagePath()) ?
                 config.getLong(Key.SOURCE_CACHE_TTL, 0) :
@@ -364,7 +365,7 @@ class FilesystemCache implements SourceCache, DerivativeCache {
      * @return Path of the root cache directory.
      */
     private static Path rootPath() {
-        final String pathname = Configuration.getInstance().
+        final String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME, "");
         if (pathname.isEmpty()) {
             LOGGER.error("{} is not set.", Key.FILESYSTEMCACHE_PATHNAME);

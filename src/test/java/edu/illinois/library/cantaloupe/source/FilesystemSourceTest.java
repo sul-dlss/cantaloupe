@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -52,7 +53,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
 
     @Override
     void useBasicLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_LOOKUP_STRATEGY,
                 "BasicLookupStrategy");
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -61,7 +62,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
 
     @Override
     void useScriptLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, true);
         config.setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("delegates.rb").toString());
@@ -169,7 +170,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
 
     @Test
     void testgetFileUsingBasicLookupStrategyWithPrefix() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX, "/prefix/");
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_SUFFIX, "");
 
@@ -180,7 +181,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
 
     @Test
     void testgetFileUsingBasicLookupStrategyWithSuffix() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX, "/prefix/");
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_SUFFIX, "/suffix");
 
@@ -193,7 +194,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
     @Test
     void testgetFileUsingBasicLookupStrategyWithoutPrefixOrSuffix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX, "");
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_SUFFIX, "");
 
@@ -207,7 +208,7 @@ public class FilesystemSourceTest extends AbstractSourceTest {
      */
     @Test
     void testgetFileSanitization() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX, "/prefix/");
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_SUFFIX, "/suffix");
 

@@ -5,6 +5,7 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -198,7 +199,7 @@ final class AzureStorageSource extends AbstractSource implements Source {
     static synchronized CloudStorageAccount getAccount() {
         if (account == null) {
             try {
-                final Configuration config = Configuration.getInstance();
+                final Configuration config = ConfigurationAccessor.getConfiguration();
                 final String accountName =
                         config.getString(Key.AZURESTORAGESOURCE_ACCOUNT_NAME);
                 final String accountKey =
@@ -297,7 +298,7 @@ final class AzureStorageSource extends AbstractSource implements Source {
     }
 
     private String getContainerName() {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         return config.getString(Key.AZURESTORAGESOURCE_CONTAINER_NAME);
     }
 

@@ -1,17 +1,21 @@
 package edu.illinois.library.cantaloupe.processor.codec.jpeg;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractImageReaderTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractImageReaderTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class JPEGImageReaderTest extends AbstractImageReaderTest {
 
@@ -56,7 +60,7 @@ public class JPEGImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(JPEGImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((JPEGImageReader) instance).
@@ -76,7 +80,7 @@ public class JPEGImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(JPEGImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((JPEGImageReader) instance).getUserPreferredIIOImplementation());

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.tiff;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Metadata;
@@ -46,7 +47,7 @@ public class TIFFImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(TIFFImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((TIFFImageWriter) instance).getUserPreferredIIOImplementation();
@@ -64,7 +65,7 @@ public class TIFFImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(TIFFImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((TIFFImageWriter) instance).getUserPreferredIIOImplementation());

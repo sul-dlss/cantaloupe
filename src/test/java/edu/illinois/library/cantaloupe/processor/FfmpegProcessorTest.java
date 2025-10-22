@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -36,7 +37,7 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration.getInstance().clearProperty(
+        ConfigurationAccessor.getConfiguration().clearProperty(
                 Key.FFMPEGPROCESSOR_PATH_TO_BINARIES);
         FfmpegProcessor.resetInitialization();
 
@@ -88,7 +89,7 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
 
     @Test
     void testGetInitializationErrorWithMissingBinaries() {
-        Configuration.getInstance().setProperty(
+        ConfigurationAccessor.getConfiguration().setProperty(
                 Key.FFMPEGPROCESSOR_PATH_TO_BINARIES,
                 "/bogus/bogus/bogus");
         FfmpegProcessor.resetInitialization();

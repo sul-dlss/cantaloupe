@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.iiif;
 
 import edu.illinois.library.cantaloupe.cache.InfoService;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Client;
@@ -60,7 +61,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheEnabledAndInfoCacheEnabledAndResolveFirstEnabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, true);
 
@@ -96,7 +97,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheEnabledAndInfoCacheEnabledAndResolveFirstDisabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
 
@@ -129,7 +130,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheEnabledAndInfoCacheDisabledAndResolveFirstEnabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, true);
 
@@ -165,7 +166,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheEnabledAndInfoCacheDisabledAndResolveFirstDisabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
 
@@ -198,7 +199,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheDisabledAndInfoCacheEnabledAndResolveFirstEnabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, false);
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, true);
@@ -234,7 +235,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheDisabledAndInfoCacheEnabledAndResolveFirstDisabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, false);
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
@@ -270,7 +271,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheDisabledAndInfoCacheDisabledAndResolveFirstEnabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, false);
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, true);
@@ -306,7 +307,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     public void testCacheWithDerivativeCacheDisabledAndInfoCacheDisabledAndResolveFirstDisabled(
             URI uri, Path sourceFile) throws Exception {
         final Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, false);
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
@@ -404,13 +405,13 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     }
 
     public void testLessThanOrEqualToMaxScale(URI uri) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
         assertStatus(200, uri);
     }
 
     public void testGreaterThanMaxScale(URI uri, int expectedStatus) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
         assertStatus(expectedStatus, uri);
     }
@@ -420,7 +421,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     }
 
     public void testLessThanMaxPixels(URI uri) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_PIXELS, 100000000);
         assertStatus(200, uri);
     }
@@ -431,7 +432,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
      * forbidden.
      */
     public void testForbiddingMoreThanMaxPixels(URI uri) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_PIXELS, 1000);
         assertStatus(403, uri);
     }
@@ -451,7 +452,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
                                            int originalWidth,
                                            int originalHeight,
                                            int maxPixels) throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_PIXELS, maxPixels);
 
         Client client = newClient(uri);
@@ -491,7 +492,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
                                            int regionWidth,
                                            int regionHeight,
                                            int maxPixels) throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_PIXELS, maxPixels);
 
         Client client = newClient(uri);
@@ -516,7 +517,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
     }
 
     public void testProcessorValidationFailure(URI uri) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_SELECTION_STRATEGY, "ManualSelectionStrategy");
         config.setProperty(Key.PROCESSOR_FALLBACK, "PdfBoxProcessor");
         assertStatus(400, uri);
@@ -550,7 +551,7 @@ public class ImageResourceTester extends ImageAPIResourceTester {
         // Create the cache directory.
         Path cacheDir = Files.createTempDirectory("cache");
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                 sourceDir.toString() + "/");
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);

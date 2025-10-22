@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.image;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
@@ -39,7 +40,7 @@ public final class MetaIdentifierTransformerFactory {
     }
 
     public MetaIdentifierTransformer newInstance(DelegateProxy delegateProxy) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         String xformerName = config.getString(Key.META_IDENTIFIER_TRANSFORMER,
                 StandardMetaIdentifierTransformer.class.getSimpleName());
         try {

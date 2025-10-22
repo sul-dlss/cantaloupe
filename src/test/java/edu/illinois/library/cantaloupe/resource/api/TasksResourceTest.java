@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.api;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -38,7 +39,7 @@ public class TasksResourceTest extends AbstractAPIResourceTest {
     @Override
     @Test
     public void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, true);
 
         client.setMethod(Method.OPTIONS);

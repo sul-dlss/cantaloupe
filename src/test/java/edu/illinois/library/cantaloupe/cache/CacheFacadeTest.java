@@ -1,18 +1,12 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.processor.FileProcessor;
-import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +15,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.processor.FileProcessor;
+import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class CacheFacadeTest extends BaseTest {
 
@@ -34,7 +41,7 @@ public class CacheFacadeTest extends BaseTest {
     public void setUp() {
         instance = new CacheFacade();
         try {
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_CACHE, FilesystemCache.class.getSimpleName());
             config.setProperty(Key.FILESYSTEMCACHE_PATHNAME,
                     Files.createTempDirectory("test").toString());
@@ -44,23 +51,23 @@ public class CacheFacadeTest extends BaseTest {
     }
 
     private void enableDerivativeCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE, FilesystemCache.class.getSimpleName());
     }
 
     private void disableDerivativeCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, false);
     }
 
     private void enableInfoCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
     }
 
     private void disableInfoCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
     }
 
@@ -93,7 +100,7 @@ public class CacheFacadeTest extends BaseTest {
 
     @Test
     void testGetOrReadInfo() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_SELECTION_STRATEGY,
                 "ManualSelectionStrategy");
         config.setProperty(Key.PROCESSOR_FALLBACK, "Java2dProcessor");
@@ -121,7 +128,7 @@ public class CacheFacadeTest extends BaseTest {
 
     @Test
     void testGetSourceCacheFileWithSourceCacheHit() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE, FilesystemCache.class.getSimpleName());
 
         SourceCache sourceCache = CacheFactory.getSourceCache().get();
@@ -137,7 +144,7 @@ public class CacheFacadeTest extends BaseTest {
 
     @Test
     void testGetSourceCacheFileWithSourceCacheMiss() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE, FilesystemCache.class.getSimpleName());
 
         Identifier identifier = new Identifier("cats");
@@ -148,7 +155,7 @@ public class CacheFacadeTest extends BaseTest {
     @Test
     void testGetSourceCacheFileWithInvalidSourceCache()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE, "BogusCache");
 
         Identifier identifier = new Identifier("cats");
@@ -396,7 +403,7 @@ public class CacheFacadeTest extends BaseTest {
 
     @Test
     void testPurgeInfos() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
 
         enableDerivativeCache();
@@ -426,7 +433,7 @@ public class CacheFacadeTest extends BaseTest {
     void testPurgeInvalid() throws Exception {
         assumeFalse(SystemUtils.IS_OS_WINDOWS); // TODO: this fails in Windows CI
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE_TTL, 1);
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
 

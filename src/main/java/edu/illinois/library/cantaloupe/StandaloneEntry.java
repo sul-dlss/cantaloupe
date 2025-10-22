@@ -1,10 +1,5 @@
 package edu.illinois.library.cantaloupe;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
-import edu.illinois.library.cantaloupe.config.MissingConfigurationException;
-import edu.illinois.library.cantaloupe.util.SystemUtils;
-
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.net.URL;
@@ -12,6 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.ProtectionDomain;
 import java.util.Optional;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
+import edu.illinois.library.cantaloupe.config.MissingConfigurationException;
+import edu.illinois.library.cantaloupe.util.SystemUtils;
 
 /**
  * <p>Serves as the main application class in a standalone context.</p>
@@ -58,7 +58,7 @@ public class StandaloneEntry {
         handleArguments(args);
         try {
             // Will throw an exception if the config VM argument is missing.
-            Configuration.getInstance();
+            ConfigurationAccessor.getConfiguration();
             Optional<Path> optConfigFile = getConfigFile();
             if (optConfigFile.isEmpty()) {
                 printUsage();
@@ -103,7 +103,7 @@ public class StandaloneEntry {
     }
 
     private static Optional<Path> getConfigFile() {
-        return Configuration.getInstance().getFile();
+        return ConfigurationAccessor.getConfiguration().getFile();
     }
 
     static File getJARFile() {
@@ -118,7 +118,7 @@ public class StandaloneEntry {
      */
     public static synchronized ApplicationServer getAppServer() {
         if (appServer == null) {
-            appServer = new ApplicationServer(Configuration.getInstance());
+            appServer = new ApplicationServer(ConfigurationAccessor.getConfiguration());
         }
         return appServer;
     }

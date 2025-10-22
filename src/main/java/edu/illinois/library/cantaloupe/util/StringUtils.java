@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.util;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 
@@ -32,7 +33,7 @@ public final class StringUtils {
      * @return                 Path component with slashes decoded.
      */
     public static String decodeSlashes(final String uriPathComponent) {
-        final String substitute = Configuration.getInstance().
+        final String substitute = ConfigurationAccessor.getConfiguration().
                 getString(Key.SLASH_SUBSTITUTE, "");
         if (!substitute.isEmpty()) {
             return org.apache.commons.lang3.StringUtils.replace(
@@ -48,7 +49,7 @@ public final class StringUtils {
      * @return                  Identifier with slashes substituted.
      */
     public static String encodeSlashes(final String slashedIdentifier) {
-        final String substitute = Configuration.getInstance().
+        final String substitute = ConfigurationAccessor.getConfiguration().
                 getString(Key.SLASH_SUBSTITUTE, "");
         if (!substitute.isEmpty()) {
             return org.apache.commons.lang3.StringUtils.replace(

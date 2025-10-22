@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.cache;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -163,7 +164,7 @@ public final class InfoService {
     }
 
     boolean isObjectCacheEnabled() {
-        return Configuration.getInstance().
+        return ConfigurationAccessor.getConfiguration().
                 getBoolean(Key.INFO_CACHE_ENABLED, false);
     }
 

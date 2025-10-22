@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Status;
@@ -97,7 +98,7 @@ class ErrorResource {
         templateVars.put("pageTitle", status.toString());
         templateVars.put("message", error.getMessage());
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         if (config.getBoolean(Key.PRINT_STACK_TRACE_ON_ERROR_PAGES, false)) {
             templateVars.put("stackTrace", getStackTrace());
         }
@@ -142,7 +143,7 @@ class ErrorResource {
     }
 
     private void log(int statusCode) {
-        if (!Configuration.getInstance().getBoolean(Key.LOG_ERROR_RESPONSES, false)) {
+        if (!ConfigurationAccessor.getConfiguration().getBoolean(Key.LOG_ERROR_RESPONSES, false)) {
             return;
         }
         String message = "Responding with HTTP {} to {} {}: {}";

@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -20,7 +21,7 @@ public class StatusResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, true);
 
         Response response = client.send();
@@ -29,7 +30,7 @@ public class StatusResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, false);
         try {
             client.send();

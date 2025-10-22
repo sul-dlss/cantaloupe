@@ -1,28 +1,11 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import edu.illinois.library.cantaloupe.util.S3ClientBuilder;
-import edu.illinois.library.cantaloupe.util.S3Utils;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -33,11 +16,33 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
+import edu.illinois.library.cantaloupe.test.TestUtil;
+import edu.illinois.library.cantaloupe.util.S3ClientBuilder;
+import edu.illinois.library.cantaloupe.util.S3Utils;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 public class S3CacheTest extends AbstractCacheTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3CacheTest.class);
@@ -170,7 +175,7 @@ public class S3CacheTest extends AbstractCacheTest {
 
     @Override
     S3Cache newInstance() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3CACHE_OBJECT_KEY_PREFIX, "test/");
         config.setProperty(Key.S3CACHE_ACCESS_KEY_ID, getAccessKeyId());
         config.setProperty(Key.S3CACHE_BUCKET_NAME, getBucket());
@@ -184,7 +189,7 @@ public class S3CacheTest extends AbstractCacheTest {
     @Test
     void testGetBucketName() {
         assertEquals(
-                Configuration.getInstance().getString(Key.S3CACHE_BUCKET_NAME),
+                ConfigurationAccessor.getConfiguration().getString(Key.S3CACHE_BUCKET_NAME),
                 instance.getBucketName());
     }
 
@@ -192,7 +197,7 @@ public class S3CacheTest extends AbstractCacheTest {
 
     @Test
     void testGetInfoUpdatesLastModifiedTime() throws Exception {
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
 
         final DerivativeCache instance = newInstance();
 
@@ -229,7 +234,7 @@ public class S3CacheTest extends AbstractCacheTest {
 
     @Test
     void testGetObjectKeyPrefix() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
 
         config.setProperty(Key.S3CACHE_OBJECT_KEY_PREFIX, "");
         assertEquals("", instance.getObjectKeyPrefix());
@@ -258,7 +263,7 @@ public class S3CacheTest extends AbstractCacheTest {
         assumeFalse(Service.MINIO.equals(getService())); // this test fails in minio
 
         final DerivativeCache instance = newInstance();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
@@ -344,7 +349,7 @@ public class S3CacheTest extends AbstractCacheTest {
     @Test
     void testPurgeWithKeyPrefix() throws Exception {
         final String prefix = "prefix/";
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3CACHE_OBJECT_KEY_PREFIX, prefix);
 
         DerivativeCache instance = newInstance();
@@ -417,7 +422,7 @@ public class S3CacheTest extends AbstractCacheTest {
                 .withOperations(new Encode(Format.get("jpg")))
                 .build();
         Info info1 = new Info();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
 
         // add an image
         Path fixture = TestUtil.getImage(id1.toString());
@@ -464,7 +469,7 @@ public class S3CacheTest extends AbstractCacheTest {
     @Test
     void testPurgeInvalidWithKeyPrefix() throws Exception {
         final String prefix        = "prefix/";
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
         config.setProperty(Key.S3CACHE_OBJECT_KEY_PREFIX, prefix);
 

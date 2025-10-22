@@ -1,15 +1,19 @@
 package edu.illinois.library.cantaloupe.source;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class SourceFactoryTest extends BaseTest {
 
@@ -54,7 +58,7 @@ public class SourceFactoryTest extends BaseTest {
 
     @Test
     void newSourceWithIdentifierWithValidStaticSourceSimpleClassName() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC,
                 HttpSource.class.getSimpleName());
 
@@ -66,7 +70,7 @@ public class SourceFactoryTest extends BaseTest {
     @Test
     void newSourceWithIdentifierWithValidStaticSourceFullClassName()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, HttpSource.class.getName());
 
         Identifier identifier = new Identifier("cats");
@@ -77,7 +81,7 @@ public class SourceFactoryTest extends BaseTest {
 
     @Test
     void newSourceWithIdentifierWithInvalidStaticSource() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, "BogusSource");
 
         Identifier identifier = new Identifier("cats");
@@ -87,7 +91,7 @@ public class SourceFactoryTest extends BaseTest {
 
     @Test
     void newSourceWithIdentifierUsingDelegateScript() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_DELEGATE, true);
 
         Identifier identifier = new Identifier("http");
@@ -106,7 +110,7 @@ public class SourceFactoryTest extends BaseTest {
 
     @Test
     void getSelectionStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
 
         config.setProperty(Key.SOURCE_DELEGATE, "false");
         assertEquals(SourceFactory.SelectionStrategy.STATIC,

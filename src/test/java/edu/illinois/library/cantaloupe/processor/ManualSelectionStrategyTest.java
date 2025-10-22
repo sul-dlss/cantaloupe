@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -24,7 +25,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWhenOnlyAssignedIsSet() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("processor.ManualSelectionStrategy.pdf",
                 PdfBoxProcessor.class.getSimpleName());
 
@@ -35,7 +36,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWhenOnlyFallbackIsSet() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_FALLBACK, Java2dProcessor.class.getSimpleName());
 
         List<Class<? extends Processor>> expected =
@@ -45,7 +46,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWhenAssignedAndFallbackAreSet() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("processor.ManualSelectionStrategy.pdf",
                 PdfBoxProcessor.class.getSimpleName());
         config.setProperty(Key.PROCESSOR_FALLBACK,
@@ -59,7 +60,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWithIllegalAssignedName() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("processor.ManualSelectionStrategy.jpg", "bogus");
         assertThrows(IllegalArgumentException.class,
                 () -> instance.getPreferredProcessors(Format.get("jpg")));
@@ -67,7 +68,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWithIllegalFallbackName() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_FALLBACK, "bogus");
         assertThrows(IllegalArgumentException.class,
                 () -> instance.getPreferredProcessors(Format.get("jpg")));
@@ -75,7 +76,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
     @Test
     void getPreferredProcessorsWithFullyQualifiedNames() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("processor.ManualSelectionStrategy.jpg",
                 Java2dProcessor.class.getName());
         config.setProperty(Key.PROCESSOR_FALLBACK, PdfBoxProcessor.class.getName());

@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -30,7 +31,7 @@ public class LandingResourceTest extends ResourceTest {
 
     @Test
     void testGETWithEndpointEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_1_ENDPOINT_ENABLED, true);
         assertStatus(200, getHTTPURI(""));
         assertRepresentationContains(Application.getName() + " Image", getHTTPURI(""));
@@ -38,7 +39,7 @@ public class LandingResourceTest extends ResourceTest {
 
     @Test
     void testGETWithEndpointDisabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_1_ENDPOINT_ENABLED, false);
         assertStatus(403, getHTTPURI(""));
     }
@@ -81,7 +82,7 @@ public class LandingResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_1_ENDPOINT_ENABLED, true);
 
         client = newClient("");
@@ -99,7 +100,7 @@ public class LandingResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_1_ENDPOINT_ENABLED, false);
         try {
             client = newClient("");

@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.source;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -410,7 +411,7 @@ class HttpSource extends AbstractSource implements Source {
                     .connectTimeout(getRequestTimeout().getSeconds(), TimeUnit.SECONDS)
                     .readTimeout(getRequestTimeout().getSeconds(), TimeUnit.SECONDS)
                     .writeTimeout(getRequestTimeout().getSeconds(), TimeUnit.SECONDS);
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
 
             final String proxyHost =
                     config.getString(Key.HTTPSOURCE_HTTP_PROXY_HOST, "");
@@ -461,7 +462,7 @@ class HttpSource extends AbstractSource implements Source {
      *         reasonable default if not set.
      */
     private static Duration getRequestTimeout() {
-        int timeout = Configuration.getInstance().getInt(
+        int timeout = ConfigurationAccessor.getConfiguration().getInt(
                 Key.HTTPSOURCE_REQUEST_TIMEOUT,
                 DEFAULT_REQUEST_TIMEOUT);
         return Duration.ofSeconds(timeout);
@@ -605,7 +606,7 @@ class HttpSource extends AbstractSource implements Source {
     }
 
     private HTTPRequestInfo newRequestInfoUsingBasicStrategy() {
-        final var config    = Configuration.getInstance();
+        final var config    = ConfigurationAccessor.getConfiguration();
         final String prefix = config.getString(Key.HTTPSOURCE_URL_PREFIX, "");
         final String suffix = config.getString(Key.HTTPSOURCE_URL_SUFFIX, "");
 

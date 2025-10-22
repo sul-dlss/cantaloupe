@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.resource;
 import java.io.IOException;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ public class PoweredByHeader implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         // Only show the x-powered-by header if configured to do so.
         if (config.getBoolean(Key.HEADERS_POWERED_BY_DISPLAY, true)) {
           ((HttpServletResponse) response).setHeader("X-Powered-By",

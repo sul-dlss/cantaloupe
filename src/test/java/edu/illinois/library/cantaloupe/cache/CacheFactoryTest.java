@@ -1,22 +1,27 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.async.ThreadPool;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class CacheFactoryTest extends BaseTest {
 
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE,
                 FilesystemCache.class.getSimpleName());
@@ -42,7 +47,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetDerivativeCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.DERIVATIVE_CACHE;
 
         config.setProperty(key, FilesystemCache.class.getSimpleName());
@@ -63,7 +68,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetDerivativeCacheWithFullyQualifiedClassName() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE, HeapCache.class.getName());
 
         assertTrue(CacheFactory.getDerivativeCache().get() instanceof HeapCache);
@@ -71,7 +76,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetDerivativeCacheInitializesNewInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.DERIVATIVE_CACHE;
 
         config.setProperty(key, MockCache.class.getSimpleName());
@@ -82,7 +87,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetDerivativeCacheShutsDownPreviousInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.DERIVATIVE_CACHE;
 
         config.setProperty(key, MockCache.class.getSimpleName());
@@ -96,7 +101,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetDerivativeCacheConcurrently() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final int numThreads = 1000;
         final CountDownLatch latch = new CountDownLatch(numThreads);
 
@@ -123,7 +128,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetSourceCache() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.SOURCE_CACHE;
 
         config.setProperty(key, FilesystemCache.class.getSimpleName());
@@ -141,7 +146,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetSourceCacheWithFullyQualifiedClassName() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE, FilesystemCache.class.getName());
 
         assertTrue(CacheFactory.getSourceCache().get() instanceof FilesystemCache);
@@ -149,7 +154,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetSourceCacheInitializesNewInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.SOURCE_CACHE;
 
         config.setProperty(key, MockCache.class.getSimpleName());
@@ -160,7 +165,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetSourceCacheShutsDownPreviousInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.SOURCE_CACHE;
 
         config.setProperty(key, MockCache.class.getSimpleName());
@@ -174,7 +179,7 @@ public class CacheFactoryTest extends BaseTest {
 
     @Test
     void testGetSourceCacheConcurrently() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final int numThreads = 1000;
         final CountDownLatch latch = new CountDownLatch(numThreads);
 

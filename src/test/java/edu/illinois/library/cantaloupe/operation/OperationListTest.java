@@ -1,7 +1,25 @@
 package edu.illinois.library.cantaloupe.operation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -15,18 +33,8 @@ import edu.illinois.library.cantaloupe.image.ScaleConstraint;
 import edu.illinois.library.cantaloupe.operation.overlay.BasicStringOverlayServiceTest;
 import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
 import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class OperationListTest extends BaseTest {
 
@@ -337,7 +345,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithBackgroundColor() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_BACKGROUND_COLOR, "white");
 
         final Dimension fullSize   = new Dimension(2000, 1000);
@@ -358,7 +366,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithJPEGOutputFormat() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_JPG_QUALITY, 50);
         config.setProperty(Key.PROCESSOR_JPG_PROGRESSIVE, true);
 
@@ -422,7 +430,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithLinearScale() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_DOWNSCALE_LINEAR, true);
 
         final Dimension fullSize   = new Dimension(2000, 1000);
@@ -445,7 +453,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithDownscaleFilter() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_DOWNSCALE_FILTER, "bicubic");
 
         final Dimension fullSize   = new Dimension(2000, 1000);
@@ -468,7 +476,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithUpscaleFilter() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_UPSCALE_FILTER, "triangle");
 
         final Dimension fullSize   = new Dimension(2000, 1000);
@@ -491,7 +499,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithSharpening() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_SHARPEN, 0.2f);
 
         final Dimension fullSize   = new Dimension(2000, 1000);
@@ -515,7 +523,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void applyNonEndpointMutationsWithTIFFOutputFormat() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_TIF_COMPRESSION, "LZW");
 
         final Dimension fullSize = new Dimension(2000, 1000);
@@ -1095,7 +1103,7 @@ class OperationListTest extends BaseTest {
 
     @Test
     void validateWithAreaGreaterThanMaxAllowed() {
-        Configuration.getInstance().setProperty(Key.MAX_PIXELS, 100);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.MAX_PIXELS, 100);
         Dimension fullSize = new Dimension(1000, 1000);
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))

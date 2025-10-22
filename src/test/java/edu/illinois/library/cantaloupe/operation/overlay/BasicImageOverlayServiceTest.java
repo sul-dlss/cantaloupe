@@ -1,16 +1,20 @@
 package edu.illinois.library.cantaloupe.operation.overlay;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.test.BaseTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.net.URI;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class BasicImageOverlayServiceTest extends BaseTest {
 
@@ -20,7 +24,7 @@ public class BasicImageOverlayServiceTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.OVERLAY_ENABLED, true);
         config.setProperty(Key.OVERLAY_STRATEGY, "BasicStrategy");
         config.setProperty(Key.OVERLAY_TYPE, "image");
@@ -45,7 +49,7 @@ public class BasicImageOverlayServiceTest extends BaseTest {
 
     @Test
     void testShouldApplyToImage() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.clear();
 
         final Dimension imageSize = new Dimension(100, 100);

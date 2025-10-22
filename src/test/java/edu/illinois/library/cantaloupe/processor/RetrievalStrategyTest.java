@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.test.BaseTest;
@@ -11,7 +12,7 @@ public class RetrievalStrategyTest extends BaseTest {
 
     @Test
     void testFromWithAbortStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.PROCESSOR_FALLBACK_RETRIEVAL_STRATEGY;
         config.setProperty(key, RetrievalStrategy.ABORT.getConfigValue());
 
@@ -20,7 +21,7 @@ public class RetrievalStrategyTest extends BaseTest {
 
     @Test
     void testFromWithCacheStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.PROCESSOR_FALLBACK_RETRIEVAL_STRATEGY;
         config.setProperty(key, RetrievalStrategy.CACHE.getConfigValue());
 
@@ -29,7 +30,7 @@ public class RetrievalStrategyTest extends BaseTest {
 
     @Test
     void testFromWithDownloadStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.PROCESSOR_FALLBACK_RETRIEVAL_STRATEGY;
         config.setProperty(key, RetrievalStrategy.DOWNLOAD.getConfigValue());
 
@@ -38,7 +39,7 @@ public class RetrievalStrategyTest extends BaseTest {
 
     @Test
     void testFromWithStreamStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Key key = Key.PROCESSOR_FALLBACK_RETRIEVAL_STRATEGY;
         config.setProperty(key, RetrievalStrategy.STREAM.getConfigValue());
 

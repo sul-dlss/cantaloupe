@@ -1,9 +1,10 @@
 package edu.illinois.library.cantaloupe.util;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -14,20 +15,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 class StringUtilsTest extends BaseTest {
 
     @Test
     void testDecodeSlashes() {
-        Configuration.getInstance().setProperty(Key.SLASH_SUBSTITUTE, "$$");
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SLASH_SUBSTITUTE, "$$");
         assertEquals("cats", StringUtils.decodeSlashes("cats"));
         assertEquals("ca/ts", StringUtils.decodeSlashes("ca$$ts"));
     }
 
     @Test
     void testEncodeSlashes() {
-        Configuration.getInstance().setProperty(Key.SLASH_SUBSTITUTE, "$$");
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SLASH_SUBSTITUTE, "$$");
         assertEquals("cats", StringUtils.encodeSlashes("cats"));
         assertEquals("ca$$ts", StringUtils.encodeSlashes("ca/ts"));
     }

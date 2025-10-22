@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,7 @@ abstract class HttpSourceHTTPSTest extends HttpSourceTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX, server.getHTTPSURI() + "/");
         config.setProperty(Key.HTTPSOURCE_ALLOW_INSECURE, true);
     }

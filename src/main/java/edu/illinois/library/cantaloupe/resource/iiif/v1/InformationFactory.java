@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -35,7 +36,7 @@ final class InformationFactory {
         final ComplianceLevel complianceLevel = ComplianceLevel.getLevel(
                 availableOutputFormats);
 
-        final int minTileSize = Configuration.getInstance().
+        final int minTileSize = ConfigurationAccessor.getConfiguration().
                 getInt(Key.IIIF_MIN_TILE_SIZE, DEFAULT_MIN_TILE_SIZE);
 
         // Find a tile width and height. If the image is not tiled,

@@ -1,15 +1,20 @@
 package edu.illinois.library.cantaloupe.image;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 class MetaIdentifierTest extends BaseTest {
 
@@ -62,7 +67,7 @@ class MetaIdentifierTest extends BaseTest {
 
     @Test
     void testFromString() {
-        final Configuration config =  Configuration.getInstance();
+        final Configuration config =  ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.META_IDENTIFIER_TRANSFORMER,
                 StandardMetaIdentifierTransformer.class.getSimpleName());
 
@@ -81,7 +86,7 @@ class MetaIdentifierTest extends BaseTest {
 
     @Test
     void testFromURIPathComponent() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "BUG");
         config.setProperty(Key.META_IDENTIFIER_TRANSFORMER,
                 StandardMetaIdentifierTransformer.class.getSimpleName());
@@ -268,7 +273,7 @@ class MetaIdentifierTest extends BaseTest {
 
     @Test
     void testToURIPathComponent() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "BUG");
         config.setProperty(Key.META_IDENTIFIER_TRANSFORMER,
                 StandardMetaIdentifierTransformer.class.getSimpleName());

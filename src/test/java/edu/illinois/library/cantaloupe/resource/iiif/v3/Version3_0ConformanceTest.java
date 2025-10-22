@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.ResourceException;
@@ -69,7 +70,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
         File directory = new File(".");
         String cwd = directory.getCanonicalPath();
         Path path = Paths.get(cwd, "src", "test", "resources");
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                 path + File.separator);
 
@@ -243,7 +244,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
     @Test
     void testMaxSizeWithUpscaling() throws Exception {
         final int maxScale = 2;
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, maxScale);
 
         client = newClient("/" + IMAGE + "/full/%5Emax/0/color.jpg");
@@ -294,7 +295,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitWidth() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 999);
 
         client = newClient("/" + IMAGE + "/full/%5E100,/0/color.jpg");
@@ -319,7 +320,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitWidthWithoutServerSupport() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
 
         client = newClient("/" + IMAGE + "/full/%5E100,/0/color.jpg");
@@ -365,7 +366,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitHeight() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 999);
 
         client = newClient("/" + IMAGE + "/full/%5E,100/0/color.jpg");
@@ -390,7 +391,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitHeightWithoutServerSupport() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
 
         client = newClient("/" + IMAGE + "/full/%5E,100/0/color.jpg");
@@ -437,7 +438,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToPercent() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 999);
 
         client = newClient("/" + IMAGE + "/full/%5Epct:110/0/color.jpg");
@@ -462,7 +463,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToPercentWithoutServerSupport() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
 
         client = newClient("/" + IMAGE + "/full/%5Epct:110/0/color.jpg");
@@ -526,7 +527,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testUpscaleToAbsoluteWidthAndHeight() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 999);
 
         client = newClient("/" + IMAGE + "/full/%5E100,100/0/color.jpg");
@@ -551,7 +552,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testUpscaleToAbsoluteWidthAndHeightWithoutServerSupport() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
 
         client = newClient("/" + IMAGE + "/full/%5E100,100/0/color.jpg");
@@ -602,7 +603,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitInside() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 999);
 
         client = newClient("/" + IMAGE + "/full/%5E!100,100/0/default.jpg");
@@ -626,7 +627,7 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testSizeUpscaledToFitInsideWithoutServerSupport() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.MAX_SCALE, 1.0);
         client = newClient("/" + IMAGE + "/full/%5E!150,150/0/color.jpg");
 

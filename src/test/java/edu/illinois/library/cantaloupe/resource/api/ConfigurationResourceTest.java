@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -31,7 +32,7 @@ public class ConfigurationResourceTest extends AbstractAPIResourceTest {
 
     @Test
     void testGETWithEndpointEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, true);
 
         client.setMethod(Method.GET);
@@ -41,7 +42,7 @@ public class ConfigurationResourceTest extends AbstractAPIResourceTest {
 
     @Test
     void testGETWithEndpointDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, false);
 
         try {
@@ -84,7 +85,7 @@ public class ConfigurationResourceTest extends AbstractAPIResourceTest {
 
     @Test
     public void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, true);
 
         client.setMethod(Method.OPTIONS);
@@ -102,7 +103,7 @@ public class ConfigurationResourceTest extends AbstractAPIResourceTest {
 
     @Test
     public void testOPTIONSWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, false);
         try {
             client.setMethod(Method.OPTIONS);
@@ -124,7 +125,7 @@ public class ConfigurationResourceTest extends AbstractAPIResourceTest {
         client.setEntity(entity);
         client.send();
 
-        assertEquals("cats", Configuration.getInstance().getString("test"));
+        assertEquals("cats", ConfigurationAccessor.getConfiguration().getString("test"));
     }
 
 }

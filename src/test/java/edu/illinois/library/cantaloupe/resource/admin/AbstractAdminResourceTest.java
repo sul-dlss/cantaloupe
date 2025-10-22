@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -25,7 +26,7 @@ abstract class AbstractAdminResourceTest extends ResourceTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_USERNAME, USERNAME);
         config.setProperty(Key.ADMIN_SECRET, SECRET);
 
@@ -35,7 +36,7 @@ abstract class AbstractAdminResourceTest extends ResourceTest {
 
     @Test
     public void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, true);
 
         client.setMethod(Method.OPTIONS);
@@ -52,7 +53,7 @@ abstract class AbstractAdminResourceTest extends ResourceTest {
 
     @Test
     public void testOPTIONSWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, false);
         try {
             client.setMethod(Method.OPTIONS);

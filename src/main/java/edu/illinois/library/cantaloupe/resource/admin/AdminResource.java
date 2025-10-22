@@ -1,7 +1,20 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
+import java.awt.GraphicsEnvironment;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.cache.CacheFactory;
-import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.Method;
@@ -19,18 +32,6 @@ import edu.illinois.library.cantaloupe.resource.ThymeleafRepresentation;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.GraphicsEnvironment;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Handles the web-based Control Panel.
@@ -328,7 +329,7 @@ public class AdminResource extends AbstractAdminResource {
         {
             vars.put("fonts", GraphicsEnvironment.getLocalGraphicsEnvironment().
                     getAvailableFontFamilyNames());
-            vars.put("currentOverlayFont", Configuration.getInstance().
+            vars.put("currentOverlayFont", ConfigurationAccessor.getConfiguration().
                     getString(Key.OVERLAY_STRING_FONT, ""));
         }
         return vars;

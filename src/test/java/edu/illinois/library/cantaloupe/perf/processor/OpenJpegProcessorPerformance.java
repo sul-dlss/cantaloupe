@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.perf.processor;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -42,7 +43,7 @@ public class OpenJpegProcessorPerformance {
 
     @Setup
     public void setUp() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_FALLBACK, "OpenJpegProcessor");
         processor = (FileProcessor) new ProcessorFactory().newProcessor(Format.get("jp2"));
     }

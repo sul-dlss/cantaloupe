@@ -1,25 +1,5 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.BlobOutputStream;
-import com.microsoft.azure.storage.blob.CloudBlob;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.azure.storage.blob.ListBlobItem;
-import edu.illinois.library.cantaloupe.async.TaskQueue;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.util.Stopwatch;
-import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -30,6 +10,29 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.blob.BlobOutputStream;
+import com.microsoft.azure.storage.blob.CloudBlob;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.ListBlobItem;
+
+import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.util.Stopwatch;
+import edu.illinois.library.cantaloupe.util.StringUtils;
 
 /**
  * @see <a href="https://github.com/azure/azure-storage-java">
@@ -157,7 +160,7 @@ class AzureStorageCache implements DerivativeCache {
     static synchronized CloudBlobClient getClientInstance() {
         if (client == null) {
             try {
-                final Configuration config = Configuration.getInstance();
+                final Configuration config = ConfigurationAccessor.getConfiguration();
                 final String accountName =
                         config.getString(Key.AZURESTORAGECACHE_ACCOUNT_NAME);
                 final String accountKey =
@@ -185,12 +188,12 @@ class AzureStorageCache implements DerivativeCache {
 
     static String getContainerName() {
         // All letters in a container name must be lowercase.
-        return Configuration.getInstance().
+        return ConfigurationAccessor.getConfiguration().
                 getString(Key.AZURESTORAGECACHE_CONTAINER_NAME).toLowerCase();
     }
 
     private static Instant getEarliestValidInstant() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final long ttl = config.getLong(Key.DERIVATIVE_CACHE_TTL);
         return (ttl > 0) ?
                 Instant.now().truncatedTo(ChronoUnit.SECONDS).minusSeconds(ttl) :
@@ -324,7 +327,7 @@ class AzureStorageCache implements DerivativeCache {
      *         with trailing slash.
      */
     String getObjectKeyPrefix() {
-        String prefix = Configuration.getInstance().
+        String prefix = ConfigurationAccessor.getConfiguration().
                 getString(Key.AZURESTORAGECACHE_OBJECT_KEY_PREFIX);
         if (prefix.isEmpty() || prefix.equals("/")) {
             return "";

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -151,7 +152,7 @@ public class Request {
         ref.setPath(getContextPath());
 
         // If base_uri is set in the configuration, build a URI based on that.
-        final String baseUri = Configuration.getInstance()
+        final String baseUri = ConfigurationAccessor.getConfiguration()
                 .getString(Key.BASE_URI, "");
         if (!baseUri.isEmpty()) {
             final Reference baseRef = new Reference(baseUri);

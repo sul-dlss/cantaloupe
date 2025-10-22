@@ -1,23 +1,28 @@
 package edu.illinois.library.cantaloupe.operation.overlay;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.awt.font.TextAttribute;
+import java.net.URI;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
 import edu.illinois.library.cantaloupe.operation.Color;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.Test;
-
-import java.awt.font.TextAttribute;
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DelegateOverlayServiceTest extends BaseTest {
 
@@ -34,7 +39,7 @@ public class DelegateOverlayServiceTest extends BaseTest {
 
     @Test
     void testIsAvailableWhenNotAvailable() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, false);
         instance = new DelegateOverlayService(null);
         assertFalse(instance.isAvailable());

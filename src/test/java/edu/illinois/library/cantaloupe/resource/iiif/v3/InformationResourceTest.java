@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -219,7 +220,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETEndpointEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_3_ENDPOINT_ENABLED, true);
 
         assertStatus(200, getHTTPURI("/" + IMAGE + "/info.json"));
@@ -227,7 +228,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETEndpointDisabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_3_ENDPOINT_ENABLED, false);
 
         assertStatus(403, getHTTPURI("/" + IMAGE + "/info.json"));
@@ -457,7 +458,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETURIsInJSONWithBaseURIOverride() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.BASE_URI, "http://example.org/");
 
         client = newClient("/" + IMAGE + "/info.json");
@@ -472,7 +473,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETURIsInJSONWithSlashSubstitution() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "CATS");
 
         final String path = "/subfolderCATSjpg";
@@ -488,7 +489,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETURIsInJSONWithEncodedCharacters() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "`");
 
         final String path = "/subfolder%60jpg";
@@ -522,7 +523,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testGETBaseURIOverridesProxyHeaders() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.BASE_URI, "https://example.net/");
 
         client = newClient("/" + IMAGE + "/info.json");
@@ -586,7 +587,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_3_ENDPOINT_ENABLED, true);
 
         client = newClient("/" + IMAGE + "/info.json");
@@ -609,7 +610,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_3_ENDPOINT_ENABLED, false);
         try {
             client = newClient("/" + IMAGE + "/info.json");

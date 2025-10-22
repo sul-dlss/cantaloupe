@@ -4,6 +4,7 @@ import edu.illinois.library.cantaloupe.Application;
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.cache.CompletableOutputStream;
 import edu.illinois.library.cantaloupe.cache.DerivativeCache;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.*;
@@ -83,7 +84,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsPreAuthorizationCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -109,7 +110,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsAuthorizationCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -135,7 +136,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsSourceAccessedCallback() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -161,7 +162,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsCacheStreamingCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -213,7 +214,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsInfoAvailableCallback() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -239,7 +240,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleCallsProcessingCallback() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -265,7 +266,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleProcessesImage() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -290,7 +291,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleStreamsFromDerivativeCache() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -343,7 +344,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleWithFailedPreAuthorization() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -388,7 +389,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleWithFailedAuthorization() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -433,7 +434,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleWithIllegalPageIndex() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -460,7 +461,7 @@ class ImageRequestHandlerTest extends BaseTest {
     @Test
     void handleWithInvalidOperationList() throws Exception {
         { // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -489,7 +490,7 @@ class ImageRequestHandlerTest extends BaseTest {
             server.start();
 
             {   // Configure the application.
-                final Configuration config = Configuration.getInstance();
+                final Configuration config = ConfigurationAccessor.getConfiguration();
                 config.setProperty(Key.SOURCE_STATIC, "HttpSource");
                 config.setProperty(Key.HTTPSOURCE_URL_PREFIX,
                         server.getHTTPURI().toString() + "/");
@@ -571,7 +572,7 @@ class ImageRequestHandlerTest extends BaseTest {
             server.start();
 
             {   // Configure the application.
-                final Configuration config = Configuration.getInstance();
+                final Configuration config = ConfigurationAccessor.getConfiguration();
                 config.setProperty(Key.SOURCE_STATIC, "HttpSource");
                 config.setProperty(Key.HTTPSOURCE_URL_PREFIX,
                         server.getHTTPURI().toString() + "/");

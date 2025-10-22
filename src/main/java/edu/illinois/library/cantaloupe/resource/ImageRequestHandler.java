@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.async.TaskQueue;
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -182,7 +183,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
         }
 
         final Identifier identifier   = operationList.getIdentifier();
-        final Configuration config    = Configuration.getInstance();
+        final Configuration config    = ConfigurationAccessor.getConfiguration();
         final CacheFacade cacheFacade = new CacheFacade();
 
         Iterator<Format> formatIterator = Collections.emptyIterator();

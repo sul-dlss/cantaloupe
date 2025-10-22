@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.source.stream.ClosingMemoryCacheImageInputStream;
@@ -81,7 +82,7 @@ public class S3StreamFactoryTest extends BaseTest {
     }
 
     private static void configureS3Source() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_ENDPOINT, endpoint());
         config.setProperty(Key.S3SOURCE_ACCESS_KEY_ID, accessKeyID());
         config.setProperty(Key.S3SOURCE_SECRET_KEY, secretAccessKey());
@@ -114,7 +115,7 @@ public class S3StreamFactoryTest extends BaseTest {
 
     @Test
     void testIsSeekingDirect() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_CHUNKING_ENABLED, false);
         assertFalse(instance.isSeekingDirect());
         config.setProperty(Key.S3SOURCE_CHUNKING_ENABLED, true);
@@ -145,7 +146,7 @@ public class S3StreamFactoryTest extends BaseTest {
 
     @Test
     void testNewSeekableStreamClassWithChunkingEnabled() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_CHUNKING_ENABLED, true);
         config.setProperty(Key.S3SOURCE_CHUNK_SIZE, "777K");
 
@@ -157,7 +158,7 @@ public class S3StreamFactoryTest extends BaseTest {
 
     @Test
     void testNewSeekableStreamClassWithChunkingDisabled() throws Exception {
-        Configuration.getInstance().setProperty(Key.S3SOURCE_CHUNKING_ENABLED, false);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.S3SOURCE_CHUNKING_ENABLED, false);
         try (ImageInputStream is = instance.newSeekableStream()) {
             assertTrue(is instanceof ClosingMemoryCacheImageInputStream);
         }
@@ -165,7 +166,7 @@ public class S3StreamFactoryTest extends BaseTest {
 
     @Test
     void testNewSeekableStreamWithChunkCacheEnabled() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_CHUNKING_ENABLED, true);
         config.setProperty(Key.S3SOURCE_CHUNK_SIZE, "777K");
         config.setProperty(Key.S3SOURCE_CHUNK_CACHE_ENABLED, true);

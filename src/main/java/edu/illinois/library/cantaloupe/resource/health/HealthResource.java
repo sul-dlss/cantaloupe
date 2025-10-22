@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.health;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Method;
@@ -34,7 +35,7 @@ public class HealthResource extends AbstractResource {
         super.doInit();
         getResponse().setHeader("Cache-Control", "no-cache");
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         if (!config.getBoolean(Key.HEALTH_ENDPOINT_ENABLED, false)) {
             throw new EndpointDisabledException();
         }
@@ -53,7 +54,7 @@ public class HealthResource extends AbstractResource {
     @Override
     public void doGET() throws IOException {
         Health health;
-        final var config = Configuration.getInstance();
+        final var config = ConfigurationAccessor.getConfiguration();
         if (config.getBoolean(Key.HEALTH_DEPENDENCY_CHECK, false)) {
             health = new HealthChecker().checkConcurrently();
         } else {

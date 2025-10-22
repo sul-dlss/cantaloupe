@@ -1,13 +1,14 @@
 package edu.illinois.library.cantaloupe.source;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.source.stream.ClosingMemoryCacheImageInputStream;
-import edu.illinois.library.cantaloupe.source.stream.HTTPImageInputStream;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.WebServer;
-import edu.illinois.library.cantaloupe.util.SocketUtils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.InputStream;
+import java.util.Map;
+
+import javax.imageio.stream.ImageInputStream;
+
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -17,11 +18,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.stream.ImageInputStream;
-import java.io.InputStream;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.source.stream.ClosingMemoryCacheImageInputStream;
+import edu.illinois.library.cantaloupe.source.stream.HTTPImageInputStream;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.WebServer;
+import edu.illinois.library.cantaloupe.util.SocketUtils;
 
 public class HTTPStreamFactoryTest extends BaseTest {
 
@@ -66,7 +71,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
     @Test
     void isSeekingDirect() {
         final HTTPStreamFactory instance = newInstance();
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, false);
         assertFalse(instance.isSeekingDirect());
         config.setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, true);
@@ -82,7 +87,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
         // TODO: write this
 
         // Set up HttpSource
-        final var config = Configuration.getInstance();
+        final var config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_HOST, "127.0.0.1");
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_PORT, proxyPort);
 
@@ -130,7 +135,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
             throws Exception {
         server.start();
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, true);
         config.setProperty(Key.HTTPSOURCE_CHUNK_SIZE, "777K");
 
@@ -146,7 +151,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
         server.setAcceptingRanges(false);
         server.start();
 
-        Configuration.getInstance().setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, true);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, true);
         try (ImageInputStream is = newInstance(false).newSeekableStream()) {
             assertTrue(is instanceof ClosingMemoryCacheImageInputStream);
         }
@@ -156,7 +161,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
     void newSeekableStreamWhenChunkingIsDisabled() throws Exception {
         server.start();
 
-        Configuration.getInstance().setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, false);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, false);
         try (ImageInputStream is = newInstance(true).newSeekableStream()) {
             assertTrue(is instanceof ClosingMemoryCacheImageInputStream);
         }
@@ -171,7 +176,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
         // TODO: write this
 
         // Set up HttpSource
-        final var config = Configuration.getInstance();
+        final var config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_HOST, "127.0.0.1");
         config.setProperty(Key.HTTPSOURCE_HTTP_PROXY_PORT, proxyPort);
 
@@ -216,7 +221,7 @@ public class HTTPStreamFactoryTest extends BaseTest {
 
     @Test
     void newSeekableStreamWithChunkCacheEnabled() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_CHUNKING_ENABLED, true);
         config.setProperty(Key.HTTPSOURCE_CHUNK_SIZE, "777K");
         config.setProperty(Key.HTTPSOURCE_CHUNK_CACHE_ENABLED, true);

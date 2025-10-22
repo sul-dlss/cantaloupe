@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.logging;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.util.StatusPrinter2;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ public final class LoggerUtil {
      * Reloads the Logback configuration from logback.xml.
      */
     public static synchronized void reloadConfiguration() {
-        Configuration appConfig = Configuration.getInstance();
+        Configuration appConfig = ConfigurationAccessor.getConfiguration();
         if (appConfig != null) {
             // Reset the logger context.
             LoggerContext loggerContext =

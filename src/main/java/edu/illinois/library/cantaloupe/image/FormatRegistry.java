@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.image;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +115,7 @@ final class FormatRegistry {
     }
 
     private static Path getUserFormatsFilePath() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         Optional<Path> configFile = config.getFile();
         Path dir = configFile.isPresent() ?
                 configFile.get().getParent() : Paths.get(".");

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -176,7 +177,7 @@ public class S3SourceTest extends AbstractSourceTest {
 
     @Override
     void useBasicLookupStrategy() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_BUCKET_NAME, getBucket());
         config.setProperty(Key.S3SOURCE_ENDPOINT, getEndpoint());
         config.setProperty(Key.S3SOURCE_ACCESS_KEY_ID, getAccessKeyId());
@@ -188,7 +189,7 @@ public class S3SourceTest extends AbstractSourceTest {
     @Override
     void useScriptLookupStrategy() {
         try {
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.S3SOURCE_LOOKUP_STRATEGY,
                     "ScriptLookupStrategy");
 
@@ -332,7 +333,7 @@ public class S3SourceTest extends AbstractSourceTest {
     @Test
     void getObjectInfoUsingBasicLookupStrategyWithPrefixAndSuffix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_PATH_PREFIX, "/prefix/");
         config.setProperty(Key.S3SOURCE_PATH_SUFFIX, "/suffix");
 
@@ -343,7 +344,7 @@ public class S3SourceTest extends AbstractSourceTest {
     @Test
     void getObjectInfoUsingBasicLookupStrategyWithoutPrefixOrSuffix()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_PATH_PREFIX, "");
         config.setProperty(Key.S3SOURCE_PATH_SUFFIX, "");
 

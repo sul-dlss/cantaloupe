@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.api;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
@@ -17,7 +18,7 @@ abstract class AbstractAPIResource extends AbstractResource {
 
         getResponse().setHeader("Cache-Control", "no-cache");
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         if (!config.getBoolean(Key.API_ENABLED, false)) {
             throw new EndpointDisabledException();

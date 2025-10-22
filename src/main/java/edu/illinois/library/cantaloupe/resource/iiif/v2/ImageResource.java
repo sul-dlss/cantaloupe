@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Method;
@@ -182,7 +183,7 @@ public class ImageResource extends IIIF2Resource {
 
     private void validateSize(Dimension resultingSize,
                               Dimension virtualSize) throws SizeRestrictedException {
-        final var config = Configuration.getInstance();
+        final var config = ConfigurationAccessor.getConfiguration();
         if (config.getBoolean(Key.IIIF_RESTRICT_TO_SIZES, false)) {
             new InformationFactory().getSizes(virtualSize)
                     .stream()

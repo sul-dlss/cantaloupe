@@ -1,11 +1,12 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.auth.BasicAuth;
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
 import edu.illinois.library.cantaloupe.resource.EndpointDisabledException;
-import edu.illinois.library.cantaloupe.auth.BasicAuth;
 
 abstract class AbstractAdminResource extends AbstractResource {
 
@@ -17,7 +18,7 @@ abstract class AbstractAdminResource extends AbstractResource {
 
         getResponse().setHeader("Cache-Control", "no-cache");
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         if (!config.getBoolean(Key.ADMIN_ENABLED, false)) {
             throw new EndpointDisabledException();

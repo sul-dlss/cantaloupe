@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -78,7 +79,7 @@ class RequestTest extends BaseTest {
     @Test
     void testGetPublicReferenceUsingConfiguration() {
         final String baseURI = "http://example.net/base";
-        Configuration.getInstance().setProperty(Key.BASE_URI, baseURI);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.BASE_URI, baseURI);
 
         sr.setContextPath("/base");
         sr.setRequestURL("http://example.org/base/llamas");

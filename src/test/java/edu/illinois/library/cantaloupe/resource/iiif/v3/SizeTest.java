@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -300,7 +301,7 @@ public class SizeTest extends BaseTest {
     @Test
     void testToScaleWithMaxTypeAndUpscalingAllowedAndZeroMaxArgumentAndPositiveMaxPixels() {
         final long maxPixels = 1000000;
-        Configuration.getInstance().setProperty(Key.MAX_PIXELS, maxPixels);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.MAX_PIXELS, maxPixels);
         instance.setType(Size.Type.MAX);
         instance.setUpscalingAllowed(true);
 
@@ -311,7 +312,7 @@ public class SizeTest extends BaseTest {
 
     @Test
     void testToScaleWithMaxTypeAndUpscalingAllowedAndZeroMaxArgumentAndZeroMaxPixels() {
-        Configuration.getInstance().setProperty(Key.MAX_PIXELS, 0);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.MAX_PIXELS, 0);
         instance.setType(Size.Type.MAX);
         instance.setUpscalingAllowed(true);
 

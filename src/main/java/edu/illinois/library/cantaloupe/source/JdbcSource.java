@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.source;
 
 import com.zaxxer.hikari.HikariDataSource;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -183,7 +184,7 @@ class JdbcSource extends AbstractSource implements Source {
      */
     static synchronized Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
 
             final String connectionString =
                     config.getString(Key.JDBCSOURCE_JDBC_URL, "");

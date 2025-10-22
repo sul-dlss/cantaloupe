@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -167,7 +168,7 @@ class FilesystemSource extends AbstractSource implements Source {
     }
 
     private Path getPathWithBasicStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final String prefix =
                 config.getString(Key.FILESYSTEMSOURCE_PATH_PREFIX, "");
         final String suffix =

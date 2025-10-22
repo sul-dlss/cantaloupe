@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.source;
 
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.source.stream.HTTPImageInputStream;
@@ -81,22 +82,22 @@ class AzureStorageStreamFactory implements StreamFactory {
     }
 
     private boolean isChunkingEnabled() {
-        return Configuration.getInstance().getBoolean(
+        return ConfigurationAccessor.getConfiguration().getBoolean(
                 Key.AZURESTORAGESOURCE_CHUNKING_ENABLED, true);
     }
 
     private int getChunkSize() {
-        return (int) Configuration.getInstance().getLongBytes(
+        return (int) ConfigurationAccessor.getConfiguration().getLongBytes(
                 Key.AZURESTORAGESOURCE_CHUNK_SIZE, DEFAULT_CHUNK_SIZE);
     }
 
     private boolean isChunkCacheEnabled() {
-        return Configuration.getInstance().getBoolean(
+        return ConfigurationAccessor.getConfiguration().getBoolean(
                 Key.AZURESTORAGESOURCE_CHUNK_CACHE_ENABLED, true);
     }
 
     private int getMaxChunkCacheSize() {
-        return (int) Configuration.getInstance().getLongBytes(
+        return (int) ConfigurationAccessor.getConfiguration().getLongBytes(
                 Key.AZURESTORAGESOURCE_CHUNK_CACHE_MAX_SIZE,
                 DEFAULT_CHUNK_CACHE_SIZE);
     }

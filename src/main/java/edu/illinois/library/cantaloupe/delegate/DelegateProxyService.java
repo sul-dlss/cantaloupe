@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.delegate;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.RequestContext;
@@ -60,7 +61,7 @@ public final class DelegateProxyService {
      * @return Whether the delegate script is enabled.
      */
     public static boolean isScriptEnabled() {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         return config.getBoolean(Key.DELEGATE_SCRIPT_ENABLED, false);
     }
 
@@ -82,7 +83,7 @@ public final class DelegateProxyService {
         }
         // If we are using a delegate script, load the code into it.
         if (getJavaDelegate().isEmpty() && !isScriptCodeLoaded &&
-                Configuration.getInstance().getBoolean(Key.DELEGATE_SCRIPT_ENABLED, false)) {
+                ConfigurationAccessor.getConfiguration().getBoolean(Key.DELEGATE_SCRIPT_ENABLED, false)) {
             try {
                 Path file = getScriptFile();
                 if (file != null) {
@@ -113,7 +114,7 @@ public final class DelegateProxyService {
     static Path getScriptFile() throws NoSuchFileException {
         String value = System.getProperty("cantaloupe.delegate_script");
         if (value == null || value.isBlank()) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             // The script name may be an absolute pathname or a filename.
             value = config.getString(Key.DELEGATE_SCRIPT_PATHNAME, "");
         }
@@ -138,7 +139,7 @@ public final class DelegateProxyService {
         if (!script.isAbsolute()) {
             // Search for it in the same directory as the application config
             // (if available), or the current working directory if not.
-            final Optional<Path> configFile = Configuration.getInstance().getFile();
+            final Optional<Path> configFile = ConfigurationAccessor.getConfiguration().getFile();
             if (configFile.isPresent()) {
                 script = configFile.get().getParent().resolve(script.getFileName());
             } else {

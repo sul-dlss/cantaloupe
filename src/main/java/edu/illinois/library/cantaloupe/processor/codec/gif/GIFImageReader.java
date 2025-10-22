@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.gif;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -73,7 +74,7 @@ public final class GIFImageReader extends AbstractIIOImageReader
 
     @Override
     protected String getUserPreferredIIOImplementation() {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         return config.getString(IMAGEIO_PLUGIN_CONFIG_KEY);
     }
 

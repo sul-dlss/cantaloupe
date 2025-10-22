@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -96,22 +97,22 @@ final class HTTPStreamFactory implements StreamFactory {
     }
 
     private boolean isChunkingEnabled() {
-        return Configuration.getInstance().getBoolean(
+        return ConfigurationAccessor.getConfiguration().getBoolean(
                 Key.HTTPSOURCE_CHUNKING_ENABLED, true);
     }
 
     private int getChunkSize() {
-        return (int) Configuration.getInstance().getLongBytes(
+        return (int) ConfigurationAccessor.getConfiguration().getLongBytes(
                 Key.HTTPSOURCE_CHUNK_SIZE, DEFAULT_CHUNK_SIZE);
     }
 
     private boolean isChunkCacheEnabled() {
-        return Configuration.getInstance().getBoolean(
+        return ConfigurationAccessor.getConfiguration().getBoolean(
                 Key.HTTPSOURCE_CHUNK_CACHE_ENABLED, true);
     }
 
     private int getMaxChunkCacheSize() {
-        return (int) Configuration.getInstance().getLongBytes(
+        return (int) ConfigurationAccessor.getConfiguration().getLongBytes(
                 Key.HTTPSOURCE_CHUNK_CACHE_MAX_SIZE, DEFAULT_CHUNK_CACHE_SIZE);
     }
 

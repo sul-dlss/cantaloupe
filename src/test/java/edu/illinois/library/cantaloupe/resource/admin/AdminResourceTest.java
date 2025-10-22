@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -23,7 +24,7 @@ public class AdminResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETCacheHeaders() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.CLIENT_CACHE_ENABLED, "true");
         config.setProperty(Key.CLIENT_CACHE_MAX_AGE, "1234");
         config.setProperty(Key.CLIENT_CACHE_SHARED_MAX_AGE, "4567");
@@ -65,7 +66,7 @@ public class AdminResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, true);
 
         Response response = client.send();
@@ -74,7 +75,7 @@ public class AdminResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, false);
         try {
             client.send();

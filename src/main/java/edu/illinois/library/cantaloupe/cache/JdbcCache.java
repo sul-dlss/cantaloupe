@@ -3,6 +3,7 @@ package edu.illinois.library.cantaloupe.cache;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zaxxer.hikari.HikariDataSource;
 import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -71,7 +72,7 @@ class JdbcCache implements DerivativeCache {
 
             connection.setAutoCommit(false);
 
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             final String sql = String.format(
                     "INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
                     config.getString(Key.JDBCCACHE_DERIVATIVE_IMAGE_TABLE),
@@ -91,7 +92,7 @@ class JdbcCache implements DerivativeCache {
             try {
                 if (isComplete()) {
                     blobOutputStream.close();
-                    final Configuration config = Configuration.getInstance();
+                    final Configuration config = ConfigurationAccessor.getConfiguration();
                     final String sql = String.format(
                             "INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
                                 config.getString(Key.JDBCCACHE_DERIVATIVE_IMAGE_TABLE),
@@ -168,7 +169,7 @@ class JdbcCache implements DerivativeCache {
      */
     public static synchronized Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             final String connectionString = config.
                     getString(Key.JDBCCACHE_JDBC_URL, "");
             final int connectionTimeout = 1000 *
@@ -212,7 +213,7 @@ class JdbcCache implements DerivativeCache {
      * @throws IllegalArgumentException If the image table name is not set.
      */
     static String getDerivativeImageTableName() {
-        final String name = Configuration.getInstance().
+        final String name = ConfigurationAccessor.getConfiguration().
                 getString(Key.JDBCCACHE_DERIVATIVE_IMAGE_TABLE);
         if (name == null) {
             throw new IllegalArgumentException(
@@ -226,7 +227,7 @@ class JdbcCache implements DerivativeCache {
      * @throws IllegalArgumentException If the info table name is not set.
      */
     static String getInfoTableName() {
-        final String name = Configuration.getInstance().
+        final String name = ConfigurationAccessor.getConfiguration().
                 getString(Key.JDBCCACHE_INFO_TABLE);
         if (name == null) {
             throw new IllegalArgumentException(
@@ -317,7 +318,7 @@ class JdbcCache implements DerivativeCache {
     }
 
     Timestamp earliestValidDate() {
-        final long ttl = Configuration.getInstance().
+        final long ttl = ConfigurationAccessor.getConfiguration().
                 getLong(Key.DERIVATIVE_CACHE_TTL, 0);
         if (ttl > 0) {
             return new Timestamp(System.currentTimeMillis() - ttl * 1000);

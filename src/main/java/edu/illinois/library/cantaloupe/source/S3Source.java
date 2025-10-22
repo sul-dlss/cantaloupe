@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Range;
@@ -217,7 +218,7 @@ final class S3Source extends AbstractSource implements Source {
         String endpoint = info.getEndpoint();
         S3Client client = CLIENTS.get(endpoint);
         if (client == null) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             if (endpoint == null) {
                 endpoint = config.getString(Key.S3SOURCE_ENDPOINT);
             }
@@ -375,7 +376,7 @@ final class S3Source extends AbstractSource implements Source {
      *         configuration.
      */
     private S3ObjectInfo getObjectInfoUsingBasicStrategy() {
-        final var config        = Configuration.getInstance();
+        final var config        = ConfigurationAccessor.getConfiguration();
         final String bucketName = config.getString(Key.S3SOURCE_BUCKET_NAME);
         final String keyPrefix  = config.getString(Key.S3SOURCE_PATH_PREFIX, "");
         final String keySuffix  = config.getString(Key.S3SOURCE_PATH_SUFFIX, "");

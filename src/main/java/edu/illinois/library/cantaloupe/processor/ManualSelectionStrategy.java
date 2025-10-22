@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -49,14 +50,14 @@ class ManualSelectionStrategy implements SelectionStrategy {
      *         null} if one is not set.
      */
     private String getAssignedProcessorName(Format format) {
-        final String value = Configuration.getInstance().getString(
+        final String value = ConfigurationAccessor.getConfiguration().getString(
                 "processor.ManualSelectionStrategy." +
                         format.getPreferredExtension());
         return (value != null && !value.isEmpty()) ? value : null;
     }
 
     private String getFallbackProcessorName() {
-        return Configuration.getInstance().getString(Key.PROCESSOR_FALLBACK);
+        return ConfigurationAccessor.getConfiguration().getString(Key.PROCESSOR_FALLBACK);
     }
 
     @Override

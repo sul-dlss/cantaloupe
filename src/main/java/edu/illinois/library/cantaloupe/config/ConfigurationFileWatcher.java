@@ -1,15 +1,16 @@
 package edu.illinois.library.cantaloupe.config;
 
-import edu.illinois.library.cantaloupe.async.ThreadPool;
-import edu.illinois.library.cantaloupe.util.FilesystemWatcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.util.FilesystemWatcher;
 
 /**
  * Watches the configuration file (if available) for changes.
@@ -55,7 +56,7 @@ public final class ConfigurationFileWatcher {
             ConcurrentHashMap.newKeySet();
 
     public static void startWatching() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         ((ConfigurationProvider) config).getWrappedConfigurations()
                 .stream()
                 .filter(c -> c instanceof FileConfiguration)

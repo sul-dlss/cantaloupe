@@ -1,21 +1,29 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.ConfigurationException;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class HeapCacheTest extends AbstractCacheTest {
 
@@ -75,7 +83,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Override
     HeapCache newInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, Math.pow(1024, 2));
 
         return new HeapCache();
@@ -85,7 +93,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testDumpToPersistentStore() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_PERSIST, true);
 
         Path cacheFile = Files.createTempFile("heapcache", "tmp");
@@ -118,7 +126,7 @@ public class HeapCacheTest extends AbstractCacheTest {
         // Initial size
         assertEquals(0, instance.getByteSize());
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, 10000);
 
         // Seed an image
@@ -153,7 +161,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetTargetByteSizeWithInvalidValue() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, "");
         try {
             instance.getTargetByteSize();
@@ -165,14 +173,14 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetTargetByteSizeWithNumber() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, 1000);
         assertEquals(1000, instance.getTargetByteSize());
     }
 
     @Test
     void testGetTargetByteSizeWithUnitSuffix() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final float base = 500.5f;
         final float delta = 0.0001f;
 
@@ -205,7 +213,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testIsPersistenceEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
 
         config.setProperty(Key.HEAPCACHE_PERSIST, true);
         assertTrue(instance.isPersistenceEnabled());
@@ -218,7 +226,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testLoadFromPersistentStore() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_PERSIST, true);
 
         Path cacheFile = Files.createTempFile("heapcache", "tmp");
@@ -271,7 +279,7 @@ public class HeapCacheTest extends AbstractCacheTest {
         Path dir = Files.createTempDirectory("test");
         Path file = dir.resolve("dump");
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_PERSIST, true);
         config.setProperty(Key.HEAPCACHE_PATHNAME, file);
 
@@ -288,7 +296,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testPurgeExcessWithExcess() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, 5000);
 
         // Seed an image
@@ -309,7 +317,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testPurgeExcessWithNoExcess() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, 10000);
 
         // Seed an image
@@ -331,7 +339,7 @@ public class HeapCacheTest extends AbstractCacheTest {
 
     @Test
     void testPurgeExcessThrowsConfigurationExceptionWhenMaxSizeIsInvalid() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEAPCACHE_TARGET_SIZE, 0);
 
         assertThrows(ConfigurationException.class, () -> instance.purgeExcess());

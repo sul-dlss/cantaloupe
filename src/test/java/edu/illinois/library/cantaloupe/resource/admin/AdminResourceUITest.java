@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.Route;
@@ -33,7 +34,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_USERNAME, USERNAME);
         config.setProperty(Key.ADMIN_SECRET, SECRET);
         config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
@@ -154,7 +155,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         // Temporary Directory
         assertEquals("/bla/bla", config.getString(Key.TEMP_PATHNAME));
@@ -253,7 +254,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertTrue(config.getBoolean(Key.HTTP_ENABLED));
         assertEquals("1.2.3.4", config.getString(Key.HTTP_HOST));
         assertEquals(8989, config.getInt(Key.HTTP_PORT));
@@ -301,7 +302,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertEquals(5000, config.getLong(Key.MAX_PIXELS));
         assertEquals(1.1, config.getDouble(Key.MAX_SCALE), DELTA);
         assertEquals(75, config.getInt(Key.IIIF_MIN_SIZE));
@@ -392,7 +393,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertFalse(config.getBoolean(Key.SOURCE_DELEGATE));
         assertEquals("FilesystemSource",
                 config.getString(Key.SOURCE_STATIC));
@@ -537,7 +538,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertEquals("ManualSelectionStrategy",
                 config.getString(Key.PROCESSOR_SELECTION_STRATEGY));
         assertEquals("Java2dProcessor",
@@ -647,7 +648,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertTrue(config.getBoolean(Key.CLIENT_CACHE_ENABLED));
         assertEquals("250", config.getString(Key.CLIENT_CACHE_MAX_AGE));
         assertEquals("220", config.getString(Key.CLIENT_CACHE_SHARED_MAX_AGE));
@@ -734,7 +735,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
         Thread.sleep(WAIT_AFTER_SUBMIT);
 
         // Assert that the application configuration has been updated correctly
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         assertTrue(config.getBoolean(Key.OVERLAY_ENABLED));
         assertEquals("BasicStrategy",
                 config.getString(Key.OVERLAY_STRATEGY));

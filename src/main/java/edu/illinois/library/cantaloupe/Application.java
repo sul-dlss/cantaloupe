@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public final class Application {
      *         not exist, it will be created.
      */
     public static Path getTempPath() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final String pathStr = config.getString(Key.TEMP_PATHNAME, "");
 
         if (!pathStr.isEmpty()) {

@@ -1,6 +1,24 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -10,18 +28,6 @@ import edu.illinois.library.cantaloupe.operation.OperationList;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
 
 abstract class AbstractCacheTest extends BaseTest {
 
@@ -52,7 +58,7 @@ abstract class AbstractCacheTest extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 300);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 300);
     }
 
     /* getInfo(Identifier) */
@@ -72,7 +78,7 @@ abstract class AbstractCacheTest extends BaseTest {
     @Test
     void testGetInfoWithExistingInvalidImage() throws Exception {
         final DerivativeCache instance = newInstance();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
 
         Identifier identifier = new Identifier("cats");
         Info info = new Info();
@@ -116,7 +122,7 @@ abstract class AbstractCacheTest extends BaseTest {
     @Test
     void testNewDerivativeImageInputStreamWithZeroTTL() throws Exception {
         final DerivativeCache instance = newInstance();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 0);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 0);
 
         OperationList opList = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
@@ -146,7 +152,7 @@ abstract class AbstractCacheTest extends BaseTest {
     @Test
     void testNewDerivativeImageInputStreamWithNonzeroTTL() throws Exception {
         final DerivativeCache instance = newInstance();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 3);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 3);
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
@@ -490,7 +496,7 @@ abstract class AbstractCacheTest extends BaseTest {
                 .withOperations(new Encode(Format.get("jpg")))
                 .build();
         Info info1 = new Info();
-        Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
 
         // add an image
         Path fixture = TestUtil.getImage(id1.toString());

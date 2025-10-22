@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor.codec.bmp;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.processor.codec.AbstractImageReaderTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
@@ -48,7 +49,7 @@ public class BMPImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(BMPImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((BMPImageReader) instance).
@@ -66,7 +67,7 @@ public class BMPImageReaderTest extends AbstractImageReaderTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(BMPImageReader.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((BMPImageReader) instance).getUserPreferredIIOImplementation());

@@ -1,24 +1,10 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.cache.CacheFactory;
-import edu.illinois.library.cantaloupe.cache.CacheDisabledException;
-import edu.illinois.library.cantaloupe.cache.MockBrokenSourceImageFileCache;
-import edu.illinois.library.cantaloupe.cache.MockBrokenSourceInputStreamCache;
-import edu.illinois.library.cantaloupe.cache.MockUnreliableSourceImageFileCache;
-import edu.illinois.library.cantaloupe.cache.MockUnreliableSourceOutputStreamCache;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.source.MockStreamSource;
-import edu.illinois.library.cantaloupe.source.Source;
-import edu.illinois.library.cantaloupe.source.SourceFactory;
-import edu.illinois.library.cantaloupe.source.StreamFactory;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import edu.illinois.library.cantaloupe.test.WebServer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,7 +16,27 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.Future;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.cache.CacheDisabledException;
+import edu.illinois.library.cantaloupe.cache.CacheFactory;
+import edu.illinois.library.cantaloupe.cache.MockBrokenSourceImageFileCache;
+import edu.illinois.library.cantaloupe.cache.MockBrokenSourceInputStreamCache;
+import edu.illinois.library.cantaloupe.cache.MockUnreliableSourceImageFileCache;
+import edu.illinois.library.cantaloupe.cache.MockUnreliableSourceOutputStreamCache;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.source.MockStreamSource;
+import edu.illinois.library.cantaloupe.source.Source;
+import edu.illinois.library.cantaloupe.source.SourceFactory;
+import edu.illinois.library.cantaloupe.source.StreamFactory;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
+import edu.illinois.library.cantaloupe.test.WebServer;
 
 public class ProcessorConnectorTest extends BaseTest {
 
@@ -61,7 +67,7 @@ public class ProcessorConnectorTest extends BaseTest {
 
         instance = new ProcessorConnector();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
         config.setProperty(Key.FILESYSTEMSOURCE_LOOKUP_STRATEGY,
                 "BasicLookupStrategy");
@@ -74,7 +80,7 @@ public class ProcessorConnectorTest extends BaseTest {
 
     @Test
     void testGetFallbackRetrievalStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         // config set to stream
         config.setProperty(Key.PROCESSOR_FALLBACK_RETRIEVAL_STRATEGY,
                 RetrievalStrategy.STREAM.getConfigValue());
@@ -101,7 +107,7 @@ public class ProcessorConnectorTest extends BaseTest {
 
     @Test
     void testGetStreamProcessorRetrievalStrategy() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         // config set to stream
         config.setProperty(Key.PROCESSOR_STREAM_RETRIEVAL_STRATEGY,
                 RetrievalStrategy.STREAM.getConfigValue());
@@ -140,7 +146,7 @@ public class ProcessorConnectorTest extends BaseTest {
     @Test
     void testConnectWithFileSourceAndStreamProcessor()
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_FALLBACK, MockStreamProcessor.class.getName());
 
         final Source source = new SourceFactory().newSource(IDENTIFIER, null);
@@ -162,7 +168,7 @@ public class ProcessorConnectorTest extends BaseTest {
             server.start();
 
             final Identifier identifier = new Identifier("jp2");
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -193,7 +199,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_CACHE, "FilesystemCache");
             config.setProperty(Key.FILESYSTEMCACHE_PATHNAME,
                     cacheFolder.toString());
@@ -225,7 +231,7 @@ public class ProcessorConnectorTest extends BaseTest {
     void testConnectWithStreamSourceAndFileProcessorAndCacheStrategyAndSourceCacheDisabled()
             throws Exception {
         final Identifier identifier = new Identifier("jp2");
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, MockStreamSource.class.getName());
         config.setProperty(Key.PROCESSOR_FALLBACK,
                 MockFileProcessor.class.getName());
@@ -243,7 +249,7 @@ public class ProcessorConnectorTest extends BaseTest {
     void testConnectWithStreamSourceAndFileProcessorAndAbortStrategy()
             throws Exception {
         final Identifier identifier = new Identifier("jp2");
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, MockStreamSource.class.getName());
         config.setProperty(Key.PROCESSOR_FALLBACK,
                 MockFileProcessor.class.getName());
@@ -264,7 +270,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
             final Identifier identifier = new Identifier("jp2");
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -289,7 +295,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -318,7 +324,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC,
                     MockStreamSource.class.getName());
             config.setProperty(Key.PROCESSOR_STREAM_RETRIEVAL_STRATEGY,
@@ -346,7 +352,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC,
                     MockStreamSource.class.getName());
             config.setProperty(Key.SOURCE_CACHE, "FilesystemCache");
@@ -377,7 +383,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -414,7 +420,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -456,7 +462,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -491,7 +497,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC,
                     MockStreamSource.class.getName());
             config.setProperty(Key.SOURCE_CACHE,
@@ -523,7 +529,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC,
                     MockStreamSource.class.getName());
             config.setProperty(Key.SOURCE_CACHE,
@@ -558,7 +564,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "HttpSource");
             config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                     "BasicLookupStrategy");
@@ -590,7 +596,7 @@ public class ProcessorConnectorTest extends BaseTest {
         try {
             server.start();
 
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC,
                     MockStreamSource.class.getName());
             config.setProperty(Key.PROCESSOR_STREAM_RETRIEVAL_STRATEGY,

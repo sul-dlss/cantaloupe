@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -23,7 +24,7 @@ public class SizeConstrainer {
      */
     public static void constrainSizeToMaxPixels(Dimension requestedSize,
                                             OperationList opList) throws ValidationException {
-        final var config    = Configuration.getInstance();
+        final var config    = ConfigurationAccessor.getConfiguration();
         final int maxPixels = config.getInt(Key.MAX_PIXELS, 0);
         // This ensures we compare maxPixels against the Resulting size 
         // after operations like cropping/region are applied.

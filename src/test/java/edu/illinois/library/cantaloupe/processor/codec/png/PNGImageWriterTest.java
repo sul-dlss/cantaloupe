@@ -1,14 +1,13 @@
 package edu.illinois.library.cantaloupe.processor.codec.png;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -16,12 +15,18 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.PlanarImage;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class PNGImageWriterTest extends AbstractImageWriterTest {
 
@@ -45,7 +50,7 @@ public class PNGImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetPreferredIIOImplementationsWithUserPreference() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(PNGImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
 
         String userImpl = ((PNGImageWriter) instance).getUserPreferredIIOImplementation();
@@ -63,7 +68,7 @@ public class PNGImageWriterTest extends AbstractImageWriterTest {
 
     @Test
     public void testGetUserPreferredIIOImplementation() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(PNGImageWriter.IMAGEIO_PLUGIN_CONFIG_KEY, "cats");
         assertEquals("cats",
                 ((PNGImageWriter) instance).getUserPreferredIIOImplementation());

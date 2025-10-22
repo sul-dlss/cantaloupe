@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Status;
@@ -18,7 +19,7 @@ abstract class IIIF1Resource extends IIIFResource {
             throw new ResourceException(Status.URI_TOO_LONG);
         }
 
-        if (!Configuration.getInstance().
+        if (!ConfigurationAccessor.getConfiguration().
                 getBoolean(Key.IIIF_1_ENDPOINT_ENABLED, true)) {
             throw new EndpointDisabledException();
         }

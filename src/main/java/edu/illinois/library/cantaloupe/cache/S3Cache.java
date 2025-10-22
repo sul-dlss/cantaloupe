@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.cache;
 
 import edu.illinois.library.cantaloupe.async.TaskQueue;
 import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Reference;
@@ -76,7 +77,7 @@ class S3Cache implements DerivativeCache {
 
     static synchronized S3Client getClientInstance() {
         if (client == null) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             final String endpointStr = config.getString(Key.S3CACHE_ENDPOINT);
             URI endpointURI = null;
             if (endpointStr != null) {
@@ -101,7 +102,7 @@ class S3Cache implements DerivativeCache {
      * @return Earliest valid instant, with second resolution.
      */
     private static Instant earliestValidInstant() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final long ttl = config.getLong(Key.DERIVATIVE_CACHE_TTL);
         return (ttl > 0) ? Instant.now().minusSeconds(ttl) : Instant.EPOCH;
     }
@@ -116,7 +117,7 @@ class S3Cache implements DerivativeCache {
     }
 
     String getBucketName() {
-        return Configuration.getInstance().getString(Key.S3CACHE_BUCKET_NAME);
+        return ConfigurationAccessor.getConfiguration().getString(Key.S3CACHE_BUCKET_NAME);
     }
 
     @Override
@@ -236,7 +237,7 @@ class S3Cache implements DerivativeCache {
      *         with trailing slash.
      */
     String getObjectKeyPrefix() {
-        String prefix = Configuration.getInstance().
+        String prefix = ConfigurationAccessor.getConfiguration().
                 getString(Key.S3CACHE_OBJECT_KEY_PREFIX, "");
         if (prefix.isEmpty() || prefix.equals("/")) {
             return "";

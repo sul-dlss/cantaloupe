@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.test.WebServer;
@@ -20,7 +21,7 @@ public class HttpSourceHTTPTest extends HttpSourceTest {
         server.setHTTPS1Enabled(false);
         server.setHTTPS2Enabled(false);
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HTTPSOURCE_URL_PREFIX, server.getHTTPURI() + "/");
     }
 

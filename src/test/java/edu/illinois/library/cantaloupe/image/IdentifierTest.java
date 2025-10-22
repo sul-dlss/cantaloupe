@@ -1,15 +1,20 @@
 package edu.illinois.library.cantaloupe.image;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringWriter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class IdentifierTest extends BaseTest {
 
@@ -39,7 +44,7 @@ public class IdentifierTest extends BaseTest {
 
     @Test
     void testFromURIPathComponent() {
-        Configuration.getInstance().setProperty(Key.SLASH_SUBSTITUTE, "BUG");
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SLASH_SUBSTITUTE, "BUG");
 
         String pathComponent = "catsBUG%3Adogs";
         Identifier actual = Identifier.fromURIPathComponent(pathComponent);

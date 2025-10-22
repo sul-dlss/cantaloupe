@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Response;
@@ -26,7 +27,7 @@ public class TrailingSlashRemovingResourceTest extends ResourceTest {
 
     @Test
     void testDoGetRespectsBaseURIConfigKey() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.BASE_URI, "http://example.org/cats");
 
         client = newClient("/");

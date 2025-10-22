@@ -1,12 +1,15 @@
 package edu.illinois.library.cantaloupe.image;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.test.BaseTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 class StandardMetaIdentifierTransformerTest extends BaseTest {
 
@@ -55,7 +58,7 @@ class StandardMetaIdentifierTransformerTest extends BaseTest {
 
     @Test
     void deserializeRespectsMetaIdentifierDelimiter() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.STANDARD_META_IDENTIFIER_TRANSFORMER_DELIMITER, "CATS");
         MetaIdentifier metaID = instance.deserialize("catsCATS2CATS2:3");
         assertEquals(new Identifier("cats"), metaID.getIdentifier());
@@ -121,7 +124,7 @@ class StandardMetaIdentifierTransformerTest extends BaseTest {
 
     @Test
     void serialize1RespectsMetaIdentifierDelimiter() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.STANDARD_META_IDENTIFIER_TRANSFORMER_DELIMITER, "DOGS");
         MetaIdentifier meta = MetaIdentifier.builder()
                 .withIdentifier("cats;cats")

@@ -101,7 +101,7 @@ public final class TestUtil {
 
     public static DelegateProxy newDelegateProxy() {
         edu.illinois.library.cantaloupe.config.Configuration config =
-                edu.illinois.library.cantaloupe.config.Configuration.getInstance();
+                edu.illinois.library.cantaloupe.config.ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DELEGATE_SCRIPT_ENABLED, true);
         config.setProperty(Key.DELEGATE_SCRIPT_PATHNAME,
                 TestUtil.getFixture("delegates.rb").toString());

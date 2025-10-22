@@ -1,19 +1,24 @@
 package edu.illinois.library.cantaloupe.resource;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.http.Method;
-import edu.illinois.library.cantaloupe.http.Status;
-import edu.illinois.library.cantaloupe.util.Stopwatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.config.SpringConfiguration;
+import edu.illinois.library.cantaloupe.http.Method;
+import edu.illinois.library.cantaloupe.http.Status;
+import edu.illinois.library.cantaloupe.util.Stopwatch;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Front-controller Servlet that handles all requests.
@@ -67,6 +72,8 @@ public class HandlerServlet extends HttpServlet {
                 request.getRequestURI(), request.getContextPath());
 
         AbstractResource resource = null;
+        System.out.println("GOT HERE");
+        ApplicationContext appContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
         try {
             Route route = Route.forPath(path);
@@ -179,7 +186,7 @@ public class HandlerServlet extends HttpServlet {
     }
 
     private boolean isPrintingStackTraces() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         return config.getBoolean(Key.PRINT_STACK_TRACE_ON_ERROR_PAGES, false);
     }
 

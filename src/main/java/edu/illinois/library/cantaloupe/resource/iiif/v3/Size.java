@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -205,7 +206,7 @@ final class Size {
                 if (maxScale > DELTA) {
                     return new ScaleByPercent(isUpscalingAllowed() ? maxScale : 1);
                 } else {
-                    Configuration config = Configuration.getInstance();
+                    Configuration config = ConfigurationAccessor.getConfiguration();
                     final long maxPixels = config.getLong(Key.MAX_PIXELS, 0);
                     if (maxPixels > 0) {
                         // Using the square root of max_pixels is not optimal,

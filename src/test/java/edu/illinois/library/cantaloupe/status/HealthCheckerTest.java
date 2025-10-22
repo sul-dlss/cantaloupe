@@ -1,18 +1,22 @@
 package edu.illinois.library.cantaloupe.status;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.cache.MockBrokenDerivativeCache;
 import edu.illinois.library.cantaloupe.cache.MockBrokenSourceCache;
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.source.MockFileSource;
 import edu.illinois.library.cantaloupe.source.MockStreamSource;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class HealthCheckerTest extends BaseTest {
 
@@ -62,7 +66,7 @@ public class HealthCheckerTest extends BaseTest {
 
     @Test
     void checkConcurrentlyWithSourceCacheFailure() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE,
                 MockBrokenSourceCache.class.getName());
 
@@ -74,7 +78,7 @@ public class HealthCheckerTest extends BaseTest {
 
     @Test
     void checkConcurrentlyWithDerivativeCacheFailure() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, "true");
         config.setProperty(Key.DERIVATIVE_CACHE,
                 MockBrokenDerivativeCache.class.getName());
@@ -96,7 +100,7 @@ public class HealthCheckerTest extends BaseTest {
 
     @Test
     void checkSeriallyWithSourceCacheFailure() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE,
                 MockBrokenSourceCache.class.getName());
 
@@ -108,7 +112,7 @@ public class HealthCheckerTest extends BaseTest {
 
     @Test
     void checkSeriallyWithDerivativeCacheFailure() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, "true");
         config.setProperty(Key.DERIVATIVE_CACHE,
                 MockBrokenDerivativeCache.class.getName());

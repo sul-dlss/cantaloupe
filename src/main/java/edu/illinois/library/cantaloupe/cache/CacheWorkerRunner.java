@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.cache;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public final class CacheWorkerRunner {
     }
 
     public synchronized void start() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final int interval = config.getInt(Key.CACHE_WORKER_INTERVAL, -1);
 
         LOGGER.info("Starting the cache worker with {} second delay, {} second interval",

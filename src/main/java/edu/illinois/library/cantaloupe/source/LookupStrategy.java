@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 
@@ -8,7 +9,7 @@ enum LookupStrategy {
     BASIC, DELEGATE_SCRIPT, UNDEFINED;
 
     static LookupStrategy from(Key key) {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
 
         switch (config.getString(key, "")) {
             case "BasicLookupStrategy":

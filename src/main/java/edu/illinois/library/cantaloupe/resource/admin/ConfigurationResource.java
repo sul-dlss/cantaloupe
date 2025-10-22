@@ -1,21 +1,24 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.ConfigurationProvider;
 import edu.illinois.library.cantaloupe.config.FileConfiguration;
 import edu.illinois.library.cantaloupe.config.MapConfiguration;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Status;
 import edu.illinois.library.cantaloupe.resource.JacksonRepresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Resource for retrieving and updating the application configuration object
@@ -49,7 +52,7 @@ public class ConfigurationResource extends AbstractAdminResource {
                 "application/json;charset=UTF-8");
 
         Map<String,Object> map                   = Collections.emptyMap();
-        final ConfigurationProvider provider     = (ConfigurationProvider) Configuration.getInstance();
+        final ConfigurationProvider provider     = (ConfigurationProvider) ConfigurationAccessor.getConfiguration();
         final List<Configuration> wrappedConfigs = provider.getWrappedConfigurations();
         for (Configuration config : wrappedConfigs) {
             if (config instanceof FileConfiguration) {
@@ -68,7 +71,7 @@ public class ConfigurationResource extends AbstractAdminResource {
      */
     @Override
     public void doPUT() throws IOException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Map<?, ?> submittedConfig = new ObjectMapper().readValue(
                 getRequest().getInputStream(), HashMap.class);
 

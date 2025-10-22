@@ -1,25 +1,11 @@
 package edu.illinois.library.cantaloupe.resource.iiif;
 
-import edu.illinois.library.cantaloupe.cache.CacheFactory;
-import edu.illinois.library.cantaloupe.cache.InfoService;
-import edu.illinois.library.cantaloupe.cache.MockBrokenDerivativeInputStreamCache;
-import edu.illinois.library.cantaloupe.cache.MockBrokenDerivativeOutputStreamCache;
-import edu.illinois.library.cantaloupe.cache.SourceCache;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.http.Client;
-import edu.illinois.library.cantaloupe.http.ResourceException;
-import edu.illinois.library.cantaloupe.http.Response;
-import edu.illinois.library.cantaloupe.http.Transport;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.source.AccessDeniedSource;
-import edu.illinois.library.cantaloupe.source.PathStreamFactory;
-import edu.illinois.library.cantaloupe.source.Source;
-import edu.illinois.library.cantaloupe.source.StatResult;
-import edu.illinois.library.cantaloupe.source.StreamFactory;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
-import edu.illinois.library.cantaloupe.test.TestUtil;
+import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.assertStatus;
+import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.assertRecursiveFileCount;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,9 +23,27 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Iterator;
 import java.util.Locale;
 
-import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.*;
-import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.cache.CacheFactory;
+import edu.illinois.library.cantaloupe.cache.InfoService;
+import edu.illinois.library.cantaloupe.cache.MockBrokenDerivativeInputStreamCache;
+import edu.illinois.library.cantaloupe.cache.MockBrokenDerivativeOutputStreamCache;
+import edu.illinois.library.cantaloupe.cache.SourceCache;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import edu.illinois.library.cantaloupe.http.Client;
+import edu.illinois.library.cantaloupe.http.ResourceException;
+import edu.illinois.library.cantaloupe.http.Response;
+import edu.illinois.library.cantaloupe.http.Transport;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.source.AccessDeniedSource;
+import edu.illinois.library.cantaloupe.source.PathStreamFactory;
+import edu.illinois.library.cantaloupe.source.Source;
+import edu.illinois.library.cantaloupe.source.StatResult;
+import edu.illinois.library.cantaloupe.source.StreamFactory;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 /**
  * Collection of tests common across major versions of IIIF Image and
@@ -60,7 +64,7 @@ public class ImageAPIResourceTester {
     public void testAuthorizationWhenNotAuthorizedWhenAccessingCachedResource(URI uri)
             throws Exception {
         initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 10);
         config.setProperty(Key.INFO_CACHE_ENABLED, false);
@@ -144,7 +148,7 @@ public class ImageAPIResourceTester {
 
     public void testCacheHeadersWhenClientCachingIsDisabled(URI uri)
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.CLIENT_CACHE_ENABLED, false);
 
         Client client = newClient(uri);
@@ -159,7 +163,7 @@ public class ImageAPIResourceTester {
     public void testCachingWhenCachesAreEnabledButNegativeCacheQueryArgumentIsSupplied(URI uri)
             throws Exception {
         Path cacheDir = initializeFilesystemCache();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
 
         // request an info
@@ -275,7 +279,7 @@ public class ImageAPIResourceTester {
     }
 
     public void testForbidden(URI uri) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC,
                 AccessDeniedSource.class.getName());
 
@@ -315,7 +319,7 @@ public class ImageAPIResourceTester {
      */
     public void testRecoveryFromDerivativeCacheNewDerivativeImageInputStreamException(URI uri)
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE,
                 MockBrokenDerivativeInputStreamCache.class.getSimpleName());
@@ -332,7 +336,7 @@ public class ImageAPIResourceTester {
      */
     public void testRecoveryFromDerivativeCacheNewDerivativeImageOutputStreamException(URI uri)
             throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE,
                 MockBrokenDerivativeOutputStreamCache.class.getSimpleName());
@@ -399,7 +403,7 @@ public class ImageAPIResourceTester {
                                                                  URI uri) throws Exception {
         // Set up the environment to use the source cache, not resolve first,
         // and use a non-FileSource.
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
         config.setProperty(Key.SOURCE_STATIC,
                 NotCheckingAccessSource.class.getName());
@@ -474,7 +478,7 @@ public class ImageAPIResourceTester {
                                                                URI uri) throws Exception {
         // Set up the environment to use the source cache, not resolve first,
         // and use a non-FileSource.
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
         config.setProperty(Key.SOURCE_STATIC,
                 NotReadingSourceFormatSource.class.getName());
@@ -511,7 +515,7 @@ public class ImageAPIResourceTester {
     public void testSourceProcessorCompatibility(URI uri,
                                                  String appServerHost,
                                                  int appServerPort) {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_STATIC, "HttpSource");
         config.setProperty(Key.HTTPSOURCE_LOOKUP_STRATEGY,
                 "BasicLookupStrategy");
@@ -526,7 +530,7 @@ public class ImageAPIResourceTester {
      * @param uri URI containing <code>CATS</code> as the slash substitute.
      */
     public void testSlashSubstitution(URI uri) {
-        Configuration.getInstance().setProperty(Key.SLASH_SUBSTITUTE, "CATS");
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SLASH_SUBSTITUTE, "CATS");
 
         assertStatus(200, uri);
     }
@@ -536,7 +540,7 @@ public class ImageAPIResourceTester {
     }
 
     private void enableCacheControlHeaders() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.CLIENT_CACHE_ENABLED, "true");
         config.setProperty(Key.CLIENT_CACHE_MAX_AGE, "1234");
         config.setProperty(Key.CLIENT_CACHE_SHARED_MAX_AGE, "4567");
@@ -552,7 +556,7 @@ public class ImageAPIResourceTester {
     Path initializeFilesystemCache() throws IOException {
         Path cacheDir = Files.createTempDirectory("test");
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
         config.setProperty(Key.DERIVATIVE_CACHE, "FilesystemCache");
         config.setProperty(Key.FILESYSTEMCACHE_PATHNAME, cacheDir.toString());

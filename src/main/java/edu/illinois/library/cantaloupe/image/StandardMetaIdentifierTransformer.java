@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.image;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.util.StringUtils;
@@ -29,7 +30,7 @@ public final class StandardMetaIdentifierTransformer
     private static final String DEFAULT_COMPONENT_DELIMITER = ";";
 
     private static String getComponentDelimiter() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         return config.getString(
                 Key.STANDARD_META_IDENTIFIER_TRANSFORMER_DELIMITER,
                 DEFAULT_COMPONENT_DELIMITER);

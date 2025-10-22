@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.processor;
 
 import edu.illinois.library.cantaloupe.cache.SourceCache;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 
@@ -40,7 +41,7 @@ enum RetrievalStrategy {
     private final String configValue;
 
     static RetrievalStrategy from(Key key) {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final String configValue = config.getString(key, "");
 
         for (RetrievalStrategy s : values()) {

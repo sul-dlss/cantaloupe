@@ -1,23 +1,27 @@
 package edu.illinois.library.cantaloupe.operation.overlay;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.awt.font.TextAttribute;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.operation.Color;
 import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.awt.font.TextAttribute;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class BasicStringOverlayServiceTest extends BaseTest {
 
     private BasicStringOverlayService instance;
 
     public static void setUpConfiguration() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.OVERLAY_ENABLED, true);
         config.setProperty(Key.OVERLAY_STRATEGY, "BasicStrategy");
         config.setProperty(Key.OVERLAY_TYPE, "string");
@@ -63,7 +67,7 @@ public class BasicStringOverlayServiceTest extends BaseTest {
 
     @Test
     void testShouldApplyToImage() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.clear();
 
         final Dimension imageSize = new Dimension(100, 100);

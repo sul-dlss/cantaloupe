@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -26,7 +27,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_DPI, 72);
         config.setProperty(Key.PROCESSOR_PDF_SCRATCH_FILE_ENABLED, false);
         config.setProperty(Key.PROCESSOR_PDF_MAX_MEMORY_BYTES, -1);

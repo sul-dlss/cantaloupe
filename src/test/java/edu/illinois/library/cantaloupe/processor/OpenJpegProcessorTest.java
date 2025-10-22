@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -19,7 +20,7 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration.getInstance().clearProperty(
+        ConfigurationAccessor.getConfiguration().clearProperty(
                 Key.OPENJPEGPROCESSOR_PATH_TO_BINARIES);
         OpenJpegProcessor.resetInitialization();
 
@@ -50,7 +51,7 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
 
     @Test
     void testGetInitializationErrorWithMissingBinaries() {
-        Configuration.getInstance().setProperty(
+        ConfigurationAccessor.getConfiguration().setProperty(
                 Key.OPENJPEGPROCESSOR_PATH_TO_BINARIES,
                 "/bogus/bogus/bogus");
         OpenJpegProcessor.resetInitialization();

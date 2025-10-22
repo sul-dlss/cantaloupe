@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v2;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
@@ -265,7 +266,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETEndpointEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_1_ENDPOINT_ENABLED, true);
 
         assertStatus(200, getHTTPURI("/" + IMAGE + "/full/full/0/color.jpg"));
@@ -273,7 +274,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETEndpointDisabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_2_ENDPOINT_ENABLED, false);
 
         assertStatus(403, getHTTPURI("/" + IMAGE + "/full/full/0/color.jpg"));
@@ -326,7 +327,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETLinkHeaderWithSlashSubstitution() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "CATS");
 
         client = newClient("/subfolderCATSjpg/full/full/0/color.jpg");
@@ -338,7 +339,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETLinkHeaderWithEncodedCharacters() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "`");
 
         client = newClient("/subfolder%60jpg/full/full/0/color.jpg");
@@ -350,7 +351,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETLinkHeaderWithBaseURIOverride() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.BASE_URI, "http://example.org/");
 
         client = newClient("/" + IMAGE + "/full/full/0/color.jpg");
@@ -375,7 +376,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETLinkHeaderBaseURIOverridesProxyHeaders() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.BASE_URI, "https://example.net/");
 
         client = newClient("/" + IMAGE + "/full/full/0/color.jpg");
@@ -619,7 +620,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETNotRestrictedToSizes() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_RESTRICT_TO_SIZES, false);
 
         assertStatus(200, getHTTPURI("/" + IMAGE + "/full/53,37/0/color.jpg"));
@@ -627,7 +628,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testGETRestrictedToSizes() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_RESTRICT_TO_SIZES, true);
 
         assertStatus(403, getHTTPURI("/" + IMAGE + "/full/53,37/0/color.jpg"));
@@ -698,7 +699,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_2_ENDPOINT_ENABLED, true);
 
         client = newClient("/" + IMAGE + "/full/full/0/color.jpg");
@@ -716,7 +717,7 @@ public class ImageResourceTest extends ResourceTest {
 
     @Test
     void testOPTIONSWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.IIIF_2_ENDPOINT_ENABLED, false);
         try {
             client = newClient("/" + IMAGE + "/full/full/0/color.jpg");

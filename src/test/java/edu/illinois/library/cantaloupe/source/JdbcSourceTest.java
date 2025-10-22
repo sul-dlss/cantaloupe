@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -37,7 +38,7 @@ public class JdbcSourceTest extends AbstractSourceTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         // Use an in-memory H2 database.
         config.setProperty(Key.JDBCSOURCE_JDBC_URL, "jdbc:h2:mem:test");
         config.setProperty(Key.JDBCSOURCE_USER, "sa");

@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -28,7 +29,7 @@ public class ConfigurationResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("test", "cats");
 
         Response response = client.send();
@@ -37,7 +38,7 @@ public class ConfigurationResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, false);
         try {
             client.send();
@@ -71,7 +72,7 @@ public class ConfigurationResourceTest extends AbstractAdminResourceTest {
 
     @Test
     void testGETResponseBody() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty("test", "cats");
 
         Response response = client.send();
@@ -81,7 +82,7 @@ public class ConfigurationResourceTest extends AbstractAdminResourceTest {
     @Override
     @Test
     public void testOPTIONSWhenEnabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, true);
 
         client.setMethod(Method.OPTIONS);
@@ -108,12 +109,12 @@ public class ConfigurationResourceTest extends AbstractAdminResourceTest {
         client.setContentType(new MediaType("application/json"));
         client.send();
 
-        assertEquals("cats", Configuration.getInstance().getString("test"));
+        assertEquals("cats", ConfigurationAccessor.getConfiguration().getString("test"));
     }
 
     @Test
     void testPUTWhenDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.ADMIN_ENABLED, false);
 
         Map<String,Object> entityMap = new HashMap<>();

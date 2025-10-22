@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -18,7 +19,7 @@ class RasterizationHelper {
     private int baseDPI;
 
     RasterizationHelper() {
-        baseDPI = Configuration.getInstance().
+        baseDPI = ConfigurationAccessor.getConfiguration().
                 getInt(Key.PROCESSOR_DPI, FALLBACK_DPI);
     }
 

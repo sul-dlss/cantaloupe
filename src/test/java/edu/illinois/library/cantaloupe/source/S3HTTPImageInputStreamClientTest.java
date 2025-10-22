@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.source;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Range;
@@ -71,7 +72,7 @@ public class S3HTTPImageInputStreamClientTest extends BaseTest {
     }
 
     private static void configureS3Source() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.S3SOURCE_ENDPOINT, endpoint());
         config.setProperty(Key.S3SOURCE_ACCESS_KEY_ID, accessKeyID());
         config.setProperty(Key.S3SOURCE_SECRET_KEY, secretAccessKey());

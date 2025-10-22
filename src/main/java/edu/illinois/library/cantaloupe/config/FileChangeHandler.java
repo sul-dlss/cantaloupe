@@ -1,12 +1,13 @@
 package edu.illinois.library.cantaloupe.config;
 
-import edu.illinois.library.cantaloupe.logging.LoggerUtil;
-import edu.illinois.library.cantaloupe.util.FilesystemWatcher;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
+import edu.illinois.library.cantaloupe.logging.LoggerUtil;
+import edu.illinois.library.cantaloupe.util.FilesystemWatcher;
 
 class FileChangeHandler implements FilesystemWatcher.Callback {
 
@@ -27,7 +28,7 @@ class FileChangeHandler implements FilesystemWatcher.Callback {
     }
 
     private void handle(Path path) {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         // If the ConfigurationProvider wraps any FileConfigurations, check
         // whether any of their files have changed.
         ((ConfigurationProvider) config).getWrappedConfigurations()

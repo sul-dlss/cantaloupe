@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.image.MetaIdentifier;
@@ -37,7 +38,7 @@ public abstract class IIIFResource extends AbstractResource {
         getResponse().setHeader("Vary",
                 "Accept, Accept-Charset, Accept-Encoding, Accept-Language, Origin");
         if (!getRequest().isBypassingCache()) {
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             if (config.getBoolean(Key.CLIENT_CACHE_ENABLED, false)) {
                 final List<String> directives = new ArrayList<>();
                 final String maxAge = config.getString(Key.CLIENT_CACHE_MAX_AGE, "");

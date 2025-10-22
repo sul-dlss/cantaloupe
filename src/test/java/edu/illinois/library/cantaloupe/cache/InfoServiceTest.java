@@ -1,6 +1,19 @@
 package edu.illinois.library.cantaloupe.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
@@ -10,14 +23,6 @@ import edu.illinois.library.cantaloupe.processor.MockFileProcessor;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InfoServiceTest extends BaseTest {
 
@@ -29,7 +34,7 @@ public class InfoServiceTest extends BaseTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
 
         InfoService.clearInstance();
@@ -37,7 +42,7 @@ public class InfoServiceTest extends BaseTest {
     }
 
     private FileProcessor newFileProcessor() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.PROCESSOR_SELECTION_STRATEGY,
                 "ManualSelectionStrategy");
         config.setProperty(Key.PROCESSOR_FALLBACK, "Java2dProcessor");
@@ -58,7 +63,7 @@ public class InfoServiceTest extends BaseTest {
 
     private void useFilesystemCache() {
         try {
-            Configuration config = Configuration.getInstance();
+            Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.DERIVATIVE_CACHE_ENABLED, true);
             config.setProperty(Key.DERIVATIVE_CACHE, "FilesystemCache");
             config.setProperty(Key.FILESYSTEMCACHE_PATHNAME,
@@ -174,7 +179,7 @@ public class InfoServiceTest extends BaseTest {
 
     @Test
     void testIsObjectCacheEnabled() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.INFO_CACHE_ENABLED, true);
         assertTrue(instance.isObjectCacheEnabled());
 

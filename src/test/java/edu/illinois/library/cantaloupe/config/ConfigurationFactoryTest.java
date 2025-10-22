@@ -19,7 +19,7 @@ public class ConfigurationFactoryTest extends BaseTest {
         System.setProperty(ConfigurationFactory.CONFIG_VM_ARGUMENT, "memory");
 
         ConfigurationProvider provider =
-                (ConfigurationProvider) Configuration.getInstance();
+                (ConfigurationProvider) ConfigurationAccessor.getConfiguration();
         assertTrue(provider.getWrappedConfigurations().get(0) instanceof MapConfiguration);
     }
 
@@ -28,7 +28,7 @@ public class ConfigurationFactoryTest extends BaseTest {
         System.setProperty(ConfigurationFactory.CONFIG_VM_ARGUMENT, "bogus");
 
         ConfigurationProvider provider =
-                (ConfigurationProvider) Configuration.getInstance();
+                (ConfigurationProvider) ConfigurationAccessor.getConfiguration();
         assertTrue(provider.getWrappedConfigurations().get(0) instanceof EnvironmentConfiguration);
         assertTrue(provider.getWrappedConfigurations().get(1) instanceof HeritablePropertiesConfiguration);
     }

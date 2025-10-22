@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.operation;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Compression;
@@ -242,7 +243,7 @@ public final class OperationList implements Iterable<Operation> {
             }
         }
 
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         final Dimension sourceImageSize = info.getSize(this.getPageIndex());
 
         // If the source image has a different orientation, adjust any Crop
@@ -820,7 +821,7 @@ public final class OperationList implements Iterable<Operation> {
         // Ensure that the resulting pixel area is less than or equal to the
         // max allowed area, unless the processing is a no-op.
         final long maxAllowedSize =
-                Configuration.getInstance().getLong(Key.MAX_PIXELS, 0);
+                ConfigurationAccessor.getConfiguration().getLong(Key.MAX_PIXELS, 0);
         if (maxAllowedSize > 0 && hasEffect(fullSize, sourceFormat) &&
                 resultingSize.area() > maxAllowedSize) {
             throw new IllegalSizeException();

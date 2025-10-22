@@ -1,15 +1,8 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import com.google.protobuf.ByteString;
-import edu.illinois.library.cantaloupe.async.ThreadPool;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.ConfigurationException;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static edu.illinois.library.cantaloupe.config.Key.HEAPCACHE_PATHNAME;
+import static edu.illinois.library.cantaloupe.config.Key.HEAPCACHE_PERSIST;
+import static edu.illinois.library.cantaloupe.config.Key.HEAPCACHE_TARGET_SIZE;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,7 +26,19 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static edu.illinois.library.cantaloupe.config.Key.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.ByteString;
+
+import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.ConfigurationException;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.util.StringUtils;
 
 /**
  * <p>Heap-based LRU cache.</p>
@@ -380,7 +385,7 @@ class HeapCache implements DerivativeCache {
      *         of {@literal null} if it is not set.
      */
     private Path getPath() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         String pathname = config.getString(HEAPCACHE_PATHNAME);
         if (pathname != null) {
             return Paths.get(pathname);
@@ -394,7 +399,7 @@ class HeapCache implements DerivativeCache {
      *                                invalid.
      */
     long getTargetByteSize() throws ConfigurationException {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         String humanSize = config.getString(HEAPCACHE_TARGET_SIZE);
         if (humanSize != null && !humanSize.isEmpty()) {
             long size = StringUtils.toByteSize(humanSize);
@@ -433,7 +438,7 @@ class HeapCache implements DerivativeCache {
      *         not set.
      */
     boolean isPersistenceEnabled() {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         return config.getBoolean(HEAPCACHE_PERSIST, false);
     }
 

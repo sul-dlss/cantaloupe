@@ -1,25 +1,18 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.operation.ColorTransform;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.operation.CropToSquare;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.Rotate;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
-import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import edu.illinois.library.cantaloupe.util.DeletingFileVisitor;
-import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.derivativeImageFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.derivativeImageTempFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.hashedPathFragment;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.infoFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.infoTempFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.sourceImageFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.sourceImageTempFile;
+import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.assertRecursiveFileCount;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +24,28 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static edu.illinois.library.cantaloupe.cache.FilesystemCache.*;
-import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.assertRecursiveFileCount;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.operation.ColorTransform;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.CropToSquare;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.Rotate;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
+import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
+import edu.illinois.library.cantaloupe.test.TestUtil;
+import edu.illinois.library.cantaloupe.util.DeletingFileVisitor;
+import edu.illinois.library.cantaloupe.util.StringUtils;
 
 public class FilesystemCacheTest extends AbstractCacheTest {
 
@@ -69,7 +80,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Override
     FilesystemCache newInstance() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMCACHE_DIRECTORY_DEPTH, 3);
         config.setProperty(Key.FILESYSTEMCACHE_DIRECTORY_NAME_LENGTH, 2);
         config.setProperty(Key.FILESYSTEMCACHE_PATHNAME,
@@ -92,7 +103,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
     @Test
     void testHashedPathFragment() {
         // depth = 2, length = 3
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.FILESYSTEMCACHE_DIRECTORY_DEPTH, 2);
         config.setProperty(Key.FILESYSTEMCACHE_DIRECTORY_NAME_LENGTH, 3);
         assertEquals(
@@ -106,7 +117,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testDerivativeImageFile() {
-        String pathname = Configuration.getInstance().
+        String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
 
         Identifier identifier = new Identifier("cats_~!@#$%^&*()");
@@ -128,7 +139,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testDerivativeImageTempFile() {
-        String pathname = Configuration.getInstance().
+        String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
 
         Identifier identifier    = new Identifier("cats_~!@#$%^&*()");
@@ -153,7 +164,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testInfoFile() {
-        final String pathname = Configuration.getInstance().
+        final String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
         final Identifier identifier = new Identifier("cats_~!@#$%^&*()");
         final Path expected = Paths.get(
@@ -166,7 +177,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testInfoTempFile() {
-        final String pathname = Configuration.getInstance().
+        final String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
         final Identifier identifier = new Identifier("cats_~!@#$%^&*()");
         final Path expected = Paths.get(
@@ -180,7 +191,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testSourceImageFile() {
-        final String pathname = Configuration.getInstance().
+        final String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
         final Identifier identifier = new Identifier("cats_~!@#$%^&*()");
         final Path expected = Paths.get(
@@ -193,7 +204,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testSourceImageTempFile() {
-        final String pathname = Configuration.getInstance().
+        final String pathname = ConfigurationAccessor.getConfiguration().
                 getString(Key.FILESYSTEMCACHE_PATHNAME);
         final Identifier identifier = new Identifier("cats_~!@#$%^&*()");
         final Path expected = Paths.get(
@@ -343,7 +354,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetSourceImageFileWithZeroTTL() throws Exception {
-        Configuration.getInstance().setProperty(Key.SOURCE_CACHE_TTL, 0);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SOURCE_CACHE_TTL, 0);
 
         Identifier identifier = new Identifier("cats");
         assertFalse(instance.getSourceImageFile(identifier).isPresent());
@@ -356,7 +367,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
 
     @Test
     void testGetSourceImageFileWithNonzeroTTL() throws Exception {
-        Configuration.getInstance().setProperty(Key.SOURCE_CACHE_TTL, 1);
+        ConfigurationAccessor.getConfiguration().setProperty(Key.SOURCE_CACHE_TTL, 1);
 
         Identifier identifier = new Identifier("cats");
         Path cacheFile = sourceImageFile(identifier);
@@ -510,7 +521,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
     @Override
     @Test
     void testPurgeInvalid() throws Exception {
-        final Configuration config = Configuration.getInstance();
+        final Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SOURCE_CACHE_TTL, 1);
         config.setProperty(Key.DERIVATIVE_CACHE_TTL, 1);
 

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v2;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.ResourceTest;
@@ -29,7 +30,7 @@ public class IdentifierResourceTest extends ResourceTest {
 
     @Test
     void testGETRedirectToInfoJSONWithEncodedCharacters() {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.SLASH_SUBSTITUTE, "`");
 
         URI fromURI = getHTTPURI("/subfolder%60" + IMAGE);

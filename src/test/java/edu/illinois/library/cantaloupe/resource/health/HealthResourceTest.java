@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.health;
 
 import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Client;
@@ -26,7 +27,7 @@ public class HealthResourceTest extends ResourceTest {
         super.setUp();
         HealthChecker.getSourceUsages().clear();
         HealthChecker.overrideHealth(null);
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEALTH_ENDPOINT_ENABLED, true);
         client = newClient("");
     }
@@ -38,7 +39,7 @@ public class HealthResourceTest extends ResourceTest {
 
     @Test
     void testGETWithEndpointDisabled() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEALTH_ENDPOINT_ENABLED, false);
         try {
             client.send();
@@ -54,7 +55,7 @@ public class HealthResourceTest extends ResourceTest {
      */
     @Test
     void testGETWithNoPriorImageRequest() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, true);
 
         Response response = client.send();
@@ -63,7 +64,7 @@ public class HealthResourceTest extends ResourceTest {
 
     @Test
     void testGETWithPriorImageRequest() throws Exception {
-        Configuration config = Configuration.getInstance();
+        Configuration config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.API_ENABLED, true);
 
         // Request an image
@@ -86,7 +87,7 @@ public class HealthResourceTest extends ResourceTest {
 
     @Test
     void testGETWithYellowStatus() throws Exception {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEALTH_DEPENDENCY_CHECK, true);
         config.setProperty(Key.API_ENABLED, true);
 
@@ -104,7 +105,7 @@ public class HealthResourceTest extends ResourceTest {
 
     @Test
     void testGETWithRedStatus() throws Exception {
-        var config = Configuration.getInstance();
+        var config = ConfigurationAccessor.getConfiguration();
         config.setProperty(Key.HEALTH_DEPENDENCY_CHECK, true);
         config.setProperty(Key.API_ENABLED, true);
 

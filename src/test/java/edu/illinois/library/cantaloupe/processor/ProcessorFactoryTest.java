@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
@@ -92,7 +93,7 @@ public class ProcessorFactoryTest extends BaseTest {
 
     @Test
     void testNewProcessorWithFormatWithUnknownFormat() {
-        Configuration.getInstance().setProperty(Key.PROCESSOR_FALLBACK,
+        ConfigurationAccessor.getConfiguration().setProperty(Key.PROCESSOR_FALLBACK,
                 Java2dProcessor.class.getSimpleName());
         assertThrows(SourceFormatException.class,
                 () -> instance.newProcessor(Format.UNKNOWN));

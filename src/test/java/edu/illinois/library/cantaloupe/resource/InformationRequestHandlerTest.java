@@ -2,6 +2,7 @@ package edu.illinois.library.cantaloupe.resource;
 
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.cache.DerivativeCache;
+import edu.illinois.library.cantaloupe.config.ConfigurationAccessor;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.*;
@@ -56,7 +57,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     @Test
     void testHandleCallsAuthorizationCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -75,7 +76,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     @Test
     void testHandleCallsSourceAccessedCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -93,7 +94,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     @Test
     void testHandleCallsAvailableOutputFormatsCallback() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -111,7 +112,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     @Test
     void testHandleReturnsInstanceFromDerivativeCache() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -148,7 +149,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     void testHandleSetsRequestContextKeysBeforeReturningInstanceFromDerivativeCache()
             throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.CACHE_SERVER_RESOLVE_FIRST, false);
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
@@ -188,7 +189,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     @Test
     void testHandleReturnsInstanceFromProcessor() throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
@@ -207,7 +208,7 @@ public class InformationRequestHandlerTest extends BaseTest {
     void testHandleSetsRequestContextPageCountBeforeReturningInstanceFromProcessor()
             throws Exception {
         {   // Configure the application.
-            final Configuration config = Configuration.getInstance();
+            final Configuration config = ConfigurationAccessor.getConfiguration();
             config.setProperty(Key.SOURCE_STATIC, "FilesystemSource");
             config.setProperty(Key.FILESYSTEMSOURCE_PATH_PREFIX,
                     TestUtil.getImagesPath() + "/");
