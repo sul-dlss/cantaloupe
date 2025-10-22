@@ -1,5 +1,13 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Method;
@@ -14,24 +22,16 @@ import edu.illinois.library.cantaloupe.operation.Scale;
 import edu.illinois.library.cantaloupe.operation.ValidationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.resource.IllegalClientArgumentException;
-import edu.illinois.library.cantaloupe.resource.Route;
-import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.ResourceException;
-import edu.illinois.library.cantaloupe.resource.iiif.SizeRestrictedException;
-import edu.illinois.library.cantaloupe.source.StatResult;
-import edu.illinois.library.cantaloupe.resource.iiif.ImageDisposition;
+import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
+import edu.illinois.library.cantaloupe.resource.iiif.ImageDisposition;
 import edu.illinois.library.cantaloupe.resource.iiif.ScaleValidator;
 import  edu.illinois.library.cantaloupe.resource.iiif.SizeConstrainer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import edu.illinois.library.cantaloupe.resource.iiif.SizeRestrictedException;
+import edu.illinois.library.cantaloupe.source.StatResult;
 
 /**
  * Handles image requests.
@@ -79,9 +79,9 @@ public class ImageResource extends IIIF3Resource {
         // Convert it into an OperationList.
         final OperationList ops = params.toOperationList(
                 getRequest().getDelegateProxy(), getMaxScale());
-        ops.setPageIndex(getPageIndex());
+        final int pageIndex = getRequest().getPageIndex();
+        ops.setPageIndex(pageIndex);
         ops.getOptions().putAll(getRequest().getReference().getQuery().toMap());
-        final int pageIndex = getPageIndex();
         final String disposition = ImageDisposition.getRepresentationDisposition(
                 getRequest(), ops.getMetaIdentifier().toString(), ops.getOutputFormat());
 

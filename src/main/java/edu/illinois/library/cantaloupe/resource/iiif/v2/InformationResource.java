@@ -8,21 +8,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.script.ScriptException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Status;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
+import edu.illinois.library.cantaloupe.resource.InformationRequestHandler;
 import edu.illinois.library.cantaloupe.resource.JacksonRepresentation;
 import edu.illinois.library.cantaloupe.resource.ResourceException;
 import edu.illinois.library.cantaloupe.resource.Route;
 import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
-import edu.illinois.library.cantaloupe.resource.InformationRequestHandler;
 import edu.illinois.library.cantaloupe.source.StatResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.script.ScriptException;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -159,7 +160,7 @@ public class InformationResource extends IIIF2Resource {
                 availableOutputFormats,
                 getImageURI(),
                 info,
-                getPageIndex(),
+                getRequest().getPageIndex(),
                 getRequest().getMetaIdentifier().getScaleConstraint());
         return new JacksonRepresentation(iiifInfo);
     }
