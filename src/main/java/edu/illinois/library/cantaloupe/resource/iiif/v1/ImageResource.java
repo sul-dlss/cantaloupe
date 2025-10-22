@@ -1,6 +1,14 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Status;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -13,18 +21,10 @@ import edu.illinois.library.cantaloupe.operation.Scale;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.ResourceException;
-import edu.illinois.library.cantaloupe.source.StatResult;
-import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.resource.iiif.IIIFAuth;
-import edu.illinois.library.cantaloupe.resource.iiif.ScaleValidator;
 import edu.illinois.library.cantaloupe.resource.iiif.ImageDisposition;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import edu.illinois.library.cantaloupe.resource.iiif.ScaleValidator;
+import edu.illinois.library.cantaloupe.source.StatResult;
 
 /**
  * Handles IIIF Image API 1.1 image requests.
@@ -105,7 +105,7 @@ public class ImageResource extends IIIF1Resource {
             @Override
             public void willProcessImage(Processor processor,
                                          Info info) throws Exception {
-                final Dimension fullSize = info.getSize(getPageIndex());
+                final Dimension fullSize = info.getSize(getRequest().getPageIndex());
                 ScaleValidator.validateScale(info.getMetadata().getOrientation().adjustedSize(fullSize),
                         (Scale) opList.getFirst(Scale.class),
                         Status.FORBIDDEN,
@@ -162,7 +162,7 @@ public class ImageResource extends IIIF1Resource {
                 args.get(3), args.get(4), outputFormat);
 
         final OperationList ops = params.toOperationList(getRequest().getDelegateProxy());
-        ops.setPageIndex(getPageIndex());
+        ops.setPageIndex(getRequest().getPageIndex());
         ops.getOptions().putAll(getRequest().getReference().getQuery().toMap());
         return ops;
     }
