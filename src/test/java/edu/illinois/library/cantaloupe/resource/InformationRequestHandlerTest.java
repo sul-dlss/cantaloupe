@@ -129,7 +129,7 @@ public class InformationRequestHandlerTest extends BaseTest {
         DerivativeCache cache = facade.getDerivativeCache().orElseThrow();
         Info info = Info.builder()
                 .withSize(64, 48)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withIdentifier(identifier)
                 .withMetadata(metadata)
                 .build();
@@ -169,7 +169,7 @@ public class InformationRequestHandlerTest extends BaseTest {
         DerivativeCache cache = facade.getDerivativeCache().orElseThrow();
         Info info = Info.builder()
                 .withSize(64, 48)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withIdentifier(identifier)
                 .withMetadata(metadata)
                 .build();

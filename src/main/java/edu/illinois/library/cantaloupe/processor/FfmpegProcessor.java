@@ -1,23 +1,5 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.async.ThreadPool;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.ValidationException;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFacade;
-import edu.illinois.library.cantaloupe.util.CommandLocator;
-import edu.illinois.library.cantaloupe.util.TimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +14,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.async.ThreadPool;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.ValidationException;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFacade;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
+import edu.illinois.library.cantaloupe.util.CommandLocator;
+import edu.illinois.library.cantaloupe.util.TimeUtils;
 
 /**
  * Processor using the {@literal ffmpeg} command-line tool to extract video
@@ -93,7 +95,8 @@ class FfmpegProcessor extends AbstractProcessor implements FileProcessor {
         initializationError = null;
     }
 
-    FfmpegProcessor() {
+    FfmpegProcessor(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
         if (!IS_INITIALIZATION_ATTEMPTED.get()) {
             initialize();
         }
@@ -107,7 +110,7 @@ class FfmpegProcessor extends AbstractProcessor implements FileProcessor {
     public Set<Format> getAvailableOutputFormats() {
         final Set<Format> outputFormats;
         if (getSourceFormat().isVideo()) {
-            outputFormats = ImageWriterFactory.supportedFormats();
+            outputFormats = ImageWriterFactory.supportedFormats(formatRegistry);
         } else {
             outputFormats = Collections.unmodifiableSet(Collections.emptySet());
         }
@@ -145,8 +148,8 @@ class FfmpegProcessor extends AbstractProcessor implements FileProcessor {
                 ThreadPool.getInstance().submit(
                         new StreamCopier(processErrorStream, errorBucket));
 
-                final ImageReader reader = new ImageReaderFactory().newImageReader(
-                        Format.get("bmp"), processInputStream);
+                final ImageReader reader = new ImageReaderFactory(formatRegistry).newImageReader(
+                        formatRegistry.formatWithKey("bmp"), processInputStream);
                 try {
                     BufferedImage image = reader.read(0);
                     image = Java2DPostProcessor.postProcess(
@@ -154,7 +157,8 @@ class FfmpegProcessor extends AbstractProcessor implements FileProcessor {
                     ImageWriterFacade.write(
                             image,
                             (Encode) opList.getFirst(Encode.class),
-                            outputStream);
+                            outputStream,
+                            formatRegistry);
                     final int code = process.waitFor();
                     if (code != 0) {
                         LOGGER.error("{} returned with code {}",

@@ -154,9 +154,9 @@ public class FilesystemSourceTest extends AbstractSourceTest {
 
         FilesystemSource.FormatIterator<Format> it =
                 instance.getFormatIterator();
-        assertEquals(Format.get("png"), it.next()); // object key
-        assertEquals(Format.get("png"), it.next()); // identifier extension
-        assertEquals(Format.get("jpg"), it.next()); // magic bytes
+        assertEquals(formatRegistry.formatWithKey("png"), it.next()); // object key
+        assertEquals(formatRegistry.formatWithKey("png"), it.next()); // identifier extension
+        assertEquals(formatRegistry.formatWithKey("jpg"), it.next()); // magic bytes
         assertThrows(NoSuchElementException.class, it::next);
     }
 

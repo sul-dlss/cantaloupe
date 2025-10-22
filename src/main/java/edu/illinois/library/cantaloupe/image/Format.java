@@ -1,12 +1,10 @@
 package edu.illinois.library.cantaloupe.image;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.illinois.library.cantaloupe.source.Source;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * <p>Image/file format.</p>
@@ -47,77 +45,18 @@ public final class Format implements Comparable<Format> {
     /**
      * @return All known formats.
      */
-    public static Set<Format> all() {
-        return FormatRegistry.allFormats();
-    }
+    // public static Set<Format> all() {
+    //     return null;//FormatRegistry.allFormats();
+    // }
 
     /**
      * @param key One of the keys in {@literal formats.yml}.
      * @return    Instance corresponding to the given argument, or {@code null}
      *            if no such format exists.
      */
-    public static Format get(String key) {
-        return FormatRegistry.formatWithKey(key);
-    }
-
-    /**
-     * <p>Attempts to infer a format from the given identifier.</p>
-     *
-     * <p>It is usually more reliable (but also maybe more expensive) to
-     * obtain this information from {@link Source#getFormatIterator()}.</p>
-     *
-     * @param identifier
-     * @return The source format corresponding to the given identifier,
-     *         assuming that its value will have a recognizable filename
-     *         extension. If not, {@link #UNKNOWN} is returned.
-     */
-    public static Format inferFormat(Identifier identifier) {
-        return inferFormat(identifier.toString());
-    }
-
-    /**
-     * <p>Attempts to infer a format from the given pathname.</p>
-     *
-     * <p>It is usually more reliable (but also maybe more expensive) to
-     * obtain this information from {@link Source#getFormatIterator()}.</p>
-     *
-     * @param pathname
-     * @return The source format corresponding to the given identifier,
-     *         assuming that its value will have a recognizable filename
-     *         extension. If not, {@link #UNKNOWN} is returned.
-     */
-    public static Format inferFormat(String pathname) {
-        String extension = null;
-        int i = pathname.lastIndexOf('.');
-        if (i > 0) {
-            extension = pathname.substring(i + 1);
-        }
-        if (extension != null) {
-            extension = extension.toLowerCase();
-            for (Format format : Format.all()) {
-                if (format.getExtensions().contains(extension)) {
-                    return format;
-                }
-            }
-        }
-        return Format.UNKNOWN;
-    }
-
-    /**
-     * @return Format in the {@link FormatRegistry registry} with the given
-     *         extension.
-     */
-    public static Format withExtension(String extension) {
-        if (extension.startsWith(".")) {
-            extension = extension.substring(1);
-        }
-        final String lcext = extension.toLowerCase();
-        return all()
-                .stream()
-                .filter(f -> f.getExtensions().contains(lcext))
-                .findAny()
-                .orElse(null);
-    }
+    // public static Format get(String key) {
+    //     return null; //FormatRegistry.formatWithKey(key);
+    // }
 
     /**
      * No-op constructor needed by Jackson.

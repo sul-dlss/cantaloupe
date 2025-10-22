@@ -1,9 +1,32 @@
 package edu.illinois.library.cantaloupe.processor.codec.jpeg;
 
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_ColorSpace;
+import java.awt.color.ICC_Profile;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.imageio.IIOException;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Rectangle;
 import edu.illinois.library.cantaloupe.image.ScaleConstraint;
 import edu.illinois.library.cantaloupe.operation.Crop;
@@ -15,26 +38,6 @@ import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
 import edu.illinois.library.cantaloupe.source.stream.BufferedImageInputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.imageio.IIOException;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.image.BufferedImage;
-import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
-import java.awt.color.ICC_Profile;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Set;
 
 public final class JPEGImageReader extends AbstractIIOImageReader
         implements ImageReader {
@@ -44,6 +47,11 @@ public final class JPEGImageReader extends AbstractIIOImageReader
 
     static final String IMAGEIO_PLUGIN_CONFIG_KEY =
             "processor.imageio.jpg.reader";
+
+    private final FormatRegistry formatRegistry;
+    public JPEGImageReader(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     /**
      * N.B.: This file must exist in the resource bundle.
@@ -80,7 +88,7 @@ public final class JPEGImageReader extends AbstractIIOImageReader
 
     @Override
     protected Format getFormat() {
-        return Format.get("jpg");
+        return formatRegistry.formatWithKey("jpg");
     }
 
     @Override

@@ -1,17 +1,19 @@
 package edu.illinois.library.cantaloupe.operation;
 
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.image.ScaleConstraint;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.image.ScaleConstraint;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class EncodeTest extends BaseTest {
 
@@ -20,7 +22,7 @@ public class EncodeTest extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        instance = new Encode(Format.get("jpg"));
+        instance = new Encode(formatRegistry.formatWithKey("jpg"));
         assertEquals(8, instance.getMaxComponentSize());
     }
 
@@ -61,7 +63,7 @@ public class EncodeTest extends BaseTest {
     void setFormatWhenFrozenThrowsException() {
         instance.freeze();
         assertThrows(IllegalStateException.class,
-                () -> instance.setFormat(Format.get("png")));
+                () -> instance.setFormat(formatRegistry.formatWithKey("png")));
     }
 
     @Test
@@ -146,7 +148,7 @@ public class EncodeTest extends BaseTest {
         assertEquals("Encode", map.get("class"));
         assertEquals("#0000FF", map.get("background_color"));
         assertEquals(Compression.JPEG.toString(), map.get("compression"));
-        assertEquals(Format.get("jpg").getPreferredMediaType(), map.get("format"));
+        assertEquals(formatRegistry.formatWithKey("jpg").getPreferredMediaType(), map.get("format"));
         assertTrue((boolean) map.get("interlace"));
         assertEquals(50, map.get("quality"));
         assertEquals(10, map.get("max_sample_size"));

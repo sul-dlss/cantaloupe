@@ -1,17 +1,12 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,8 +15,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 abstract class AbstractCacheTest extends BaseTest {
 
@@ -120,7 +125,7 @@ abstract class AbstractCacheTest extends BaseTest {
 
         OperationList opList = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Path imageFile = TestUtil.getImage(IMAGE);
 
@@ -150,7 +155,7 @@ abstract class AbstractCacheTest extends BaseTest {
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Path fixture = TestUtil.getImage(IMAGE);
 
@@ -193,7 +198,7 @@ abstract class AbstractCacheTest extends BaseTest {
         final DerivativeCache instance = newInstance();
         final OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         new ConcurrentReaderWriter(() -> {
@@ -223,7 +228,7 @@ abstract class AbstractCacheTest extends BaseTest {
         final DerivativeCache instance = newInstance();
         final OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         final Path fixture = TestUtil.getImage("jpg");
 
@@ -255,7 +260,7 @@ abstract class AbstractCacheTest extends BaseTest {
         final DerivativeCache instance = newInstance();
         final OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         final Path fixture = TestUtil.getImage("jpg");
 
@@ -293,7 +298,7 @@ abstract class AbstractCacheTest extends BaseTest {
         Identifier identifier = new Identifier(IMAGE);
         OperationList opList = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info = new Info();
 
@@ -348,7 +353,7 @@ abstract class AbstractCacheTest extends BaseTest {
 
         final OperationList opList1 = OperationList.builder()
                 .withIdentifier(id1)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         try (CompletableOutputStream os =
                      instance.newDerivativeImageOutputStream(opList1)) {
@@ -361,7 +366,7 @@ abstract class AbstractCacheTest extends BaseTest {
         final Identifier id2        = new Identifier("dogs");
         final OperationList opList2 = OperationList.builder()
                 .withIdentifier(id2)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         try (CompletableOutputStream os =
                      instance.newDerivativeImageOutputStream(opList2)) {
@@ -401,7 +406,7 @@ abstract class AbstractCacheTest extends BaseTest {
         // Seed a derivative image
         OperationList ops1 = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         try (CompletableOutputStream os =
                      instance.newDerivativeImageOutputStream(ops1)) {
@@ -412,7 +417,7 @@ abstract class AbstractCacheTest extends BaseTest {
         // Seed another derivative image
         OperationList ops2 = OperationList.builder()
                 .withIdentifier(new Identifier("dogs"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         try (CompletableOutputStream os =
                      instance.newDerivativeImageOutputStream(ops2)) {
@@ -440,7 +445,7 @@ abstract class AbstractCacheTest extends BaseTest {
         Identifier identifier    = new Identifier(IMAGE);
         OperationList opList     = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info = new Info();
 
@@ -487,7 +492,7 @@ abstract class AbstractCacheTest extends BaseTest {
         Identifier id1           = new Identifier(IMAGE);
         OperationList ops1       = OperationList.builder()
                 .withIdentifier(id1)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info1 = new Info();
         Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
@@ -514,7 +519,7 @@ abstract class AbstractCacheTest extends BaseTest {
         Path fixture2 = TestUtil.getImage("gif-rgb-64x56x8.gif");
         OperationList ops2 = OperationList.builder()
                 .withIdentifier(new Identifier(fixture2.getFileName().toString()))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         try (CompletableOutputStream outputStream =

@@ -1,6 +1,14 @@
 package edu.illinois.library.cantaloupe.processor.codec;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.Set;
+
+import javax.imageio.stream.ImageInputStream;
+
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.processor.codec.bmp.BMPImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.gif.GIFImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.jpeg.JPEGImageReader;
@@ -10,42 +18,42 @@ import edu.illinois.library.cantaloupe.processor.codec.xpm.XPMImageReader;
 import edu.illinois.library.cantaloupe.source.StreamFactory;
 import edu.illinois.library.cantaloupe.source.stream.ClosingMemoryCacheImageInputStream;
 
-import javax.imageio.stream.ImageInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Set;
-
 /**
  * Used for obtaining {@link ImageReader} instances.
  */
 public final class ImageReaderFactory {
-
-    private static final Set<Format> SUPPORTED_FORMATS = Set.of(
-            Format.get("bmp"), Format.get("gif"), Format.get("jpg"),
-            Format.get("png"), Format.get("tif"), Format.get("xpm"));
+    private FormatRegistry formatRegistry;
+    public ImageReaderFactory(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     /**
      * @return Map of available output formats for all known source formats,
      *         based on information reported by ImageIO.
      */
-    public static Set<Format> supportedFormats() {
-        return SUPPORTED_FORMATS;
+    public static Set<Format> supportedFormats(FormatRegistry formatRegistry) {
+        return Set.of(
+            formatRegistry.formatWithKey("bmp"),
+            formatRegistry.formatWithKey("gif"),
+            formatRegistry.formatWithKey("jpg"),
+            formatRegistry.formatWithKey("png"),
+            formatRegistry.formatWithKey("tif"),
+            formatRegistry.formatWithKey("xpm"));
     }
 
     public ImageReader newImageReader(Format format) {
-        if (Format.get("bmp").equals(format)) {
-            return new BMPImageReader();
-        } else if (Format.get("gif").equals(format)) {
-            return new GIFImageReader();
-        } else if (Format.get("jpg").equals(format)) {
-            return new JPEGImageReader();
-        } else if (Format.get("png").equals(format)) {
-            return new PNGImageReader();
-        } else if (Format.get("tif").equals(format)) {
-            return new TIFFImageReader();
-        } else if (Format.get("xpm").equals(format)) {
-            return new XPMImageReader();
+        if (formatRegistry.formatWithKey("bmp").equals(format)) {
+            return new BMPImageReader(formatRegistry);
+        } else if (formatRegistry.formatWithKey("gif").equals(format)) {
+            return new GIFImageReader(formatRegistry);
+        } else if (formatRegistry.formatWithKey("jpg").equals(format)) {
+            return new JPEGImageReader(formatRegistry);
+        } else if (formatRegistry.formatWithKey("png").equals(format)) {
+            return new PNGImageReader(formatRegistry);
+        } else if (formatRegistry.formatWithKey("tif").equals(format)) {
+            return new TIFFImageReader(formatRegistry);
+        } else if (formatRegistry.formatWithKey("xpm").equals(format)) {
+            return new XPMImageReader(formatRegistry);
         }
         throw new IllegalArgumentException("Unsupported format: " + format);
     }

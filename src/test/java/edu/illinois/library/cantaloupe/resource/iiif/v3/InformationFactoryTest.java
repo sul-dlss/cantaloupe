@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class InformationFactoryTest extends BaseTest {
 
     private static final Set<Format> PROCESSOR_FORMATS =
-            Set.of(Format.get("gif"), Format.get("jpg"), Format.get("png"));
+            Set.of(formatRegistry.formatWithKey("gif"), formatRegistry.formatWithKey("jpg"), formatRegistry.formatWithKey("png"));
 
     private InformationFactory instance;
 

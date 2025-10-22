@@ -1,17 +1,21 @@
 package edu.illinois.library.cantaloupe.test;
 
-import edu.illinois.library.cantaloupe.Application;
-import edu.illinois.library.cantaloupe.cache.CacheFacade;
-import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.cache.CacheFacade;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+
 /**
  * Base class for all tests.
  */
 public abstract class BaseTest {
+    protected FormatRegistry formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
 
     static {
         // Suppress a Dock icon and annoying Space transition in full-screen

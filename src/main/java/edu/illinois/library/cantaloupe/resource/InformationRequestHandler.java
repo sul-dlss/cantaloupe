@@ -1,5 +1,20 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.cache.CacheFacade;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
@@ -14,20 +29,6 @@ import edu.illinois.library.cantaloupe.processor.SourceFormatException;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import edu.illinois.library.cantaloupe.source.StatResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.Future;
 
 /**
  * <p>High-level information request handler. Use the return value of {@link
@@ -216,7 +217,7 @@ public class InformationRequestHandler extends AbstractRequestHandler
             final Format format = formatIterator.next();
             // Obtain an instance of the processor assigned to this format.
             String processorName = "unknown processor";
-            try (Processor processor = new ProcessorFactory().newProcessor(format)) {
+            try (Processor processor = new ProcessorFactory(formatRegistry).newProcessor(format)) {
                 processorName = processor.getClass().getSimpleName();
                 // Connect it to the source.
                 tempFileFuture = new ProcessorConnector().connect(

@@ -1,15 +1,16 @@
 package edu.illinois.library.cantaloupe.processor.codec;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.processor.codec.jpeg.TurboJPEGImageWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.processor.codec.jpeg.TurboJPEGImageWriter;
 
 /**
  * Facade class for writing images without having to know what writer to use
@@ -29,8 +30,9 @@ public final class ImageWriterFacade {
      */
     public static void write(BufferedImage image,
                              Encode encode,
-                             OutputStream outputStream) throws IOException {
-        if (Format.get("jpg").equals(encode.getFormat()) &&
+                             OutputStream outputStream,
+                             FormatRegistry formatRegistry) throws IOException {
+        if (formatRegistry.formatWithKey("jpg").equals(encode.getFormat()) &&
                 TurboJPEGImageWriter.isTurboJPEGAvailable()) {
             LOGGER.debug("Writing with {}",
                     TurboJPEGImageWriter.class.getName());
@@ -44,7 +46,7 @@ public final class ImageWriterFacade {
             }
             writer.write(image, outputStream);
         } else {
-            ImageWriter writer = new ImageWriterFactory().newImageWriter(encode);
+            ImageWriter writer = new ImageWriterFactory(formatRegistry).newImageWriter(encode);
             LOGGER.debug("Writing with {}", writer.getClass().getName());
             writer.write(image, outputStream);
         }
@@ -57,12 +59,12 @@ public final class ImageWriterFacade {
      */
     public static void write(BufferedImageSequence sequence,
                              Encode encode,
-                             OutputStream outputStream) throws IOException {
-        ImageWriter writer = new ImageWriterFactory().newImageWriter(encode);
+                             OutputStream outputStream,
+                             FormatRegistry formatRegistry) throws IOException {
+        ImageWriter writer = new ImageWriterFactory(formatRegistry).newImageWriter(encode);
         LOGGER.debug("Writing with {}", writer.getClass().getName());
         writer.write(sequence, outputStream);
     }
-
-    private ImageWriterFacade() {}
+    private ImageWriterFacade() { }
 
 }

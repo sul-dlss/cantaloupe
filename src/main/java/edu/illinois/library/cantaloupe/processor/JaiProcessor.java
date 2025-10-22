@@ -1,33 +1,5 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.image.Orientation;
-import edu.illinois.library.cantaloupe.image.ScaleConstraint;
-import edu.illinois.library.cantaloupe.operation.ColorTransform;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.Operation;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.ReductionFactor;
-import edu.illinois.library.cantaloupe.operation.Rotate;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.operation.Sharpen;
-import edu.illinois.library.cantaloupe.operation.Transpose;
-import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriter;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
-import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.media.jai.Interpolation;
-import javax.media.jai.RenderedOp;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -36,6 +8,36 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+
+import javax.media.jai.Interpolation;
+import javax.media.jai.RenderedOp;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.image.Orientation;
+import edu.illinois.library.cantaloupe.image.ScaleConstraint;
+import edu.illinois.library.cantaloupe.operation.ColorTransform;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.Operation;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.ReductionFactor;
+import edu.illinois.library.cantaloupe.operation.Rotate;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.Sharpen;
+import edu.illinois.library.cantaloupe.operation.Transpose;
+import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriter;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
+import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
 
 /**
  * <p>Processor using the Java Advanced Imaging (JAI) library.</p>
@@ -61,7 +63,7 @@ class JaiProcessor extends AbstractImageIOProcessor
     @Override
     public Set<Format> getAvailableOutputFormats() {
         Set<Format> formats;
-        if (Format.get("gif").equals(getSourceFormat())) {
+        if (formatRegistry.formatWithKey("gif").equals(getSourceFormat())) {
             formats = Collections.emptySet();
         } else {
             formats = super.getAvailableOutputFormats();
@@ -71,9 +73,9 @@ class JaiProcessor extends AbstractImageIOProcessor
 
     @Override
     public boolean supportsSourceFormat(Format format) {
-        return ImageReaderFactory.supportedFormats().
+        return ImageReaderFactory.supportedFormats(formatRegistry).
                 stream().
-                filter(f -> !Format.get("gif").equals(f)).
+                filter(f -> !formatRegistry.formatWithKey("gif").equals(f)).
                 anyMatch(f -> f.equals(format));
     }
 
@@ -104,7 +106,7 @@ class JaiProcessor extends AbstractImageIOProcessor
                     RenderedOp.wrapRenderedImage(renderedImage));
 
             Encode encode = (Encode) opList.getFirst(Encode.class);
-            if (encode != null && !Format.get("gif").equals(outputFormat)) {
+            if (encode != null && !formatRegistry.formatWithKey("gif").equals(outputFormat)) {
                 renderedOp = JAIUtil.rescalePixels(renderedOp);
                 renderedOp = JAIUtil.reduceTo8Bits(renderedOp);
             }
@@ -149,7 +151,7 @@ class JaiProcessor extends AbstractImageIOProcessor
                            better than nothing.
                         2) otherwise, use the SubsampleAverage operation.
                         */
-                        if (Format.get("tif").equals(getSourceFormat()) &&
+                        if (formatRegistry.formatWithKey("tif").equals(getSourceFormat()) &&
                                 (!Compression.UNCOMPRESSED.equals(reader.getCompression(0)) &&
                                         !Compression.UNDEFINED.equals(reader.getCompression(0)))) {
                             LOGGER.debug("process(): detected compressed TIFF; " +
@@ -204,11 +206,11 @@ class JaiProcessor extends AbstractImageIOProcessor
             for (Operation op : opList) {
                 if (op instanceof Overlay && op.hasEffect(fullSize, opList)) {
                     image = renderedOp.getAsBufferedImage();
-                    Java2DUtil.applyOverlay(image, (Overlay) op);
+                    Java2DUtil.applyOverlay(image, (Overlay) op, formatRegistry);
                 }
             }
 
-            final ImageWriter writer = new ImageWriterFactory()
+            final ImageWriter writer = new ImageWriterFactory(formatRegistry)
                     .newImageWriter((Encode) opList.getFirst(Encode.class));
             if (image != null) {
                 writer.write(image, outputStream);

@@ -1,24 +1,8 @@
 package edu.illinois.library.cantaloupe.processor.codec.gif;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
-import edu.illinois.library.cantaloupe.processor.codec.BufferedImageSequence;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.NamedNodeMap;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.imageio.ImageIO;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataNode;
-import javax.imageio.stream.ImageInputStream;
-import javax.media.jai.PlanarImage;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +11,25 @@ import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.imageio.ImageIO;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
+import javax.media.jai.PlanarImage;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.NamedNodeMap;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
+import edu.illinois.library.cantaloupe.processor.codec.BufferedImageSequence;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class GIFImageWriterTest extends AbstractImageWriterTest {
 
@@ -72,7 +74,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
     @Override
     protected GIFImageWriter newInstance() {
         GIFImageWriter writer = new GIFImageWriter();
-        Encode encode = new Encode(Format.get("gif"));
+        Encode encode = new Encode(formatRegistry.formatWithKey("gif"));
         Metadata metadata = new Metadata();
         encode.setMetadata(metadata);
         writer.setEncode(encode);
@@ -127,7 +129,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
     @Test
     @Disabled // this writer doesn't support XMP metadata.
     public void testWriteWithBufferedImageWritesXMPMetadata()  throws Exception {
-        Encode encode = new Encode(Format.get("gif"));
+        Encode encode = new Encode(formatRegistry.formatWithKey("gif"));
         encode.setMetadata(metadata);
         instance.setEncode(encode);
         instance.write(bufferedImage, outputStream);
@@ -143,7 +145,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
     @Test
     @Disabled // this writer doesn't support XMP metadata.
     public void testWriteWithPlanarImageWritesXMPMetadata() throws Exception {
-        Encode encode = new Encode(Format.get("gif"));
+        Encode encode = new Encode(formatRegistry.formatWithKey("gif"));
         encode.setMetadata(metadata);
         instance.setEncode(encode);
         instance.write(planarImage, outputStream);
@@ -155,7 +157,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
         Path image = TestUtil.getImage("gif-animated-looping.gif");
         edu.illinois.library.cantaloupe.processor.codec.ImageReader reader = null;
         try {
-            reader = new ImageReaderFactory().newImageReader(Format.get("gif"), image);
+            reader = new ImageReaderFactory().newImageReader(formatRegistry.formatWithKey("gif"), image);
             BufferedImageSequence sequence = reader.readSequence();
 
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -165,7 +167,7 @@ public class GIFImageWriterTest extends AbstractImageWriterTest {
                     reader.dispose();
                     reader = null;
                     try {
-                        reader = new ImageReaderFactory().newImageReader(Format.get("gif"), is);
+                        reader = new ImageReaderFactory().newImageReader(formatRegistry.formatWithKey("gif"), is);
                         assertEquals(2, reader.getNumImages());
                     } finally {
                         if (reader != null) {

@@ -1,31 +1,34 @@
 package edu.illinois.library.cantaloupe.processor.codec.tiff;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.image.ScaleConstraint;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.operation.CropByPercent;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.operation.ReductionFactor;
-import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
-import edu.illinois.library.cantaloupe.processor.SourceFormatException;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
-
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataNode;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.NodeList;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.image.ScaleConstraint;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.CropByPercent;
+import edu.illinois.library.cantaloupe.operation.ReductionFactor;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
+import edu.illinois.library.cantaloupe.processor.SourceFormatException;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
 
 public final class TIFFImageReader extends AbstractIIOImageReader
         implements ImageReader {
@@ -39,6 +42,11 @@ public final class TIFFImageReader extends AbstractIIOImageReader
     static {
         // See: https://github.com/geosolutions-it/imageio-ext/wiki/TIFF-plugin
         System.setProperty("it.geosolutions.codec.tiff.lazy", "true");
+    }
+
+    private final FormatRegistry formatRegistry;
+    public TIFFImageReader(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
     }
 
     @Override
@@ -95,7 +103,7 @@ public final class TIFFImageReader extends AbstractIIOImageReader
 
     @Override
     protected Format getFormat() {
-        return Format.get("tif");
+        return formatRegistry.formatWithKey("tif");
     }
 
     @Override

@@ -22,7 +22,7 @@ class ComplianceLevelTest extends BaseTest {
         // add the set of level 1 features
         serviceFeatures.add(ServiceFeature.SIZE_BY_WHITELISTED);
         qualities.add(Quality.DEFAULT);
-        outputFormats.add(Format.get("jpg"));
+        outputFormats.add(formatRegistry.formatWithKey("jpg"));
         serviceFeatures.add(ServiceFeature.BASE_URI_REDIRECT);
         serviceFeatures.add(ServiceFeature.CORS);
         serviceFeatures.add(ServiceFeature.JSON_LD_MEDIA_TYPE);
@@ -33,7 +33,7 @@ class ComplianceLevelTest extends BaseTest {
         qualities.add(Quality.BITONAL);
         qualities.add(Quality.COLOR);
         qualities.add(Quality.GRAY);
-        outputFormats.add(Format.get("png"));
+        outputFormats.add(formatRegistry.formatWithKey("png"));
         assertEquals(ComplianceLevel.LEVEL_2,
                 ComplianceLevel.getLevel(serviceFeatures, outputFormats));
     }

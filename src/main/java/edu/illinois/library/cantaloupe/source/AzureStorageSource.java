@@ -1,20 +1,5 @@
 package edu.illinois.library.cantaloupe.source;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.MediaType;
-import edu.illinois.library.cantaloupe.delegate.DelegateMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.script.ScriptException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +10,24 @@ import java.security.InvalidKeyException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.script.ScriptException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateMethod;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.MediaType;
 
 /**
  * <p>Maps an identifier to a

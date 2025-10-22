@@ -10,7 +10,7 @@ public class OutputFormatTest extends BaseTest {
 
     @Test
     void testToFormat() {
-        assertEquals(Format.get("jpg"), OutputFormat.JPG.toFormat());
+        assertEquals(formatRegistry.formatWithKey("jpg"), OutputFormat.JPG.toFormat());
     }
 
     @Test

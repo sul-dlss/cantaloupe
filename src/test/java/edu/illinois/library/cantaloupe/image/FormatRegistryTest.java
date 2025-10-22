@@ -1,7 +1,8 @@
 package edu.illinois.library.cantaloupe.image;
 
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +11,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 class FormatRegistryTest extends BaseTest {
 
@@ -21,7 +25,7 @@ class FormatRegistryTest extends BaseTest {
         Set<String> expected = Set.of("avi", "bmp", "flv", "gif", "jp2", "jpg",
                 "mov", "mp4", "mpg", "pdf", "png", "tif", "webm", "webp",
                 "xpm");
-        Set<String> actual = FormatRegistry.allFormats()
+        Set<String> actual = formatRegistry.allFormats()
                 .stream()
                 .map(Format::getKey)
                 .collect(Collectors.toSet());
@@ -38,10 +42,10 @@ class FormatRegistryTest extends BaseTest {
         }
 
         try {
-            FormatRegistry.clear();
+            // FormatRegistry.clear();
 
             // Get the registry size excepting any user formats.
-            Set<Format> formats = FormatRegistry.allFormats();
+            Set<Format> formats = formatRegistry.allFormats();
             final int initialSize = formats.size();
 
             // Write a new formats.yml file.
@@ -57,10 +61,12 @@ class FormatRegistryTest extends BaseTest {
                     "  supportsTransparency: false";
             Files.writeString(pathname, yaml);
 
-            FormatRegistry.clear();
+            // FormatRegistry.clear();
+            formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
+
 
             // Check again.
-            formats = FormatRegistry.allFormats();
+            formats = formatRegistry.allFormats();
             assertTrue(formats.size() > initialSize);
         } finally {
             // Delete the temporary formats.yml.
@@ -73,7 +79,9 @@ class FormatRegistryTest extends BaseTest {
                     }
                 }
             } finally {
-                FormatRegistry.clear();
+                formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
+
+                // FormatRegistry.clear();
             }
         }
     }
@@ -82,13 +90,13 @@ class FormatRegistryTest extends BaseTest {
 
     @Test
     void testFormatWithKeyWithRecognizedKey() {
-        Format format = FormatRegistry.formatWithKey("jpg");
+        Format format = formatRegistry.formatWithKey("jpg");
         assertEquals("JPEG", format.getName());
     }
 
     @Test
     void testFormatWithKeyWithUnrecognizedKey() {
-        Format format = FormatRegistry.formatWithKey("bogus");
+        Format format = formatRegistry.formatWithKey("bogus");
         assertNull(format);
     }
 

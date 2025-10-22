@@ -39,7 +39,7 @@ public class ParametersTest extends BaseTest {
         assertEquals(90f, params.getSize().getPercent(), 0.0000001f);
         assertEquals(15f, params.getRotation().getDegrees(), 0.0000001f);
         assertEquals(Quality.NATIVE, params.getQuality());
-        assertEquals(Format.get("jpg"), params.getOutputFormat());
+        assertEquals(formatRegistry.formatWithKey("jpg"), params.getOutputFormat());
     }
 
     @Test

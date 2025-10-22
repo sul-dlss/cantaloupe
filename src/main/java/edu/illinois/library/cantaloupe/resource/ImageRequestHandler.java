@@ -1,26 +1,5 @@
 package edu.illinois.library.cantaloupe.resource;
 
-import edu.illinois.library.cantaloupe.async.TaskQueue;
-import edu.illinois.library.cantaloupe.cache.CacheFacade;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.image.MediaType;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.processor.Processor;
-import edu.illinois.library.cantaloupe.processor.ProcessorConnector;
-import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
-import edu.illinois.library.cantaloupe.processor.SourceFormatException;
-import edu.illinois.library.cantaloupe.source.StatResult;
-import edu.illinois.library.cantaloupe.status.HealthChecker;
-import edu.illinois.library.cantaloupe.source.Source;
-import edu.illinois.library.cantaloupe.source.SourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +12,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.async.TaskQueue;
+import edu.illinois.library.cantaloupe.cache.CacheFacade;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.image.MediaType;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.processor.Processor;
+import edu.illinois.library.cantaloupe.processor.ProcessorConnector;
+import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
+import edu.illinois.library.cantaloupe.processor.SourceFormatException;
+import edu.illinois.library.cantaloupe.source.Source;
+import edu.illinois.library.cantaloupe.source.SourceFactory;
+import edu.illinois.library.cantaloupe.source.StatResult;
+import edu.illinois.library.cantaloupe.status.HealthChecker;
 
 /**
  * <p>High-level image request handler. Use the return value of {@link
@@ -180,9 +182,11 @@ public class ImageRequestHandler extends AbstractRequestHandler
         if (!callback.preAuthorize()) {
             return;
         }
+        
 
         final Identifier identifier   = operationList.getIdentifier();
         final Configuration config    = Configuration.getInstance();
+        final FormatRegistry formatRegistry = FormatRegistry.buildFromConfig(config);
         final CacheFacade cacheFacade = new CacheFacade();
 
         Iterator<Format> formatIterator = Collections.emptyIterator();
@@ -254,7 +258,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                 if (!mediaTypes.isEmpty()) {
                     formatIterator = mediaTypes
                             .stream()
-                            .map(MediaType::toFormat)
+                            .map(type -> formatRegistry.formatForMime(type))
                             .iterator();
                 }
             } else {
@@ -266,7 +270,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
             final Format format = formatIterator.next();
             // Obtain an instance of the processor assigned to this format.
             String processorName = "unknown processor";
-            try (Processor processor = new ProcessorFactory().newProcessor(format)) {
+            try (Processor processor = new ProcessorFactory(formatRegistry).newProcessor(format)) {
                 processorName = processor.getClass().getSimpleName();
 
                 // Connect it to the source.

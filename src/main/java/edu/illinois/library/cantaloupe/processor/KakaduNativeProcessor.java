@@ -1,7 +1,19 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.Metadata;
 import edu.illinois.library.cantaloupe.image.Orientation;
@@ -19,24 +31,13 @@ import edu.illinois.library.cantaloupe.operation.Sharpen;
 import edu.illinois.library.cantaloupe.operation.Transpose;
 import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
 import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
 import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFacade;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
 import edu.illinois.library.cantaloupe.processor.codec.jpeg.TurboJPEGImageWriter;
 import edu.illinois.library.cantaloupe.processor.codec.jpeg2000.JPEG2000KakaduImageReader;
 import edu.illinois.library.cantaloupe.source.StreamFactory;
 import kdu_jni.KduException;
 import kdu_jni.Kdu_global;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 /**
  * <p>Processor using the Kakadu native library ({@literal libkdu}) via the
@@ -74,6 +75,11 @@ class KakaduNativeProcessor implements FileProcessor, StreamProcessor {
 
     private static String initializationError;
 
+    private final FormatRegistry formatRegistry;
+    public KakaduNativeProcessor(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
+
     private final JPEG2000KakaduImageReader reader =
             new JPEG2000KakaduImageReader();
 
@@ -109,7 +115,7 @@ class KakaduNativeProcessor implements FileProcessor, StreamProcessor {
 
     @Override
     public Set<Format> getAvailableOutputFormats() {
-        return ImageWriterFactory.supportedFormats();
+        return ImageWriterFactory.supportedFormats(formatRegistry);
     }
 
     @Override
@@ -125,7 +131,7 @@ class KakaduNativeProcessor implements FileProcessor, StreamProcessor {
 
     @Override
     public Format getSourceFormat() {
-        return Format.get("jp2");
+        return formatRegistry.formatWithKey("jp2");
     }
 
     @Override
@@ -164,7 +170,7 @@ class KakaduNativeProcessor implements FileProcessor, StreamProcessor {
 
     @Override
     public boolean supportsSourceFormat(Format format) {
-        return Format.get("jp2").equals(format);
+        return formatRegistry.formatWithKey("jp2").equals(format);
     }
 
     @Override
@@ -262,20 +268,20 @@ class KakaduNativeProcessor implements FileProcessor, StreamProcessor {
                 } else if (op instanceof Sharpen) {
                     image = Java2DUtil.sharpen(image, (Sharpen) op);
                 } else if (op instanceof Overlay) {
-                    Java2DUtil.applyOverlay(image, (Overlay) op);
+                    Java2DUtil.applyOverlay(image, (Overlay) op, formatRegistry);
                 }
             }
         }
 
         // Write the result.
         final Encode encode = (Encode) opList.getFirst(Encode.class);
-        ImageWriterFacade.write(image, encode, outputStream);
+        ImageWriterFacade.write(image, encode, outputStream, formatRegistry);
     }
 
     @Override
     public Info readInfo() throws IOException {
         return Info.builder()
-                .withFormat(Format.get("jp2"))
+                .withFormat(formatRegistry.formatWithKey("jp2"))
                 .withSize(reader.getWidth(), reader.getHeight())
                 .withTileSize(reader.getTileWidth(), reader.getTileHeight())
                 .withNumResolutions(reader.getNumDecompositionLevels() + 1)

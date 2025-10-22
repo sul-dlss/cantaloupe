@@ -11,7 +11,7 @@ class NameFormatCheckerTest extends BaseTest {
     @Test
     void testCheckWithKnownFormat() {
         NameFormatChecker instance = new NameFormatChecker("cats.jpg");
-        assertEquals(Format.get("jpg"), instance.check());
+        assertEquals(formatRegistry.formatWithKey("jpg"), instance.check());
     }
 
     @Test

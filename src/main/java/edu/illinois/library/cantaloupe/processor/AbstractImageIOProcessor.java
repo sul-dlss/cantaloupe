@@ -1,21 +1,23 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
-import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
-import edu.illinois.library.cantaloupe.source.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
+import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
+import edu.illinois.library.cantaloupe.source.StreamFactory;
 
 /**
  * Abstract class that can be extended by processors that read images using
@@ -26,8 +28,6 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(AbstractImageIOProcessor.class);
 
-    private static final Map<Format,Set<Format>> FORMATS =
-            availableOutputFormats();
 
     protected Path sourceFile;
     protected StreamFactory streamFactory;
@@ -40,10 +40,10 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
     /**
      * @return Map of available output formats for all known source formats.
      */
-    private static Map<Format, Set<Format>> availableOutputFormats() {
+    private static Map<Format, Set<Format>> availableOutputFormats(FormatRegistry formatRegistry) {
         final HashMap<Format,Set<Format>> map = new HashMap<>();
-        for (Format format : ImageReaderFactory.supportedFormats()) {
-            map.put(format, ImageWriterFactory.supportedFormats());
+        for (Format format : ImageReaderFactory.supportedFormats(formatRegistry)) {
+            map.put(format, ImageWriterFactory.supportedFormats(formatRegistry));
         }
         return map;
     }
@@ -56,7 +56,8 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
     }
 
     public Set<Format> getAvailableOutputFormats() {
-        Set<Format> formats = FORMATS.get(getSourceFormat());
+        Map<Format, Set<Format>> map = availableOutputFormats(formatRegistry);
+        Set<Format> formats = map.get(getSourceFormat());
         if (formats == null) {
             formats = Collections.emptySet();
         }
@@ -111,7 +112,7 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
      */
     protected ImageReader getReader() throws IOException {
         if (reader == null) {
-            ImageReaderFactory rf = new ImageReaderFactory();
+            ImageReaderFactory rf = new ImageReaderFactory(formatRegistry);
             if (streamFactory != null) {
                 reader = rf.newImageReader(getSourceFormat(), streamFactory);
             } else {
@@ -130,7 +131,7 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
     }
 
     public boolean isSeeking() {
-        ImageReaderFactory rf = new ImageReaderFactory();
+        ImageReaderFactory rf = new ImageReaderFactory(formatRegistry);
         ImageReader reader = rf.newImageReader(getSourceFormat());
         try {
             return reader.canSeek();
@@ -151,8 +152,8 @@ abstract class AbstractImageIOProcessor extends AbstractProcessor {
         this.streamFactory = streamFactory;
     }
 
-    public boolean supportsSourceFormat(Format format) {
-        return ImageReaderFactory.supportedFormats().contains(format);
+    public boolean supportsSourceFormat(Format format, FormatRegistry formatRegistry) {
+        return ImageReaderFactory.supportedFormats(formatRegistry).contains(format);
     }
 
 }

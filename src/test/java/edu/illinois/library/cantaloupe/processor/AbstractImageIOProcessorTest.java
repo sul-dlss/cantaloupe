@@ -1,5 +1,14 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.Metadata;
@@ -8,13 +17,6 @@ import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
 import edu.illinois.library.cantaloupe.source.PathStreamFactory;
 import edu.illinois.library.cantaloupe.source.StreamFactory;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
 
@@ -26,8 +28,8 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
         }
 
         try (Processor proc = newInstance()) {
-            proc.setSourceFormat(Format.get("jpg"));
-            Set<Format> expectedFormats = formats.get(Format.get("jpg"));
+            proc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
+            Set<Format> expectedFormats = formats.get(formatRegistry.formatWithKey("jpg"));
             assertEquals(expectedFormats, proc.getAvailableOutputFormats());
         }
     }
@@ -38,7 +40,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
 
         try (FileProcessor fproc = (FileProcessor) newInstance()) {
             fproc.setSourceFile(fixture);
-            fproc.setSourceFormat(Format.get("jpg"));
+            fproc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
 
             final Info info = fproc.readInfo();
             assertTrue(info.getMetadata().getEXIF().isPresent());
@@ -51,7 +53,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
 
         try (FileProcessor fproc = (FileProcessor) newInstance()) {
             fproc.setSourceFile(fixture);
-            fproc.setSourceFormat(Format.get("jpg"));
+            fproc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
 
             final Info info = fproc.readInfo();
             assertTrue(info.getMetadata().getIPTC().isPresent());
@@ -64,7 +66,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
 
         try (FileProcessor fproc = (FileProcessor) newInstance()) {
             fproc.setSourceFile(fixture);
-            fproc.setSourceFormat(Format.get("jpg"));
+            fproc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
 
             final Info info = fproc.readInfo();
             assertTrue(info.getMetadata().getXMP().isPresent());
@@ -77,7 +79,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
                 .withSize(64, 56)
                 .withTileSize(16, 16)
                 .withNumResolutions(1)
-                .withFormat(Format.get("tif"))
+                .withFormat(formatRegistry.formatWithKey("tif"))
                 .build();
         final Path fixture = TestUtil.
                 getImage("tif-rgb-1res-64x56x8-tiled-uncompressed.tif");
@@ -86,7 +88,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
         try (StreamProcessor sproc = (StreamProcessor) newInstance()) {
             StreamFactory streamFactory = new PathStreamFactory(fixture);
             sproc.setStreamFactory(streamFactory);
-            sproc.setSourceFormat(Format.get("tif"));
+            sproc.setSourceFormat(formatRegistry.formatWithKey("tif"));
             Info actualInfo = sproc.readInfo();
             actualInfo.setMetadata(new Metadata()); // we don't care about this
             assertEquals(expectedInfo, actualInfo);
@@ -95,7 +97,7 @@ abstract class AbstractImageIOProcessorTest extends AbstractProcessorTest {
         // test as a FileProcessor
         try (FileProcessor fproc = (FileProcessor) newInstance()) {
             fproc.setSourceFile(fixture);
-            fproc.setSourceFormat(Format.get("tif"));
+            fproc.setSourceFormat(formatRegistry.formatWithKey("tif"));
             Info actualInfo = fproc.readInfo();
             actualInfo.setMetadata(new Metadata()); // we don't care about this
             assertEquals(expectedInfo, actualInfo);

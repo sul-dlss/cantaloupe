@@ -1,5 +1,11 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.EnumSet;
+import java.util.Set;
+
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.ScaleConstraint;
@@ -14,19 +20,11 @@ import edu.illinois.library.cantaloupe.processor.codec.ImageWriter;
 import edu.illinois.library.cantaloupe.processor.codec.ImageWriterFactory;
 import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.EnumSet;
-import java.util.Set;
-
 /**
  * <p>Processor using the Java 2D and ImageIO libraries.</p>
  */
 class Java2dProcessor extends AbstractImageIOProcessor
         implements StreamProcessor, FileProcessor {
-
-    private static final Format GIF = Format.get("gif");
 
     @Override
     public void process(final OperationList ops,
@@ -46,10 +44,11 @@ class Java2dProcessor extends AbstractImageIOProcessor
             // will have to be different. (No problem if it only contains one
             // frame, though.)
             final Encode encode = (Encode) ops.getFirst(Encode.class);
-            final ImageWriter writer = new ImageWriterFactory()
+            final ImageWriter writer = new ImageWriterFactory(formatRegistry)
                     .newImageWriter(encode);
-            if (GIF.equals(info.getSourceFormat()) &&
-                    GIF.equals(ops.getOutputFormat())) {
+            Format gif = formatRegistry.formatWithKey("gif");
+            if (gif.equals(info.getSourceFormat()) &&
+                    gif.equals(ops.getOutputFormat())) {
                 BufferedImageSequence seq = reader.readSequence();
                 Java2DPostProcessor.postProcess(seq, ops, info);
                 writer.write(seq, outputStream);

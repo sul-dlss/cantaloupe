@@ -1,15 +1,15 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ProcessorFactoryTest extends BaseTest {
 
@@ -56,7 +56,7 @@ public class ProcessorFactoryTest extends BaseTest {
     void testNewProcessorWithFormatWithWorkingFirstPreferenceMatch() throws Exception {
         instance.setSelectionStrategy(f ->
                 List.of(PdfBoxProcessor.class, Java2dProcessor.class));
-        assertTrue(instance.newProcessor(Format.get("pdf")) instanceof PdfBoxProcessor);
+        assertTrue(instance.newProcessor(formatRegistry.formatWithKey("pdf")) instanceof PdfBoxProcessor);
     }
 
     @Test
@@ -64,14 +64,14 @@ public class ProcessorFactoryTest extends BaseTest {
             throws Exception {
         instance.setSelectionStrategy(f ->
                 List.of(MockBrokenProcessor.class, Java2dProcessor.class));
-        assertTrue(instance.newProcessor(Format.get("jpg")) instanceof Java2dProcessor);
+        assertTrue(instance.newProcessor(formatRegistry.formatWithKey("jpg")) instanceof Java2dProcessor);
     }
 
     @Test
     void testNewProcessorWithFormatWithWorkingSecondPreferenceMatch() throws Exception {
         instance.setSelectionStrategy(f ->
                 List.of(PdfBoxProcessor.class, Java2dProcessor.class));
-        assertTrue(instance.newProcessor(Format.get("jpg")) instanceof Java2dProcessor);
+        assertTrue(instance.newProcessor(formatRegistry.formatWithKey("jpg")) instanceof Java2dProcessor);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ProcessorFactoryTest extends BaseTest {
         instance.setSelectionStrategy(f ->
                 List.of(PdfBoxProcessor.class, MockBrokenProcessor.class));
         assertThrows(InitializationException.class,
-                () -> instance.newProcessor(Format.get("jpg")));
+                () -> instance.newProcessor(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ProcessorFactoryTest extends BaseTest {
         instance.setSelectionStrategy(f ->
                 List.of(MockPDFOnlyProcessor.class, MockPNGOnlyProcessor.class));
         assertThrows(SourceFormatException.class,
-                () -> instance.newProcessor(Format.get("jpg")));
+                () -> instance.newProcessor(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test

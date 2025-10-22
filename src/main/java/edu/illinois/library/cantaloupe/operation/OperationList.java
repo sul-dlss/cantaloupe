@@ -1,25 +1,5 @@
 package edu.illinois.library.cantaloupe.operation;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.image.MetaIdentifier;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.image.Orientation;
-import edu.illinois.library.cantaloupe.image.ScaleConstraint;
-import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
-import edu.illinois.library.cantaloupe.operation.overlay.OverlayFactory;
-import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
-import edu.illinois.library.cantaloupe.operation.redaction.RedactionService;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
-import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +10,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.image.MetaIdentifier;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.image.Orientation;
+import edu.illinois.library.cantaloupe.image.ScaleConstraint;
+import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
+import edu.illinois.library.cantaloupe.operation.overlay.OverlayFactory;
+import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
+import edu.illinois.library.cantaloupe.operation.redaction.RedactionService;
+import edu.illinois.library.cantaloupe.util.StringUtils;
 
 /**
  * <p>Normalized list of {@link Operation image transform operations}
@@ -115,7 +117,8 @@ public final class OperationList implements Iterable<Operation> {
     private final List<Operation> operations = new ArrayList<>();
     private final Map<String,Object> options = new HashMap<>();
     private int pageIndex;
-
+    private FormatRegistry formatRegistry;
+    
     public static OperationList.Builder builder() {
         return new Builder();
     }
@@ -123,7 +126,10 @@ public final class OperationList implements Iterable<Operation> {
     /**
      * No-op constructor.
      */
-    public OperationList() {}
+    public OperationList() {
+        // TODO: dependency injection
+        formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
+    }
 
     public OperationList(Identifier identifier) {
         this();
@@ -319,7 +325,7 @@ public final class OperationList implements Iterable<Operation> {
 
         // Encode customization
         final Encode encode = (Encode) getFirst(Encode.class);
-        if (encode != null && Format.get("jpg").equals(encode.getFormat())) {
+        if (encode != null && formatRegistry.formatWithKey("jpg").equals(encode.getFormat())) {
             // Compression
             encode.setCompression(Compression.JPEG);
             // Interlacing
@@ -330,7 +336,7 @@ public final class OperationList implements Iterable<Operation> {
             final int quality =
                     config.getInt(Key.PROCESSOR_JPG_QUALITY, 80);
             encode.setQuality(quality);
-        } else if (encode != null && Format.get("tif").equals(encode.getFormat())) {
+        } else if (encode != null && formatRegistry.formatWithKey("tif").equals(encode.getFormat())) {
             // Compression
             final String compressionStr =
                     config.getString(Key.PROCESSOR_TIF_COMPRESSION, "LZW");
@@ -499,6 +505,13 @@ public final class OperationList implements Iterable<Operation> {
     }
 
     /**
+     * @return Page index.
+     */
+    public FormatRegistry getFormatRegistry() {
+        return formatRegistry;
+    }
+
+    /**
      * @param fullSize Full size of the source image to which the instance is
      *                 being applied.
      * @return         Resulting dimensions when all operations are applied in
@@ -552,7 +565,7 @@ public final class OperationList implements Iterable<Operation> {
                 //    as the instance's output format. (This helps enable
                 //    streaming source images without re-encoding them.)
                 if (op instanceof Overlay &&
-                        getOutputFormat().equals(Format.get("pdf"))) { // (1)
+                        getOutputFormat().equals(formatRegistry.formatWithKey("pdf"))) { // (1)
                     continue;
                 } else if (op instanceof Encode &&
                         format.equals(((Encode) op).getFormat())) { // (2)

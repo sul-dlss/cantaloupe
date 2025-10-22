@@ -1,28 +1,11 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import edu.illinois.library.cantaloupe.util.S3ClientBuilder;
-import edu.illinois.library.cantaloupe.util.S3Utils;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -33,11 +16,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.ConfigurationConstants;
+import edu.illinois.library.cantaloupe.test.TestUtil;
+import edu.illinois.library.cantaloupe.util.S3ClientBuilder;
+import edu.illinois.library.cantaloupe.util.S3Utils;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 public class S3CacheTest extends AbstractCacheTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3CacheTest.class);
@@ -262,7 +265,7 @@ public class S3CacheTest extends AbstractCacheTest {
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Path fixture = TestUtil.getImage(IMAGE);
 
@@ -298,7 +301,7 @@ public class S3CacheTest extends AbstractCacheTest {
         Identifier identifier = new Identifier(IMAGE);
         OperationList opList = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info = new Info();
 
@@ -351,7 +354,7 @@ public class S3CacheTest extends AbstractCacheTest {
         Identifier identifier = new Identifier(IMAGE);
         OperationList opList = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info = new Info();
 
@@ -414,7 +417,7 @@ public class S3CacheTest extends AbstractCacheTest {
         Identifier id1           = new Identifier(IMAGE);
         OperationList ops1       = OperationList.builder()
                 .withIdentifier(id1)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Info info1 = new Info();
         Configuration.getInstance().setProperty(Key.DERIVATIVE_CACHE_TTL, 2);
@@ -437,7 +440,7 @@ public class S3CacheTest extends AbstractCacheTest {
         Path fixture2 = TestUtil.getImage("gif-rgb-64x56x8.gif");
         OperationList ops2 = OperationList.builder()
                 .withIdentifier(new Identifier(fixture2.getFileName().toString()))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         uploadDerivative(ops2, fixture2);
@@ -490,7 +493,7 @@ public class S3CacheTest extends AbstractCacheTest {
         Identifier id1 = new Identifier(IMAGE);
         OperationList ops1 = OperationList.builder()
                 .withIdentifier(id1)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Path fixture = TestUtil.getImage(id1.toString());
         uploadDerivative(ops1, fixture);

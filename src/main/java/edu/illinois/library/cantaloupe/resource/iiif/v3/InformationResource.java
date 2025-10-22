@@ -77,7 +77,7 @@ public class InformationResource extends IIIF3Resource {
         // processor, but the control flow may not lead to a processor ever
         // being obtained.
         final Set<Format> availableOutputFormats =
-                new HashSet<>(ImageWriterFactory.supportedFormats());
+                new HashSet<>(ImageWriterFactory.supportedFormats(formatRegistry));
 
         class CustomCallback implements InformationRequestHandler.Callback {
             @Override

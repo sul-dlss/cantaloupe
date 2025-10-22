@@ -1,18 +1,20 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.http.Query;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.MetaIdentifier;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.operation.OperationList;
 import edu.illinois.library.cantaloupe.resource.IllegalClientArgumentException;
 import edu.illinois.library.cantaloupe.resource.iiif.FormatException;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Encapsulates the parameters of a request.
@@ -195,7 +197,7 @@ class Parameters {
      *                 excluding any additional server-side operations that may
      *                 need to be performed, such as overlays, etc.
      */
-    OperationList toOperationList(DelegateProxy delegateProxy, double maxScale) {
+    OperationList toOperationList(DelegateProxy delegateProxy, double maxScale, FormatRegistry formatRegistry) {
         final OperationList ops = new OperationList(
                 MetaIdentifier.fromString(getIdentifier(), delegateProxy));
         if (!Region.Type.FULL.equals(getRegion().getType())) {
@@ -210,7 +212,7 @@ class Parameters {
             ops.add(getRotation().toRotate());
         }
         ops.add(getQuality().toColorTransform());
-        ops.add(new Encode(getOutputFormat().toFormat()));
+        ops.add(new Encode(getOutputFormat().toFormat(formatRegistry)));
         return ops;
     }
 

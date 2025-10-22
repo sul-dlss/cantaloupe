@@ -1,21 +1,28 @@
 package edu.illinois.library.cantaloupe.processor.codec.xpm;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.image.Compression;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Metadata;
 import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.generic.GenericMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public final class XPMImageReader extends AbstractIIOImageReader
         implements ImageReader {
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(XPMImageReader.class);
+
+    private final FormatRegistry formatRegistry;
+    public XPMImageReader(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     @Override
     public boolean canSeek() {
@@ -36,7 +43,7 @@ public final class XPMImageReader extends AbstractIIOImageReader
 
     @Override
     protected Format getFormat() {
-        return Format.get("xpm");
+        return formatRegistry.formatWithKey("xpm");
     }
 
     @Override

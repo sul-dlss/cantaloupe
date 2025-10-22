@@ -1,15 +1,18 @@
 package edu.illinois.library.cantaloupe.processor.codec;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.processor.OutputFormatException;
 import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageWriterFactoryTest extends BaseTest {
 
@@ -24,13 +27,13 @@ public class ImageWriterFactoryTest extends BaseTest {
     @Test
     void testSupportedFormats() {
         Set<Format> outputFormats = Set.of(
-                Format.get("gif"), Format.get("jpg"), Format.get("png"), Format.get("tif"));
+                formatRegistry.formatWithKey("gif"), formatRegistry.formatWithKey("jpg"), formatRegistry.formatWithKey("png"), formatRegistry.formatWithKey("tif"));
         assertEquals(outputFormats, ImageWriterFactory.supportedFormats());
     }
 
     @Test
     void testNewImageWriter() throws Exception {
-        assertNotNull(instance.newImageWriter(new Encode(Format.get("jpg"))));
+        assertNotNull(instance.newImageWriter(new Encode(formatRegistry.formatWithKey("jpg"))));
     }
 
     @Test

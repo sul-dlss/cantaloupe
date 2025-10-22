@@ -1,6 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v2;
 
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 /**
  * Legal Image API output format. This is used only within the context of
@@ -32,13 +33,11 @@ public enum OutputFormat {
     /**
      * @return Equivalent {@link Format}.
      */
-    public Format toFormat() {
-        return Format.get(formatKey);
+    public Format toFormat(FormatRegistry formatRegistry) {
+        return formatRegistry.formatWithKey(formatKey);
     }
 
-    @Override
-    public String toString() {
-        return toFormat().toString();
+    public String toString(FormatRegistry formatRegistry) {
+        return toFormat(formatRegistry).toString();
     }
-
 }

@@ -411,10 +411,10 @@ abstract class HttpSourceTest extends AbstractSourceTest {
         server.start();
 
         HttpSource.FormatIterator<Format> it = instance.getFormatIterator();
-        assertEquals(Format.get("png"), it.next()); // URI path extension
-        assertEquals(Format.get("png"), it.next()); // identifier extension
+        assertEquals(formatRegistry.formatWithKey("png"), it.next()); // URI path extension
+        assertEquals(formatRegistry.formatWithKey("png"), it.next()); // identifier extension
         assertEquals(Format.UNKNOWN, it.next());    // Content-Type is null
-        assertEquals(Format.get("jpg"), it.next()); // magic bytes
+        assertEquals(formatRegistry.formatWithKey("jpg"), it.next()); // magic bytes
         assertThrows(NoSuchElementException.class, it::next);
     }
 

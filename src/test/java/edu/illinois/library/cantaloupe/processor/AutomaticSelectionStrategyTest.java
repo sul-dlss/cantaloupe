@@ -1,13 +1,13 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class AutomaticSelectionStrategyTest extends BaseTest {
 
@@ -25,7 +25,7 @@ public class AutomaticSelectionStrategyTest extends BaseTest {
                 KakaduNativeProcessor.class,
                 OpenJpegProcessor.class,
                 GrokProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("jp2")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("jp2")));
     }
 
     @Test
@@ -33,28 +33,28 @@ public class AutomaticSelectionStrategyTest extends BaseTest {
         List<?> expected = List.of(
                 TurboJpegProcessor.class,
                 Java2dProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("jpg")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test
     void getPreferredProcessorsWithPDF() {
         List<?> expected = List.of(PdfBoxProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("pdf")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("pdf")));
     }
 
     @Test
     void getPreferredProcessorsWithVideo() {
         List<?> expected = List.of(FfmpegProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("mpg")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("mpg")));
     }
 
     @Test
     void getPreferredProcessorsWithOther() {
         List<?> expected = List.of(Java2dProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("bmp")));
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("gif")));
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("png")));
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("tif")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("bmp")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("gif")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("png")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("tif")));
     }
 
     @Test

@@ -1,5 +1,22 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.async.ThreadPool;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Info;
@@ -19,22 +36,6 @@ import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
 import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
 import edu.illinois.library.cantaloupe.processor.codec.BufferedImageSequence;
 import edu.illinois.library.cantaloupe.processor.codec.ReaderHint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * <p>Provides generic functionality for applying transformations to {@link
@@ -145,7 +146,7 @@ final class Java2DPostProcessor {
             } else if (op instanceof Sharpen) {
                 image = Java2DUtil.sharpen(image, (Sharpen) op);
             } else if (op instanceof Overlay) {
-                Java2DUtil.applyOverlay(image, (Overlay) op);
+                Java2DUtil.applyOverlay(image, (Overlay) op, opList.getFormatRegistry());
             }
         }
         return image;

@@ -1,20 +1,22 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.operation.OperationList;
 import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class Java2dProcessorTest extends AbstractImageIOProcessorTest {
 
@@ -33,14 +35,14 @@ public class Java2dProcessorTest extends AbstractImageIOProcessorTest {
 
     @Test
     void testIsSeekingWithNonSeekableSource() throws Exception {
-        instance.setSourceFormat(Format.get("bmp"));
+        instance.setSourceFormat(formatRegistry.formatWithKey("bmp"));
         instance.setSourceFile(TestUtil.getImage("bmp"));
         assertFalse(instance.isSeeking());
     }
 
     @Test
     void testIsSeekingWithSeekableSource() throws Exception {
-        instance.setSourceFormat(Format.get("tif"));
+        instance.setSourceFormat(formatRegistry.formatWithKey("tif"));
         instance.setSourceFile(TestUtil.getImage("tif-rgb-1res-64x56x8-tiled-jpeg.tif"));
         assertTrue(instance.isSeeking());
     }
@@ -49,15 +51,15 @@ public class Java2dProcessorTest extends AbstractImageIOProcessorTest {
     void testProcessWithAnimatedGIF() throws Exception {
         Path image = TestUtil.getImage("gif-animated-looping.gif");
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("gif")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("gif")))
                 .build();
         Info info = Info.builder()
                 .withSize(136, 200)
-                .withFormat(Format.get("gif"))
+                .withFormat(formatRegistry.formatWithKey("gif"))
                 .build();
 
         instance.setSourceFile(image);
-        instance.setSourceFormat(Format.get("gif"));
+        instance.setSourceFormat(formatRegistry.formatWithKey("gif"));
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             instance.process(ops, info, os);
@@ -65,7 +67,7 @@ public class Java2dProcessorTest extends AbstractImageIOProcessorTest {
             try (ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray())) {
                 ImageReader reader = null;
                 try {
-                    reader = new ImageReaderFactory().newImageReader(Format.get("gif"), is);
+                    reader = new ImageReaderFactory().newImageReader(formatRegistry.formatWithKey("gif"), is);
                     assertEquals(2, reader.getNumImages());
                 } finally {
                     if (reader != null) {
@@ -91,14 +93,14 @@ public class Java2dProcessorTest extends AbstractImageIOProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("jpg")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("jpg")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("mp4")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("mp4")));
         }
     }
 

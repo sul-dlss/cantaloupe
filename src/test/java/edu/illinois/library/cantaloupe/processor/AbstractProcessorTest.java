@@ -98,7 +98,7 @@ abstract class AbstractProcessorTest extends BaseTest {
     @Test
     public void testProcessWithNoOperations() throws Exception {
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("jpg"))) // OK, one operation, but it's required
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg"))) // OK, one operation, but it's required
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -120,7 +120,7 @@ abstract class AbstractProcessorTest extends BaseTest {
                 .withOperations(
                         new ScaleByPercent(),
                         new Rotate(0),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -144,19 +144,19 @@ abstract class AbstractProcessorTest extends BaseTest {
                         .build())
                 .withOperations(
                         new ScaleByPercent(),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         Path fixture;
         Format sourceFormat;
         Dimension size;
         try (Processor processor = newInstance()) {
-            if (processor.supportsSourceFormat(Format.get("jpg"))) {
-                sourceFormat = Format.get("jpg");
+            if (processor.supportsSourceFormat(formatRegistry.formatWithKey("jpg"))) {
+                sourceFormat = formatRegistry.formatWithKey("jpg");
                 fixture = TestUtil.getImage("jpg-exif-orientation-270.jpg");
                 size = new Dimension(64, 56);
-            } else if (processor.supportsSourceFormat(Format.get("jp2"))) {
-                sourceFormat = Format.get("jp2");
+            } else if (processor.supportsSourceFormat(formatRegistry.formatWithKey("jp2"))) {
+                sourceFormat = formatRegistry.formatWithKey("jp2");
                 fixture = TestUtil.getImage("jp2-orientation-90.jp2");
                 size = new Dimension(64, 56);
             } else {
@@ -188,7 +188,7 @@ abstract class AbstractProcessorTest extends BaseTest {
                         .build())
                 .withOperations(
                         new ScaleByPercent(),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -208,7 +208,7 @@ abstract class AbstractProcessorTest extends BaseTest {
     public void testProcessWithSquareCropOperation() throws Exception {
         CropToSquare crop = new CropToSquare();
         OperationList ops = OperationList.builder()
-                .withOperations(crop, new Encode(Format.get("jpg")))
+                .withOperations(crop, new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -232,7 +232,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new CropByPixels(10, 10, 35, 30),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         boolean tmpFlag = false;
@@ -270,7 +270,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         final double height = 0.2;
         Crop crop = new CropByPercent(0.2, 0.2, width, height);
         OperationList ops = OperationList.builder()
-                .withOperations(crop, new Encode(Format.get("jpg")))
+                .withOperations(crop, new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -292,7 +292,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPercent(),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -313,7 +313,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPixels(20, null, ScaleByPixels.Mode.ASPECT_FIT_WIDTH),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -334,7 +334,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPixels(null, 20, ScaleByPixels.Mode.ASPECT_FIT_HEIGHT),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -355,7 +355,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPercent(0.5),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -376,7 +376,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPercent(1.5),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -397,7 +397,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPixels(20, 20, ScaleByPixels.Mode.ASPECT_FIT_INSIDE),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -422,7 +422,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         new ScaleByPixels(20, 20, ScaleByPixels.Mode.NON_ASPECT_FILL),
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -439,7 +439,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         Transpose.HORIZONTAL,
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -458,7 +458,7 @@ abstract class AbstractProcessorTest extends BaseTest {
     @Test
     public void testProcessWithRotate0DegreesOperation() throws Exception {
         OperationList ops = OperationList.builder()
-                .withOperations(new Rotate(0), new Encode(Format.get("jpg")))
+                .withOperations(new Rotate(0), new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -477,7 +477,7 @@ abstract class AbstractProcessorTest extends BaseTest {
     @Test
     public void testProcessWithRotate275DegreesOperation() throws Exception {
         OperationList ops = OperationList.builder()
-                .withOperations(new Rotate(275), new Encode(Format.get("jpg")))
+                .withOperations(new Rotate(275), new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -507,7 +507,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         ColorTransform.BITONAL,
-                        new Encode(Format.get("png")))
+                        new Encode(formatRegistry.formatWithKey("png")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -536,7 +536,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         OperationList ops = OperationList.builder()
                 .withOperations(
                         ColorTransform.GRAY,
-                        new Encode(Format.get("jpg")))
+                        new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forEachFixture(ops, new ProcessorAssertion() {
@@ -629,7 +629,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         assumeTrue(TurboJPEGImageWriter.isTurboJPEGAvailable());
 
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forAnyFixture(ops, new ProcessorAssertion() {
@@ -650,7 +650,7 @@ abstract class AbstractProcessorTest extends BaseTest {
         TurboJPEGImageWriter.setTurboJPEGAvailable(false);
 
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         forAnyFixture(ops, new ProcessorAssertion() {
@@ -669,22 +669,22 @@ abstract class AbstractProcessorTest extends BaseTest {
     @Test
     @Disabled // see comment in GIFImageWriter, which most processors use to write GIFs
     public void testProcessWritesXMPMetadataIntoGIF() throws Exception {
-        testProcessWritesXMPMetadata(Format.get("gif"));
+        testProcessWritesXMPMetadata(formatRegistry.formatWithKey("gif"));
     }
 
     @Test
     public void testProcessWritesXMPMetadataIntoJPEG() throws Exception {
-        testProcessWritesXMPMetadata(Format.get("jpg"));
+        testProcessWritesXMPMetadata(formatRegistry.formatWithKey("jpg"));
     }
 
     @Test
     public void testProcessWritesXMPMetadataIntoPNG() throws Exception {
-        testProcessWritesXMPMetadata(Format.get("png"));
+        testProcessWritesXMPMetadata(formatRegistry.formatWithKey("png"));
     }
 
     @Test
     public void testProcessWritesXMPMetadataIntoTIFF() throws Exception {
-        testProcessWritesXMPMetadata(Format.get("tif"));
+        testProcessWritesXMPMetadata(formatRegistry.formatWithKey("tif"));
     }
 
     private void testProcessWritesXMPMetadata(Format outputFormat)

@@ -45,7 +45,7 @@ class RequestContextMapTest extends BaseTest {
                         .withPageNumber(3)
                         .withScaleConstraint(1, 2)
                         .build())
-                .withOperations(new Encode(Format.get("gif")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("gif")))
                 .build();
         context.setOperationList(opList, fullSize);
         // page count

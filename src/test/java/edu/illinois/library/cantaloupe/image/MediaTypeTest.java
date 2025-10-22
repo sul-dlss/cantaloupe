@@ -168,20 +168,20 @@ public class MediaTypeTest extends BaseTest {
 
     @Test
     void testToFormat() {
-        assertEquals(Format.get("avi"), new MediaType("video/avi").toFormat());
-        assertEquals(Format.get("bmp"), new MediaType("image/bmp").toFormat());
-        assertEquals(Format.get("gif"), new MediaType("image/gif").toFormat());
-        assertEquals(Format.get("jp2"), new MediaType("image/jp2").toFormat());
-        assertEquals(Format.get("jpg"), new MediaType("image/jpeg").toFormat());
-        assertEquals(Format.get("mov"), new MediaType("video/quicktime").toFormat());
-        assertEquals(Format.get("mp4"), new MediaType("video/mp4").toFormat());
-        assertEquals(Format.get("mpg"), new MediaType("video/mpeg").toFormat());
-        assertEquals(Format.get("pdf"), new MediaType("application/pdf").toFormat());
-        assertEquals(Format.get("png"), new MediaType("image/png").toFormat());
-        assertEquals(Format.get("tif"), new MediaType("image/tiff").toFormat());
-        assertEquals(Format.get("webm"), new MediaType("video/webm").toFormat());
-        assertEquals(Format.get("webp"), new MediaType("image/webp").toFormat());
-        assertEquals(Format.get("xpm"), new MediaType("image/x-xpixmap").toFormat());
+        assertEquals(formatRegistry.formatWithKey("avi"), new MediaType("video/avi").toFormat());
+        assertEquals(formatRegistry.formatWithKey("bmp"), new MediaType("image/bmp").toFormat());
+        assertEquals(formatRegistry.formatWithKey("gif"), new MediaType("image/gif").toFormat());
+        assertEquals(formatRegistry.formatWithKey("jp2"), new MediaType("image/jp2").toFormat());
+        assertEquals(formatRegistry.formatWithKey("jpg"), new MediaType("image/jpeg").toFormat());
+        assertEquals(formatRegistry.formatWithKey("mov"), new MediaType("video/quicktime").toFormat());
+        assertEquals(formatRegistry.formatWithKey("mp4"), new MediaType("video/mp4").toFormat());
+        assertEquals(formatRegistry.formatWithKey("mpg"), new MediaType("video/mpeg").toFormat());
+        assertEquals(formatRegistry.formatWithKey("pdf"), new MediaType("application/pdf").toFormat());
+        assertEquals(formatRegistry.formatWithKey("png"), new MediaType("image/png").toFormat());
+        assertEquals(formatRegistry.formatWithKey("tif"), new MediaType("image/tiff").toFormat());
+        assertEquals(formatRegistry.formatWithKey("webm"), new MediaType("video/webm").toFormat());
+        assertEquals(formatRegistry.formatWithKey("webp"), new MediaType("image/webp").toFormat());
+        assertEquals(formatRegistry.formatWithKey("xpm"), new MediaType("image/x-xpixmap").toFormat());
     }
 
     /* toString() */

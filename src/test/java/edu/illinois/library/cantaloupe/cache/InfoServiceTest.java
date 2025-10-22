@@ -1,8 +1,19 @@
 package edu.illinois.library.cantaloupe.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.image.Identifier;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.processor.FileProcessor;
@@ -10,14 +21,6 @@ import edu.illinois.library.cantaloupe.processor.MockFileProcessor;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InfoServiceTest extends BaseTest {
 
@@ -42,8 +45,8 @@ public class InfoServiceTest extends BaseTest {
                 "ManualSelectionStrategy");
         config.setProperty(Key.PROCESSOR_FALLBACK, "Java2dProcessor");
         try (FileProcessor proc = (FileProcessor) new ProcessorFactory().
-                newProcessor(Format.get("jpg"))) {
-            proc.setSourceFormat(Format.get("jpg"));
+                newProcessor(formatRegistry.formatWithKey("jpg"))) {
+            proc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
             proc.setSourceFile(TestUtil.getImage("jpg"));
             return proc;
         }
@@ -51,7 +54,7 @@ public class InfoServiceTest extends BaseTest {
 
     private FileProcessor newMockProcessor() throws Exception {
         FileProcessor proc = new MockFileProcessor();
-        proc.setSourceFormat(Format.get("jpg"));
+        proc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
         proc.setSourceFile(TestUtil.getImage("jpg"));
         return proc;
     }

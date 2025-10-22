@@ -1,18 +1,12 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.processor.FileProcessor;
-import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +15,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.processor.FileProcessor;
+import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
+import edu.illinois.library.cantaloupe.test.BaseTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class CacheFacadeTest extends BaseTest {
 
@@ -99,9 +104,9 @@ public class CacheFacadeTest extends BaseTest {
         config.setProperty(Key.PROCESSOR_FALLBACK, "Java2dProcessor");
 
         final Identifier identifier = new Identifier("jpg");
-        try (FileProcessor processor = (FileProcessor) new ProcessorFactory().
-                newProcessor(Format.get("jpg"))) {
-            processor.setSourceFormat(Format.get("jpg"));
+        try (FileProcessor processor = (FileProcessor) new ProcessorFactory(formatRegistry).
+                newProcessor(formatRegistry.formatWithKey("jpg"))) {
+            processor.setSourceFormat(formatRegistry.formatWithKey("jpg"));
             processor.setSourceFile(TestUtil.getImage(identifier.toString()));
 
             Optional<Info> expected = InfoService.getInstance().getOrReadInfo(identifier, processor);
