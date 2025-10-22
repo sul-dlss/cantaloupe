@@ -13,7 +13,7 @@ import edu.illinois.library.cantaloupe.processor.InitializationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
 import edu.illinois.library.cantaloupe.resource.TemplateVariables;
 import edu.illinois.library.cantaloupe.resource.ThymeleafRepresentation;
 import edu.illinois.library.cantaloupe.source.Source;
@@ -156,7 +156,7 @@ public class AdminResource extends AbstractAdminResource {
      */
     private TemplateVariables getTemplateVars() {
         final TemplateVariables vars = TemplateVariables.getDefault(getRequest());
-        vars.put("adminUri", StringUtils.stripEnd((String) vars.get("basePath"), "/") + Route.ADMIN_PATH);
+        vars.put("adminUri", StringUtils.stripEnd((String) vars.get("basePath"), "/") + RouteSet.ADMIN_PATH);
 
         ////////////////////////////////////////////////////////////////////
         //////////////////////// status section ////////////////////////////

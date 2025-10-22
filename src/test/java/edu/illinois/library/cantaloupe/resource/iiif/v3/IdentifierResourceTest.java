@@ -1,13 +1,14 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import java.net.URI;
+
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.resource.ResourceTest;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
 import edu.illinois.library.cantaloupe.resource.iiif.InformationResourceTester;
-import org.junit.jupiter.api.Test;
-
-import java.net.URI;
 
 class IdentifierResourceTest extends ResourceTest {
 
@@ -17,7 +18,7 @@ class IdentifierResourceTest extends ResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.IIIF_3_PATH;
+        return RouteSet.IIIF_3_PATH;
     }
 
     @Test

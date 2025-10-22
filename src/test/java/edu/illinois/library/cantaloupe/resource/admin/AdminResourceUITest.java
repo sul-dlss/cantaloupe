@@ -2,7 +2,8 @@ package edu.illinois.library.cantaloupe.resource.admin;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ public class AdminResourceUITest extends AbstractAdminResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.ADMIN_PATH;
+        return RouteSet.ADMIN_PATH;
     }
 
     @Override

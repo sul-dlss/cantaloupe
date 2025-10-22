@@ -69,11 +69,7 @@ public class HandlerServlet extends HttpServlet {
         AbstractResource resource = null;
 
         try {
-            Route route = Route.forPath(path);
-            if (route == null) {
-                throw new ResourceException(Status.NOT_FOUND,
-                        "No route for path: " + path);
-            }
+            Route route = getRouteForPath(path);
 
             resource = route.getResource().getDeclaredConstructor().newInstance();
             Request iiifrequest = route.getRequest().getDeclaredConstructor(HttpServletRequest.class, List.class).newInstance(request, route.getPathArguments());
@@ -118,6 +114,15 @@ public class HandlerServlet extends HttpServlet {
                     request.getMethod(), request.getPathInfo(),
                     response.getStatus(), requestClock);
         }
+    }
+
+    private Route getRouteForPath(String path) throws ResourceException {
+        RouteSet routeSet = (RouteSet) getServletContext().getAttribute("routeSet");
+        Route route =  routeSet.forPath(path);
+        if (route == null) {
+            throw new ResourceException(Status.NOT_FOUND,  "No route for path: " + path);
+        }
+        return route;
     }
 
     /**

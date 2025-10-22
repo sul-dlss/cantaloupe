@@ -3,7 +3,8 @@ package edu.illinois.library.cantaloupe.resource.iiif.v1;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.http.Status;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class IdentifierResource extends IIIF1Resource {
     public void doGET() {
         final Reference newRef = new Reference(
                 getRequest().getPublicRootReference() +
-                Route.IIIF_1_PATH +
+                RouteSet.IIIF_1_PATH +
                 "/" + getRequest().getPublicIdentifier() +
                 "/info.json");
         getResponse().setStatus(Status.SEE_OTHER.getCode());

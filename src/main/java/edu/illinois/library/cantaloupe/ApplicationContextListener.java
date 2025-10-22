@@ -8,6 +8,7 @@ import edu.illinois.library.cantaloupe.config.ConfigurationFileWatcher;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.logging.LoggerUtil;
 import edu.illinois.library.cantaloupe.resource.PoweredByHeader;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import edu.illinois.library.cantaloupe.delegate.DelegateProxyService;
@@ -57,6 +58,10 @@ public class ApplicationContextListener implements ServletContextListener {
         }
 
         ServletContext servletContext = sce.getServletContext();
+
+        RouteSet routeSet = new RouteSet();
+        routeSet.build();
+        servletContext.setAttribute("routeSet", routeSet);
 
         FilterRegistration.Dynamic filterRegistration = 
             servletContext.addFilter("poweredByHeader", PoweredByHeader.class);
