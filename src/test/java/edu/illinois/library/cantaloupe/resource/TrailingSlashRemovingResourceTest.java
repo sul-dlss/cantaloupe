@@ -11,7 +11,7 @@ public class TrailingSlashRemovingResourceTest extends ResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.IIIF_2_PATH;
+        return RouteSet.IIIF_2_PATH;
     }
 
     @Test

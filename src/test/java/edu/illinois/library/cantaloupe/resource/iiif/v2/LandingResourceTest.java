@@ -8,7 +8,8 @@ import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.ResourceException;
 import edu.illinois.library.cantaloupe.http.Response;
 import edu.illinois.library.cantaloupe.resource.ResourceTest;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class LandingResourceTest extends ResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.IIIF_2_PATH;
+        return RouteSet.IIIF_2_PATH;
     }
 
     @Test

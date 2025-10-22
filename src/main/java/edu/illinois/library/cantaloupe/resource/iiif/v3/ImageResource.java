@@ -14,7 +14,7 @@ import edu.illinois.library.cantaloupe.operation.Scale;
 import edu.illinois.library.cantaloupe.operation.ValidationException;
 import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.resource.IllegalClientArgumentException;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
 import edu.illinois.library.cantaloupe.resource.ScaleRestrictedException;
 import edu.illinois.library.cantaloupe.resource.ImageRequestHandler;
 import edu.illinois.library.cantaloupe.resource.ResourceException;
@@ -171,7 +171,7 @@ public class ImageResource extends IIIF3Resource {
         queuedHeaders.put("Link",
                 String.format("<%s%s/%s>;rel=\"canonical\"",
                         getRequest().getPublicRootReference(),
-                        Route.IIIF_3_PATH,
+                        RouteSet.IIIF_3_PATH,
                         paramsStr));
     }
 

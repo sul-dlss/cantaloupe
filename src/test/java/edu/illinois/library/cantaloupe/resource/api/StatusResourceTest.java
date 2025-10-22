@@ -6,7 +6,8 @@ import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.ResourceException;
 import edu.illinois.library.cantaloupe.http.Response;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +16,7 @@ public class StatusResourceTest extends AbstractAPIResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.STATUS_PATH;
+        return RouteSet.STATUS_PATH;
     }
 
     @Test

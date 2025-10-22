@@ -1,6 +1,24 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
+import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.assertRedirect;
+import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.assertRepresentationEquals;
+import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.assertRepresentationsNotSame;
+import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.assertStatus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import java.net.URI;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.utils.SystemUtils;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.illinois.library.cantaloupe.Application;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
@@ -13,19 +31,9 @@ import edu.illinois.library.cantaloupe.image.MetaIdentifier;
 import edu.illinois.library.cantaloupe.image.StandardMetaIdentifierTransformer;
 import edu.illinois.library.cantaloupe.resource.IIIFRequest;
 import edu.illinois.library.cantaloupe.resource.ResourceTest;
-import edu.illinois.library.cantaloupe.resource.Route;
+import edu.illinois.library.cantaloupe.resource.RouteSet;
 import edu.illinois.library.cantaloupe.resource.iiif.InformationResourceTester;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.utils.SystemUtils;
-import org.junit.jupiter.api.Test;
-
-import java.net.URI;
-import java.util.List;
-
-import static edu.illinois.library.cantaloupe.test.Assert.HTTPAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * Functional test of the features of InformationResource.
@@ -39,7 +47,7 @@ public class InformationResourceTest extends ResourceTest {
 
     @Override
     protected String getEndpointPath() {
-        return Route.IIIF_3_PATH;
+        return RouteSet.IIIF_3_PATH;
     }
 
     @Test
@@ -452,7 +460,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("http://localhost:" + getHTTPPort() +
-                Route.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
+                RouteSet.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
     }
 
     @Test
@@ -467,7 +475,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("http://example.org" +
-                Route.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
+                RouteSet.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
     }
 
     @Test
@@ -483,7 +491,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("http://localhost:" + getHTTPPort() +
-                Route.IIIF_3_PATH + path, info.get("id"));
+                RouteSet.IIIF_3_PATH + path, info.get("id"));
     }
 
     @Test
@@ -499,7 +507,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("http://localhost:" + getHTTPPort() +
-                Route.IIIF_3_PATH + path, info.get("id"));
+                RouteSet.IIIF_3_PATH + path, info.get("id"));
     }
 
     @Test
@@ -517,7 +525,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("http://example.org:8080/cats" +
-                Route.IIIF_3_PATH + "/originalID", info.get("id"));
+                RouteSet.IIIF_3_PATH + "/originalID", info.get("id"));
     }
 
     @Test
@@ -536,7 +544,7 @@ public class InformationResourceTest extends ResourceTest {
         ObjectMapper mapper = new ObjectMapper();
         Information<?, ?> info = mapper.readValue(json, Information.class);
         assertEquals("https://example.net" +
-                Route.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
+                RouteSet.IIIF_3_PATH + "/" + IMAGE, info.get("id"));
     }
 
     /**
