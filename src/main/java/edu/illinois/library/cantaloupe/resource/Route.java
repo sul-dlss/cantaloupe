@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+
 /**
  * Associates a URI path pattern with an {@link AbstractResource}
  * implementation.
@@ -65,37 +68,45 @@ public final class Route {
         MAPPINGS.put(Pattern.compile("/$"),
                 new RouteEntry(TrailingSlashRemovingResource.class, Request.class));
 
+        Configuration config = Configuration.getInstance();
+
         // IIIF Image API v3 routes
-        MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.LandingResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)/info\\.json$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.InformationResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.IdentifierResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)\\.([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.ImageResource.class, IIIFRequest.class));
+        if (config.getBoolean(Key.IIIF_3_ENDPOINT_ENABLED, true)) {
+                MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.LandingResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)/info\\.json$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.InformationResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.IdentifierResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_3_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)\\.([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v3.ImageResource.class, IIIFRequest.class));
+        }
 
         // IIIF Image API v2 routes
-        MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.LandingResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)/info\\.json$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.InformationResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.IdentifierResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)\\.([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.ImageResource.class, IIIFRequest.class));
+        if (config.getBoolean(Key.IIIF_2_ENDPOINT_ENABLED, true)) {
+                MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.LandingResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)/info\\.json$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.InformationResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.IdentifierResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_2_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)\\.([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v2.ImageResource.class, IIIFRequest.class));
+        }
 
         // IIIF Image API v1 routes
-        MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.LandingResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/info\\.json$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.InformationResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.IdentifierResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/.]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.ImageResource.class, IIIFRequest.class));
-        MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/.]+)\\.([^/]+)$"),
-                new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.ImageResource.class, IIIFRequest.class));
+        if (config.getBoolean(Key.IIIF_1_ENDPOINT_ENABLED, true)) {
+                MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.LandingResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/info\\.json$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.InformationResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.IdentifierResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/.]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.ImageResource.class, IIIFRequest.class));
+                MAPPINGS.put(Pattern.compile("^" + IIIF_1_PATH + "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/.]+)\\.([^/]+)$"),
+                        new RouteEntry(edu.illinois.library.cantaloupe.resource.iiif.v1.ImageResource.class, IIIFRequest.class));
+        }
 
         // Control Panel routes
         MAPPINGS.put(Pattern.compile("^" + ADMIN_CONFIG_PATH + "$"),
