@@ -1,23 +1,24 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Query;
 import edu.illinois.library.cantaloupe.http.Reference;
-import edu.illinois.library.cantaloupe.delegate.DelegateProxy;
 import edu.illinois.library.cantaloupe.image.MetaIdentifier;
 import edu.illinois.library.cantaloupe.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Set;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Wraps an {@link HttpServletRequest}, adding some convenience methods.
@@ -40,12 +41,14 @@ public class Request {
     private static final Set<String> CACHE_BYPASS_ARGUMENTS =
             Set.of("false", "nocache");
 
+    private Configuration configuration;
     /**
      * @param request Request that the new instance will wrap.
      */
-    public Request(HttpServletRequest request, List<String> pathArguments) {
+    public Request(HttpServletRequest request, List<String> pathArguments, Configuration configuration) {
         this.wrappedRequest = request;
         this.pathArguments = pathArguments;
+        this.configuration = configuration;
     }
 
     public String getContextPath() {
@@ -151,8 +154,7 @@ public class Request {
         ref.setPath(getContextPath());
 
         // If base_uri is set in the configuration, build a URI based on that.
-        final String baseUri = Configuration.getInstance()
-                .getString(Key.BASE_URI, "");
+        final String baseUri = configuration.getString(Key.BASE_URI, "");
         if (!baseUri.isEmpty()) {
             final Reference baseRef = new Reference(baseUri);
             ref.setScheme(baseRef.getScheme());

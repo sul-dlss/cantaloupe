@@ -1,23 +1,25 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequestTest extends BaseTest {
 
     private MockHttpServletRequest sr = new MockHttpServletRequest();
-    private Request instance = new Request(sr, Collections.emptyList());
+    private Request instance = new Request(sr, Collections.emptyList(), Configuration.getInstance());
 
     @Test
     void testGetContextPath() {

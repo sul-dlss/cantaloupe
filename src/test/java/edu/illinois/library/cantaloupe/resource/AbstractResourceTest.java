@@ -1,15 +1,18 @@
 package edu.illinois.library.cantaloupe.resource;
 
-import edu.illinois.library.cantaloupe.test.BaseTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class AbstractResourceTest extends BaseTest {
 
@@ -26,7 +29,7 @@ public class AbstractResourceTest extends BaseTest {
             }
         };
 
-        Request mockRequest = new Request(new MockHttpServletRequest(), Collections.emptyList());
+        Request mockRequest = new Request(new MockHttpServletRequest(), Collections.emptyList(), Configuration.getInstance());
         instance.setRequest(mockRequest);
         instance.setResponse(new MockHttpServletResponse());
     }
