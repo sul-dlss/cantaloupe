@@ -140,7 +140,7 @@ public final class MetaIdentifier {
             return null;
         }
     }
-    
+
 
     /**
      * <p>Deserializes the given meta-identifier string using the {@link
@@ -155,7 +155,7 @@ public final class MetaIdentifier {
     public static MetaIdentifier fromString(String string,
                                             DelegateProxy delegateProxy) {
         final MetaIdentifierTransformer xformer =
-                new MetaIdentifierTransformerFactory().newInstance(delegateProxy);
+                MetaIdentifierTransformerFactory.newInstanceStatic(delegateProxy);
         return xformer.deserialize(string);
     }
 
@@ -301,7 +301,7 @@ public final class MetaIdentifier {
         final String deSlashedIdentifier = StringUtils.encodeSlashes(slashedIdentifier);
         final String encodedIdentifier = Reference.encode(deSlashedIdentifier);
         final MetaIdentifierTransformer xformer =
-                new MetaIdentifierTransformerFactory().newInstance(delegateProxy);
+                MetaIdentifierTransformerFactory.newInstanceStatic(delegateProxy);
         final String serializedMetaIdentifier;
 
         setIdentifier(new Identifier(encodedIdentifier));
