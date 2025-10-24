@@ -128,7 +128,6 @@ public class ImageRequestHandler extends AbstractRequestHandler
     private Callback callback;
     private OperationList operationList;
     private Future<Path> tempFileFuture;
-    private Configuration configuration;
 
 
     /**
