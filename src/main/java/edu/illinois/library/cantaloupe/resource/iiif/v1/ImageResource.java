@@ -7,6 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.ContentTypeNegotiator;
 import edu.illinois.library.cantaloupe.http.Method;
@@ -106,7 +107,7 @@ public class ImageResource extends IIIF1Resource {
             public void willProcessImage(Processor processor,
                                          Info info) throws Exception {
                 final Dimension fullSize = info.getSize(getRequest().getPageIndex());
-                ScaleValidator.validateScale(info.getMetadata().getOrientation().adjustedSize(fullSize),
+                ScaleValidator.validateScale(Configuration.getInstance(), info.getMetadata().getOrientation().adjustedSize(fullSize),
                         (Scale) opList.getFirst(Scale.class),
                         Status.FORBIDDEN,
                         getRequest().getMetaIdentifier());

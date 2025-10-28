@@ -133,6 +133,7 @@ public class ImageResource extends IIIF2Resource {
                 final Dimension virtualSize   = orientation.adjustedSize(info.getSize(pageIndex));
                 final Dimension resultingSize = ops.getResultingSize(info.getSize());
                 ScaleValidator.validateScale(
+                        Configuration.getInstance(),
                         virtualSize,
                         (Scale) ops.getFirst(Scale.class),
                         Status.FORBIDDEN,
