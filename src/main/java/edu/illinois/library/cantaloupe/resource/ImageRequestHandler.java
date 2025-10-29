@@ -215,7 +215,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
             final Optional<Info> optInfo = cacheFacade.getInfo(identifier);
             if (optInfo.isPresent()) {
                 Info info = optInfo.get();
-                operationList.applyNonEndpointMutations(info, delegateProxy);
+                operationList.applyNonEndpointMutations(info, delegateProxy, configuration);
 
                 InputStream cacheStream = null;
                 try {
@@ -305,7 +305,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                     requestContext.setPageCount(info.getNumPages());
                     // This must be done *after* the request context is fully
                     // populated, as some of the mutations may depend on it.
-                    operationList.applyNonEndpointMutations(info, delegateProxy);
+                    operationList.applyNonEndpointMutations(info, delegateProxy, configuration);
                     operationList.freeze();
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     throw new IllegalClientArgumentException(e);
@@ -315,7 +315,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                     return;
                 }
 
-                processor.validate(operationList, fullSize);
+                processor.validate(operationList, fullSize, configuration);
 
                 callback.willProcessImage(processor, info);
 
