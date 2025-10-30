@@ -7,11 +7,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
 import edu.illinois.library.cantaloupe.http.Cookies;
 
 public class RequestContextDecoratorTest {
     @Test
     void testGetCookies() {
+        // Set up configuration system properties
+        System.setProperty(ConfigurationFactory.CONFIG_VM_ARGUMENT, "memory");
         MockHttpServletRequest sr = new MockHttpServletRequest();
         sr.getHeaders().put("Cookie", List.of("fruit=apples; animal=cats",
                 "shape=cube; car=ford"));
