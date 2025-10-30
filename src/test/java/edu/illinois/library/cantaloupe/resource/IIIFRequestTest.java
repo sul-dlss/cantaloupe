@@ -6,20 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
-import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 
-class RequestTest extends BaseTest {
+class IIIFRequestTest extends BaseTest {
 
     private MockHttpServletRequest sr = new MockHttpServletRequest();
-    private Request instance = new Request(sr, Collections.emptyList(), Configuration.getInstance());
+    private IIIFRequest instance = new IIIFRequest(sr, Collections.emptyList(), Configuration.getInstance());
 
     @Test
     void testGetContextPath() {
@@ -37,18 +35,6 @@ class RequestTest extends BaseTest {
         assertEquals(2, headers.size());
         assertEquals("cats=yes", headers.getFirstValue("Cookie"));
         assertEquals("text/plain", headers.getFirstValue("Accept"));
-    }
-
-    @Disabled // TODO: write this
-    @Test
-    void testGetInputStream() {
-    }
-
-    @Test
-    void testGetMethod() {
-        sr.setMethod("PUT");
-
-        assertEquals(Method.PUT, instance.getMethod());
     }
 
     @Test
