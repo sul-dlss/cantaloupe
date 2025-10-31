@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.illinois.library.cantaloupe.config.Configuration;
@@ -16,8 +17,14 @@ import edu.illinois.library.cantaloupe.test.BaseTest;
 
 class IIIFRequestTest extends BaseTest {
 
-    private MockHttpServletRequest sr = new MockHttpServletRequest();
-    private IIIFRequest instance = new IIIFRequest(sr, Collections.emptyList(), Configuration.getInstance());
+    private MockHttpServletRequest sr;
+    private IIIFRequest instance;
+    
+    @BeforeEach
+    void beforeEach() {
+        sr = new MockHttpServletRequest();
+        instance = new IIIFRequest(sr, Collections.emptyList(), Configuration.getInstance());
+    }
 
     @Test
     void testGetContextPath() {
