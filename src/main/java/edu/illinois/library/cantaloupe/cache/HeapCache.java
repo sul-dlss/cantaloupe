@@ -238,6 +238,7 @@ class HeapCache implements DerivativeCache {
                         Thread.sleep(INTERVAL_SECONDS * 1000);
                     } catch (ConfigurationException e) {
                         logger.error("run(): {}", e.getMessage());
+                        return;
                     } catch (InterruptedException e) {
                         return;
                     }
