@@ -1,14 +1,13 @@
 package edu.illinois.library.cantaloupe.resource;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
+import edu.illinois.library.cantaloupe.http.Cookies;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
-import edu.illinois.library.cantaloupe.http.Cookies;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestContextDecoratorTest {
     @Test
