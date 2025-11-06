@@ -1,17 +1,20 @@
 package edu.illinois.library.cantaloupe.resource.iiif;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.resource.IIIFRequest;
+import edu.illinois.library.cantaloupe.resource.MockHttpServletRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import edu.illinois.library.cantaloupe.config.ConfigurationFactory;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.resource.Request;
-import edu.illinois.library.cantaloupe.resource.MockHttpServletRequest;
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 public class ImageDispositionTest {
+    IIIFRequest request = new IIIFRequest(new MockHttpServletRequest(), Collections.emptyList(), Configuration.getInstance());
+
     @BeforeAll
     public static void beforeClass() throws Exception {
         ConfigurationFactory.clearInstance();
@@ -21,7 +24,6 @@ public class ImageDispositionTest {
     @Test
     void testGetRepresentationDispositionWithNoQueryArgument() {
 
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().remove(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG);
         String disposition = ImageDisposition.getRepresentationDisposition(
@@ -32,7 +34,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithInlineQueryArgument() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "inline");
@@ -44,8 +45,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgument() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
-
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment");
@@ -57,7 +56,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgumentWithASCIIFilename() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename=\"dogs.jpg\"");
@@ -71,7 +69,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgumentWithUnsafeASCIIFilename() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename=\"unsafe_path../\\.jpg\"");
@@ -83,7 +80,7 @@ public class ImageDispositionTest {
                 disposition);
 
         // attachment; filename="unsafe_injection_.....//./.jpg"
-        request = new Request(new MockHttpServletRequest(), Collections.emptyList());
+        request = new IIIFRequest(new MockHttpServletRequest(), Collections.emptyList(), Configuration.getInstance());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename=\"unsafe_injection_.....//./.jpg\"");
@@ -96,8 +93,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgumentWithUnicodeFilename() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
-
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename*= UTF-8''dogs.jpg");
@@ -110,7 +105,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgumentWithUnsafeUnicodeFilename() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename*=UTF-8''unsafe_path../\\.jpg");
@@ -121,7 +115,7 @@ public class ImageDispositionTest {
                 disposition);
 
         // attachment; filename*= utf-8''"unsafe_injection_.....//./.jpg"
-        request = new Request(new MockHttpServletRequest(), Collections.emptyList());
+        request = new IIIFRequest(new MockHttpServletRequest(), Collections.emptyList(), Configuration.getInstance());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename*= utf-8''unsafe_injection_.....//./.jpg");
@@ -133,7 +127,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionWithAttachmentQueryArgumentWithASCIIAndUnicodeFilenames() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
         request.getReference().getQuery().set(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename=\"dogs.jpg\"; filename*= UTF-8''dogs.jpg");
@@ -146,8 +139,6 @@ public class ImageDispositionTest {
 
     @Test
     void testGetRepresentationDispositionFallsBackToNone() {
-        Request request = new Request(new MockHttpServletRequest(), Collections.emptyList());
-
         request.getReference().getQuery().remove(
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG);
 

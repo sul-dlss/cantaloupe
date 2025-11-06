@@ -14,10 +14,10 @@ import edu.illinois.library.cantaloupe.processor.Processor;
 import edu.illinois.library.cantaloupe.processor.ProcessorConnector;
 import edu.illinois.library.cantaloupe.processor.ProcessorFactory;
 import edu.illinois.library.cantaloupe.processor.SourceFormatException;
-import edu.illinois.library.cantaloupe.source.StatResult;
-import edu.illinois.library.cantaloupe.status.HealthChecker;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
+import edu.illinois.library.cantaloupe.source.StatResult;
+import edu.illinois.library.cantaloupe.status.HealthChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +132,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
     /**
      * Creates a new ImageRequestHandler with full configuration options.
      *
+     * @deprecated                 Use the constructor that takes configuration
      * @param operationList        Operation list to process.
      * @param request              The IIIF request.
      * @param callback             Callback to receive events during request handling.
@@ -143,6 +144,24 @@ public class ImageRequestHandler extends AbstractRequestHandler
         this.callback = callback;
         this.isBypassingCache = request.isBypassingCache();
         this.isBypassingCacheRead = request.isBypassingCacheRead();
+    }
+
+    /**
+     * Creates a new ImageRequestHandler with injected Configuration.
+     *
+     * @param operationList        Operation list to process.
+     * @param request              The IIIF request.
+     * @param callback             Callback to receive events during request handling.
+     * @param configuration        The Configuration instance to inject.
+     */
+    public ImageRequestHandler(OperationList operationList, IIIFRequest request, Callback callback, Configuration configuration) {
+        this.operationList = operationList;
+        this.delegateProxy = request.getDelegateProxy();
+        this.requestContext = request.getRequestContext();
+        this.callback = callback;
+        this.isBypassingCache = request.isBypassingCache();
+        this.isBypassingCacheRead = request.isBypassingCacheRead();
+        this.configuration = configuration;
     }
 
     /**
@@ -182,8 +201,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
         }
 
         final Identifier identifier   = operationList.getIdentifier();
-        final Configuration config    = Configuration.getInstance();
-        final CacheFacade cacheFacade = new CacheFacade();
+        final CacheFacade cacheFacade = new CacheFacade(configuration);
 
         Iterator<Format> formatIterator = Collections.emptyIterator();
         boolean isFormatKnownYet = false;
@@ -197,7 +215,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
             final Optional<Info> optInfo = cacheFacade.getInfo(identifier);
             if (optInfo.isPresent()) {
                 Info info = optInfo.get();
-                operationList.applyNonEndpointMutations(info, delegateProxy);
+                operationList.applyNonEndpointMutations(info, delegateProxy, configuration);
 
                 InputStream cacheStream = null;
                 try {
@@ -223,7 +241,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
             }
         }
 
-        final Source source = new SourceFactory().newSource(
+        final Source source = new SourceFactory(configuration).newSource(
                 identifier, delegateProxy);
 
         // If we are resolving first, or if the source image is not present in
@@ -235,7 +253,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                 StatResult result = source.stat();
                 callback.sourceAccessed(result);
             } catch (NoSuchFileException e) { // this needs to be rethrown!
-                if (config.getBoolean(Key.CACHE_SERVER_PURGE_MISSING, false)) {
+                if (configuration.getBoolean(Key.CACHE_SERVER_PURGE_MISSING, false)) {
                     // If the image was not found, purge it from the cache.
                     cacheFacade.purgeAsync(operationList.getIdentifier());
                 }
@@ -266,11 +284,12 @@ public class ImageRequestHandler extends AbstractRequestHandler
             final Format format = formatIterator.next();
             // Obtain an instance of the processor assigned to this format.
             String processorName = "unknown processor";
-            try (Processor processor = new ProcessorFactory().newProcessor(format)) {
+            ProcessorFactory processorFactory = new ProcessorFactory(configuration);
+            try (Processor processor = processorFactory.newProcessor(format)) {
                 processorName = processor.getClass().getSimpleName();
 
                 // Connect it to the source.
-                tempFileFuture = new ProcessorConnector().connect(
+                tempFileFuture = new ProcessorConnector(configuration).connect(
                         source, processor, identifier, format);
 
                 final Info info = getOrReadInfo(
@@ -286,7 +305,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                     requestContext.setPageCount(info.getNumPages());
                     // This must be done *after* the request context is fully
                     // populated, as some of the mutations may depend on it.
-                    operationList.applyNonEndpointMutations(info, delegateProxy);
+                    operationList.applyNonEndpointMutations(info, delegateProxy, configuration);
                     operationList.freeze();
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     throw new IllegalClientArgumentException(e);
@@ -296,12 +315,12 @@ public class ImageRequestHandler extends AbstractRequestHandler
                     return;
                 }
 
-                processor.validate(operationList, fullSize);
+                processor.validate(operationList, fullSize, configuration);
 
                 callback.willProcessImage(processor, info);
 
                 new ImageRepresentation(info, processor, operationList,
-                        isBypassingCacheRead, isBypassingCache)
+                        isBypassingCacheRead, isBypassingCache, configuration)
                         .write(outputStream);
 
                 // Notify the health checker of a successful response.
@@ -314,7 +333,7 @@ public class ImageRequestHandler extends AbstractRequestHandler
                         format, identifier);
             }
         }
-        if (config.getBoolean(Key.PROCESSOR_PURGE_INCOMPATIBLE_FROM_SOURCE_CACHE, false)) {
+        if (configuration.getBoolean(Key.PROCESSOR_PURGE_INCOMPATIBLE_FROM_SOURCE_CACHE, false)) {
             TaskQueue.getInstance().submit(() -> {
                 try {
                     cacheFacade.getSourceCacheFile(identifier).ifPresent(file -> {

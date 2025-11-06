@@ -6,10 +6,10 @@ import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Reference;
 import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.MediaType;
 import edu.illinois.library.cantaloupe.operation.Encode;
 import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.util.S3ClientBuilder;
 import edu.illinois.library.cantaloupe.util.S3Utils;
 import edu.illinois.library.cantaloupe.util.Stopwatch;
@@ -72,12 +72,17 @@ class S3Cache implements DerivativeCache {
     /**
      * Lazy-initialized by {@link #getClientInstance}.
      */
-    private static S3Client client;
+    private S3Client client;
 
-    static synchronized S3Client getClientInstance() {
+    private Configuration configuration;
+
+    S3Cache(Configuration configuration) { 
+        this.configuration = configuration;
+    }
+
+    synchronized S3Client getClientInstance() {
         if (client == null) {
-            final Configuration config = Configuration.getInstance();
-            final String endpointStr = config.getString(Key.S3CACHE_ENDPOINT);
+            final String endpointStr = configuration.getString(Key.S3CACHE_ENDPOINT);
             URI endpointURI = null;
             if (endpointStr != null) {
                 try {
@@ -88,10 +93,10 @@ class S3Cache implements DerivativeCache {
                 }
             }
             client = new S3ClientBuilder()
-                    .accessKeyID(config.getString(Key.S3CACHE_ACCESS_KEY_ID))
-                    .secretAccessKey(config.getString(Key.S3CACHE_SECRET_KEY))
+                    .accessKeyID(configuration.getString(Key.S3CACHE_ACCESS_KEY_ID))
+                    .secretAccessKey(configuration.getString(Key.S3CACHE_SECRET_KEY))
                     .endpointURI(endpointURI)
-                    .region(config.getString(Key.S3CACHE_REGION))
+                    .region(configuration.getString(Key.S3CACHE_REGION))
                     .build();
         }
         return client;
@@ -100,23 +105,22 @@ class S3Cache implements DerivativeCache {
     /**
      * @return Earliest valid instant, with second resolution.
      */
-    private static Instant earliestValidInstant() {
-        final Configuration config = Configuration.getInstance();
-        final long ttl = config.getLong(Key.DERIVATIVE_CACHE_TTL);
+    private Instant earliestValidInstant() {
+        final long ttl = configuration.getLong(Key.DERIVATIVE_CACHE_TTL);
         return (ttl > 0) ? Instant.now().minusSeconds(ttl) : Instant.EPOCH;
     }
 
-    private static boolean isValid(S3Object object) {
+    private boolean isValid(S3Object object) {
         return isValid(object.lastModified());
     }
 
-    private static boolean isValid(Instant lastModified) {
+    private boolean isValid(Instant lastModified) {
         Instant earliestAllowed = earliestValidInstant();
         return lastModified.isAfter(earliestAllowed);
     }
 
     String getBucketName() {
-        return Configuration.getInstance().getString(Key.S3CACHE_BUCKET_NAME);
+        return configuration.getString(Key.S3CACHE_BUCKET_NAME);
     }
 
     @Override
@@ -236,7 +240,7 @@ class S3Cache implements DerivativeCache {
      *         with trailing slash.
      */
     String getObjectKeyPrefix() {
-        String prefix = Configuration.getInstance().
+        String prefix = configuration.
                 getString(Key.S3CACHE_OBJECT_KEY_PREFIX, "");
         if (prefix.isEmpty() || prefix.equals("/")) {
             return "";
