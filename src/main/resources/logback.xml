@@ -56,6 +56,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AppFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.application.FileAppender.enabled").contains("true") &amp;&amp; property("log.application.FileAppender.logstash.enabled").contains("true")'>
@@ -68,6 +71,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AppFileLogLogstash" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Error File Appenders -->
@@ -81,6 +87,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="ErrorFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.error.FileAppender.enabled").contains("true") &amp;&amp; property("log.error.FileAppender.logstash.enabled").contains("true")'>
@@ -93,6 +102,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="ErrorFileLogLogstash" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Rolling File Appenders for Application Logs -->
@@ -110,6 +122,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AppRollingFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.application.RollingFileAppender.enabled").contains("true") &amp;&amp; property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
@@ -126,6 +141,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AppRollingFileLogLogstash" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Rolling File Appenders for Error Logs -->
@@ -143,6 +161,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="ErrorRollingFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.error.RollingFileAppender.enabled").contains("true") &amp;&amp; property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
@@ -159,6 +180,9 @@
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="ErrorRollingFileLogLogstash" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Syslog Appenders -->
@@ -169,8 +193,12 @@
                 <syslogHost>${log.application.SyslogAppender.host}</syslogHost>
                 <port>${log.application.SyslogAppender.port}</port>
                 <facility>${log.application.SyslogAppender.facility}</facility>
+                <suffixPattern>cantaloupe: %logger{15} %msg</suffixPattern>
             </appender>
         </then>
+        <else>
+            <appender name="AppSyslogLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Access Log Appenders -->
@@ -179,6 +207,7 @@
         <encoder>
             <pattern>%msg%n</pattern>
         </encoder>
+        <withJansi>false</withJansi>
     </appender>
 
     <if condition='property("log.access.FileAppender.enabled").contains("true")'>
@@ -187,11 +216,13 @@
                 <filter class="edu.illinois.library.cantaloupe.logging.AccessLogFilter" />
                 <file>${log.access.FileAppender.pathname}</file>
                 <encoder>
-                    <!-- already in W3C Extended Log File Format -->
                     <pattern>%msg%n</pattern>
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AccessFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
@@ -204,11 +235,13 @@
                     <maxHistory>${log.access.RollingFileAppender.TimeBasedRollingPolicy.max_history}</maxHistory>
                 </rollingPolicy>
                 <encoder>
-                    <!-- already in W3C Extended Log File Format -->
                     <pattern>%msg%n</pattern>
                 </encoder>
             </appender>
         </then>
+        <else>
+            <appender name="AccessRollingFileLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
@@ -218,120 +251,77 @@
                 <syslogHost>${log.access.SyslogAppender.host}</syslogHost>
                 <port>${log.access.SyslogAppender.port}</port>
                 <facility>${log.access.SyslogAppender.facility}</facility>
+                <suffixPattern>cantaloupe: %msg</suffixPattern>
             </appender>
         </then>
+        <else>
+            <appender name="AccessSyslogLog" class="ch.qos.logback.core.helpers.NOPAppender" />
+        </else>
     </if>
 
     <!-- Access Logger Configuration -->
     <logger name="edu.illinois.library.cantaloupe.logging.AccessLogService" additivity="false">
-        <if condition='property("log.access.ConsoleAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessStdoutLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.FileAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessRollingFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessSyslogLog" />
-            </then>
-        </if>
+        <appender-ref ref="AccessStdoutLog" />
+        <appender-ref ref="AccessFileLog" />
+        <appender-ref ref="AccessRollingFileLog" />
+        <appender-ref ref="AccessSyslogLog" />
     </logger>
 
     <!-- Root Logger Configuration -->
-    <root level="${log.application.level}">
-        <!--
-        Access log appenders
-        -->
-        <if condition='property("log.access.ConsoleAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessStdoutLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.FileAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessRollingFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
-            <then>
-                <appender-ref ref="AccessSyslogLog" />
-            </then>
-        </if>
-
-        <!--
-        Application log appenders
-        -->
-        <if condition='property("log.application.ConsoleAppender.enabled").contains("true") &amp;&amp; !property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
-            <then>
+    <!-- Console appenders -->
+    <if condition='property("log.application.ConsoleAppender.enabled").contains("true") &amp;&amp; !property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
+        <then>
+            <root level="${log.application.level}">
                 <appender-ref ref="AppStdoutLog" />
                 <appender-ref ref="AppStderrLog" />
-            </then>
-        </if>
-        <if condition='property("log.application.ConsoleAppender.enabled").contains("true") &amp;&amp; property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
-            <then>
+                <appender-ref ref="AppFileLog" />
+                <appender-ref ref="AppFileLogLogstash" />
+                <appender-ref ref="ErrorFileLog" />
+                <appender-ref ref="ErrorFileLogLogstash" />
+                <appender-ref ref="AppRollingFileLog" />
+                <appender-ref ref="AppRollingFileLogLogstash" />
+                <appender-ref ref="ErrorRollingFileLog" />
+                <appender-ref ref="ErrorRollingFileLogLogstash" />
+                <appender-ref ref="AppSyslogLog" />
+            </root>
+        </then>
+    </if>
+
+    <if condition='property("log.application.ConsoleAppender.enabled").contains("true") &amp;&amp; property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
+        <then>
+            <root level="${log.application.level}">
                 <appender-ref ref="AppStdoutLogLogstash" />
                 <appender-ref ref="AppStderrLogLogstash" />
-            </then>
-        </if>
-        <if condition='property("log.application.FileAppender.enabled").contains("true") &amp;&amp; !property("log.application.FileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="AppFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.application.FileAppender.enabled").contains("true") &amp;&amp; property("log.application.FileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="AppFileLogLogstash" />
-            </then>
-        </if>
-        <if condition='property("log.error.FileAppender.enabled").contains("true") &amp;&amp; !property("log.error.FileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="ErrorFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.error.FileAppender.enabled").contains("true") &amp;&amp; property("log.error.FileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="ErrorFileLogLogstash" />
-            </then>
-        </if>
-        <if condition='property("log.application.RollingFileAppender.enabled").contains("true") &amp;&amp; !property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="AppRollingFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.application.RollingFileAppender.enabled").contains("true") &amp;&amp; property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="AppRollingFileLogLogstash" />
-            </then>
-        </if>
-        <if condition='property("log.error.RollingFileAppender.enabled").contains("true") &amp;&amp; !property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="ErrorRollingFileLog" />
-            </then>
-        </if>
-        <if condition='property("log.error.RollingFileAppender.enabled").contains("true") &amp;&amp; property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="ErrorRollingFileLogLogstash" />
-            </then>
-        </if>
-        <if condition='property("log.application.SyslogAppender.enabled").contains("true")'>
-            <then>
                 <appender-ref ref="AppSyslogLog" />
-            </then>
-        </if>
-    </root>
+            </root>
+        </then>
+    </if>
+
+    <!-- Fallback root logger if console is disabled -->
+    <if condition='!property("log.application.ConsoleAppender.enabled").contains("true")'>
+        <then>
+            <root level="${log.application.level}">
+                <appender-ref ref="AppStdoutLog" />
+                <appender-ref ref="AppStderrLog" />
+                <appender-ref ref="AppFileLog" />
+                <appender-ref ref="AppFileLogLogstash" />
+                <appender-ref ref="ErrorFileLog" />
+                <appender-ref ref="ErrorFileLogLogstash" />
+                <appender-ref ref="AppRollingFileLog" />
+                <appender-ref ref="AppRollingFileLogLogstash" />
+                <appender-ref ref="ErrorRollingFileLog" />
+                <appender-ref ref="ErrorRollingFileLogLogstash" />
+                <appender-ref ref="AppSyslogLog" />
+            </root>
+        </then>
+    </if>
 
 </configuration>
