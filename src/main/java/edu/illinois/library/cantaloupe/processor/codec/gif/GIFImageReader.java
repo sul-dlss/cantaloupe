@@ -1,21 +1,28 @@
 package edu.illinois.library.cantaloupe.processor.codec.gif;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Compression;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.image.Compression;
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractIIOImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
 
 public final class GIFImageReader extends AbstractIIOImageReader
         implements ImageReader {
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(GIFImageReader.class);
+
+    private final FormatRegistry formatRegistry;
+    public GIFImageReader(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     static final String IMAGEIO_PLUGIN_CONFIG_KEY =
             "processor.imageio.gif.reader";
@@ -38,7 +45,7 @@ public final class GIFImageReader extends AbstractIIOImageReader
 
     @Override
     protected Format getFormat() {
-        return Format.get("gif");
+        return formatRegistry.formatWithKey("gif");
     }
 
     @Override

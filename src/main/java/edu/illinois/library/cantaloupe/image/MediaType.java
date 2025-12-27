@@ -1,5 +1,20 @@
 package edu.illinois.library.cantaloupe.image;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.parser.AutoDetectParser;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,20 +23,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * IANA media (a.k.a. MIME) type. Instances are immutable.
@@ -189,16 +190,16 @@ public final class MediaType {
     /**
      * @return Format corresponding with the instance.
      */
-    public Format toFormat() {
-        for (Format enumValue : Format.all()) {
-            for (MediaType type : enumValue.getMediaTypes()) {
-                if (type.equals(this)) {
-                    return enumValue;
-                }
-            }
-        }
-        return Format.UNKNOWN;
-    }
+    // public Format toFormat() {
+    //     for (Format enumValue : Format.all()) {
+    //         for (MediaType type : enumValue.getMediaTypes()) {
+    //             if (type.equals(this)) {
+    //                 return enumValue;
+    //             }
+    //         }
+    //     }
+    //     return Format.UNKNOWN;
+    // }
 
     @Override
     public String toString() {

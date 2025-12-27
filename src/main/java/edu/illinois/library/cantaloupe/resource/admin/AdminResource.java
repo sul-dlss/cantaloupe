@@ -1,11 +1,25 @@
 package edu.illinois.library.cantaloupe.resource.admin;
 
+import java.awt.GraphicsEnvironment;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.cache.CacheFactory;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
 import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Identifier;
 import edu.illinois.library.cantaloupe.image.MetaIdentifierTransformerFactory;
 import edu.illinois.library.cantaloupe.operation.Scale;
@@ -19,18 +33,6 @@ import edu.illinois.library.cantaloupe.resource.ThymeleafRepresentation;
 import edu.illinois.library.cantaloupe.source.Source;
 import edu.illinois.library.cantaloupe.source.SourceFactory;
 import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.GraphicsEnvironment;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Handles the web-based Control Panel.
@@ -146,7 +148,7 @@ public class AdminResource extends AbstractAdminResource {
     public void doGET() throws Exception {
         getResponse().setHeader("Content-Type", "text/html;charset=UTF-8");
 
-        new ThymeleafRepresentation("/admin.html", getTemplateVars())
+        new ThymeleafRepresentation("/admin.html", getTemplateVars(FormatRegistry.buildFromConfig(Configuration.getInstance())))
                 .write(getResponse().getOutputStream());
     }
 
@@ -154,7 +156,7 @@ public class AdminResource extends AbstractAdminResource {
      * @return Map containing keys that will be used as variables in the admin
      *         interface's HTML template.
      */
-    private TemplateVariables getTemplateVars() {
+    private TemplateVariables getTemplateVars(FormatRegistry formatRegistry) {
         final TemplateVariables vars = TemplateVariables.getDefault(getRequest());
         vars.put("adminUri", StringUtils.stripEnd((String) vars.get("basePath"), "/") + Route.ADMIN_PATH);
 
@@ -232,12 +234,12 @@ public class AdminResource extends AbstractAdminResource {
 
         // selection strategy
         vars.put("processorSelectionStrategy",
-                new ProcessorFactory().getSelectionStrategy());
+                new ProcessorFactory(formatRegistry).getSelectionStrategy());
 
         // source format assignments
         Map<FormatProxy, ProcessorProxy> assignments = new TreeMap<>();
-        for (Format format : Format.all()) {
-            try (Processor proc = new ProcessorFactory().newProcessor(format)) {
+        for (Format format : formatRegistry.allFormats()) {
+            try (Processor proc = new ProcessorFactory(FormatRegistry.buildFromConfig(Configuration.getInstance())).newProcessor(format)) {
                 assignments.put(new FormatProxy(format), new ProcessorProxy(proc));
             } catch (SourceFormatException |
                     InitializationException |
@@ -248,7 +250,7 @@ public class AdminResource extends AbstractAdminResource {
         vars.put("processorAssignments", assignments);
 
         // image source formats
-        List<FormatProxy> imageFormats = Format.all()
+        List<FormatProxy> imageFormats = formatRegistry.allFormats()
                 .stream()
                 .filter(f -> !f.isVideo())
                 .sorted(Comparator.comparing(Format::getName))
@@ -257,7 +259,7 @@ public class AdminResource extends AbstractAdminResource {
         vars.put("imageSourceFormats", imageFormats);
 
         // video source formats
-        List<FormatProxy> videoFormats = Format.all()
+        List<FormatProxy> videoFormats = formatRegistry.allFormats()
                 .stream()
                 .filter(Format::isVideo)
                 .sorted(Comparator.comparing(Format::getName))
@@ -266,7 +268,7 @@ public class AdminResource extends AbstractAdminResource {
         vars.put("videoSourceFormats", videoFormats);
 
         // source format assignments
-        vars.put("sourceFormats", Format.all()
+        vars.put("sourceFormats", formatRegistry.allFormats()
                 .stream()
                 .map(FormatProxy::new)
                 .collect(Collectors.toUnmodifiableList()));

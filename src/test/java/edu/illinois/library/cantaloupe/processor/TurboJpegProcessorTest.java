@@ -26,7 +26,7 @@ public class TurboJpegProcessorTest extends AbstractProcessorTest {
     protected TurboJpegProcessor newInstance() {
         TurboJpegProcessor proc = new TurboJpegProcessor();
         try {
-            proc.setSourceFormat(Format.get("jpg"));
+            proc.setSourceFormat(formatRegistry.formatWithKey("jpg"));
         } catch (SourceFormatException e) {
             fail("Huge bug");
         }
@@ -91,14 +91,14 @@ public class TurboJpegProcessorTest extends AbstractProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("jpg")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("jpg")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("gif")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("gif")));
         }
     }
 

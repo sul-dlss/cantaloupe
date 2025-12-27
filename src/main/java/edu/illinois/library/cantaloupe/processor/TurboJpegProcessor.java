@@ -1,7 +1,17 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.Metadata;
 import edu.illinois.library.cantaloupe.image.Orientation;
@@ -26,14 +36,6 @@ import edu.illinois.library.cantaloupe.processor.codec.jpeg.JPEGMetadataReader;
 import edu.illinois.library.cantaloupe.processor.codec.jpeg.TurboJPEGImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.jpeg.TurboJPEGImageWriter;
 import edu.illinois.library.cantaloupe.source.StreamFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>Processor using the TurboJPEG high-level API to the libjpeg-turbo native
@@ -82,7 +84,8 @@ public class TurboJpegProcessor extends AbstractProcessor
         isClassInitialized = false;
     }
 
-    TurboJpegProcessor() {
+    TurboJpegProcessor(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
         initializeClass();
         try {
             imageReader = new TurboJPEGImageReader();
@@ -100,7 +103,7 @@ public class TurboJpegProcessor extends AbstractProcessor
 
     @Override
     public Set<Format> getAvailableOutputFormats() {
-        return ImageWriterFactory.supportedFormats();
+        return ImageWriterFactory.supportedFormats(formatRegistry);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class TurboJpegProcessor extends AbstractProcessor
 
     @Override
     public Format getSourceFormat() {
-        return Format.get("jpg");
+        return formatRegistry.formatWithKey("jpg");
     }
 
     @Override
@@ -127,7 +130,7 @@ public class TurboJpegProcessor extends AbstractProcessor
     @Override
     public void setSourceFormat(Format format)
             throws SourceFormatException {
-        if (!Format.get("jpg").equals(format)) {
+        if (!formatRegistry.formatWithKey("jpg").equals(format)) {
             throw new SourceFormatException(format);
         }
     }
@@ -150,14 +153,14 @@ public class TurboJpegProcessor extends AbstractProcessor
 
     @Override
     public boolean supportsSourceFormat(Format format) {
-        return Format.get("jpg").equals(format);
+        return formatRegistry.formatWithKey("jpg").equals(format);
     }
 
     @Override
     public void process(final OperationList opList,
                         final Info info,
                         final OutputStream outputStream) throws FormatException, ProcessorException {
-        if (Format.get("jpg").equals(opList.getOutputFormat())) {
+        if (formatRegistry.formatWithKey("jpg").equals(opList.getOutputFormat())) {
             processUsingTurboJPEGWriter(opList, info, outputStream);
         } else {
             processUsingImageIOWriter(opList, info, outputStream);
@@ -252,7 +255,7 @@ public class TurboJpegProcessor extends AbstractProcessor
                 } else if (op instanceof Sharpen) {
                     image = Java2DUtil.sharpen(image, (Sharpen) op);
                 } else if (op instanceof Overlay) {
-                    Java2DUtil.applyOverlay(image, (Overlay) op);
+                    Java2DUtil.applyOverlay(image, (Overlay) op, formatRegistry);
                 }
             }
             writer.write(image, outputStream);
@@ -341,11 +344,11 @@ public class TurboJpegProcessor extends AbstractProcessor
                 } else if (op instanceof Sharpen) {
                     image = Java2DUtil.sharpen(image, (Sharpen) op);
                 } else if (op instanceof Overlay) {
-                    Java2DUtil.applyOverlay(image, (Overlay) op);
+                    Java2DUtil.applyOverlay(image, (Overlay) op, formatRegistry);
                 }
             }
             Encode encode = (Encode) opList.getFirst(Encode.class);
-            ImageWriter writer = new ImageWriterFactory().newImageWriter(encode);
+            ImageWriter writer = new ImageWriterFactory(formatRegistry).newImageWriter(encode);
             writer.write(image, outputStream);
         } catch (SourceFormatException e) {
             throw e;
@@ -357,7 +360,7 @@ public class TurboJpegProcessor extends AbstractProcessor
     @Override
     public Info readInfo() throws IOException {
         return Info.builder()
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withSize(imageReader.getWidth(), imageReader.getHeight())
                 .withTileSize(imageReader.getWidth(), imageReader.getHeight())
                 .withNumResolutions(1)

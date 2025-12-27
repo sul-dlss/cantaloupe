@@ -11,7 +11,7 @@ public class SourceFormatExceptionTest extends BaseTest {
     @Test
     void testConstructor4WithKnownFormat() {
         Exception e = new SourceFormatException(
-                new MockStreamProcessor(), Format.get("jpg"));
+                new MockStreamProcessor(), formatRegistry.formatWithKey("jpg"));
         assertEquals(MockStreamProcessor.class.getSimpleName() + " does not support the JPEG source format",
                 e.getMessage());
     }

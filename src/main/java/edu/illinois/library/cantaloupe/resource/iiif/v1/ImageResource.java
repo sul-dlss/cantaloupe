@@ -13,6 +13,7 @@ import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.http.Status;
 import edu.illinois.library.cantaloupe.image.Dimension;
 import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.Identifier;
 import edu.illinois.library.cantaloupe.image.Info;
 import edu.illinois.library.cantaloupe.image.MediaType;
@@ -43,7 +44,15 @@ public class ImageResource extends IIIF1Resource {
     /**
      * Format to assume when no extension is present in the URI.
      */
-    private static final Format DEFAULT_FORMAT = Format.get("jpg");
+    private final Format defaultFormat() {
+        return formatRegistry.formatWithKey("jpg");
+    }
+    
+
+    private FormatRegistry formatRegistry;
+    public ImageResource(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     private static final Method[] SUPPORTED_METHODS =
             new Method[] { Method.GET, Method.OPTIONS };
@@ -138,7 +147,7 @@ public class ImageResource extends IIIF1Resource {
                 outputFormat.getPreferredMediaType().toString());
 
         final ComplianceLevel complianceLevel = ComplianceLevel.getLevel(
-                availableOutputFormats);
+                availableOutputFormats, formatRegistry);
         getResponse().setHeader("Link",
                 String.format("<%s>;rel=\"profile\";", complianceLevel.getUri()));
     }
@@ -179,7 +188,7 @@ public class ImageResource extends IIIF1Resource {
 
         Format format = null;
         if (extension != null) {
-            format = Format.all().stream()
+            format = formatRegistry.allFormats().stream()
                     .filter(f -> f.getPreferredExtension().equals(extension))
                     .findFirst()
                     .orElse(null);
@@ -191,12 +200,12 @@ public class ImageResource extends IIIF1Resource {
             if (contentType != null) {
                 format = new MediaType(contentType).toFormat();
             } else {
-                format = DEFAULT_FORMAT;
+                format = defaultFormat();
             }
         }
 
         if (format == null) {
-            format = DEFAULT_FORMAT;
+            format = defaultFormat();
         }
         return format;
     }

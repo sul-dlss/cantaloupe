@@ -11,6 +11,7 @@ import java.util.Locale;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Reference;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 import edu.illinois.library.cantaloupe.image.MetaIdentifier;
 import edu.illinois.library.cantaloupe.resource.AbstractResource;
 import edu.illinois.library.cantaloupe.resource.IIIFRequest;
@@ -18,7 +19,7 @@ import edu.illinois.library.cantaloupe.resource.RequestContextDecorator;
 import edu.illinois.library.cantaloupe.resource.StringRepresentation;
 
 public abstract class IIIFResource extends AbstractResource {
-
+    public FormatRegistry formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
 
     @Override
     public void doInit() throws Exception {

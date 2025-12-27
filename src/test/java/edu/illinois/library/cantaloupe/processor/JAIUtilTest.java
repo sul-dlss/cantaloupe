@@ -1,9 +1,25 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import static edu.illinois.library.cantaloupe.test.Assert.ImageAssert.assertGray;
+import static edu.illinois.library.cantaloupe.test.Assert.ImageAssert.assertRGBA;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+
+import javax.media.jai.Interpolation;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.RenderedOp;
+
+import org.junit.jupiter.api.Test;
+
 import edu.illinois.library.cantaloupe.image.ScaleConstraint;
 import edu.illinois.library.cantaloupe.operation.ColorTransform;
 import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Format;
 import edu.illinois.library.cantaloupe.operation.CropByPercent;
 import edu.illinois.library.cantaloupe.operation.CropByPixels;
 import edu.illinois.library.cantaloupe.operation.CropToSquare;
@@ -19,17 +35,6 @@ import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
 import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
 import edu.illinois.library.cantaloupe.test.BaseTest;
 import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
-
-import javax.media.jai.Interpolation;
-import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-
-import static edu.illinois.library.cantaloupe.test.Assert.ImageAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("deprecation")
 class JAIUtilTest extends BaseTest {
@@ -553,7 +558,7 @@ class JAIUtilTest extends BaseTest {
         ImageReader reader = null;
         try {
             reader = new ImageReaderFactory().newImageReader(
-                    Format.get("png"), TestUtil.getImage(name));
+                    formatRegistry.formatWithKey("png"), TestUtil.getImage(name));
 
             Crop crop          = (Crop) ops.getFirst(Crop.class);
             Scale scale        = (Scale) ops.getFirst(Scale.class);

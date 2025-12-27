@@ -1,8 +1,9 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
-
 import java.util.List;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 /**
  * Selects a {@link Processor} based on which ones are available for use, and
@@ -24,13 +25,19 @@ class AutomaticSelectionStrategy implements SelectionStrategy {
     private static final List<Class<? extends Processor>> FALLBACK_CANDIDATES = List.of(
             Java2dProcessor.class);
 
+    private final FormatRegistry formatRegistry;
+
+    AutomaticSelectionStrategy(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
+    
     @Override
     public List<Class<? extends Processor>> getPreferredProcessors(Format sourceFormat) {
-        if (Format.get("jp2").equals(sourceFormat)) {
+        if (formatRegistry.formatWithKey("jp2").equals(sourceFormat)) {
             return JP2_CANDIDATES;
-        } else if (Format.get("jpg").equals(sourceFormat)) {
+        } else if (formatRegistry.formatWithKey("jpg").equals(sourceFormat)) {
             return JPG_CANDIDATES;
-        } else if (Format.get("pdf").equals(sourceFormat)) {
+        } else if (formatRegistry.formatWithKey("pdf").equals(sourceFormat)) {
             return PDF_CANDIDATES;
         } else if (sourceFormat.isVideo()) {
             return VIDEO_CANDIDATES;

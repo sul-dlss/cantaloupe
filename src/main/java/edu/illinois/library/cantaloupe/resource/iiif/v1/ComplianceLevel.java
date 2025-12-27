@@ -1,9 +1,10 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
-import edu.illinois.library.cantaloupe.image.Format;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 /**
  * @see <a href="http://iiif.io/api/image/1.1/compliance.html">Compliance
@@ -15,26 +16,24 @@ enum ComplianceLevel {
     LEVEL_1("http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1"),
     LEVEL_2("http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2");
 
-    private static final Set<Format> LEVEL_1_OUTPUT_FORMATS = new HashSet<>();
-    private static final Set<Format> LEVEL_2_OUTPUT_FORMATS = new HashSet<>();
-
     private String uri;
-
-    static {
-        LEVEL_1_OUTPUT_FORMATS.add(Format.get("jpg"));
-        LEVEL_2_OUTPUT_FORMATS.addAll(LEVEL_1_OUTPUT_FORMATS);
-        LEVEL_2_OUTPUT_FORMATS.add(Format.get("png"));
-    }
 
     /**
      * @return Effective IIIF compliance level corresponding to the given
      * parameters.
      */
-    public static ComplianceLevel getLevel(Set<Format> outputFormats) {
+    public static ComplianceLevel getLevel(Set<Format> outputFormats, FormatRegistry formatRegistry) {
         ComplianceLevel level = LEVEL_0;
-        if (outputFormats.containsAll(LEVEL_1_OUTPUT_FORMATS)) {
+        Set<Format> l1outputFormats = new HashSet<>();
+        l1outputFormats.add(formatRegistry.formatWithKey("jpg"));
+
+        Set<Format> l2outputFormats = new HashSet<>();
+        l2outputFormats.addAll(l1outputFormats);
+        l2outputFormats.add(formatRegistry.formatWithKey("png"));
+
+        if (outputFormats.containsAll(l1outputFormats)) {
             level = LEVEL_1;
-            if (outputFormats.containsAll(LEVEL_2_OUTPUT_FORMATS)) {
+            if (outputFormats.containsAll(l2outputFormats)) {
                 level = LEVEL_2;
             }
         }

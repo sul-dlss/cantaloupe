@@ -372,7 +372,7 @@ public class ImageAPIResourceTester {
 
                 @Override
                 public Format next() {
-                    return Format.get("jpg");
+                    return formatRegistry.formatWithKey("jpg");
                 }
             };
         }

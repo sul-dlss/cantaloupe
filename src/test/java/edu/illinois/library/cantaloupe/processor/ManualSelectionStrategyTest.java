@@ -1,16 +1,17 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.test.BaseTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
 public class ManualSelectionStrategyTest extends BaseTest {
 
@@ -30,7 +31,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
         List<Class<? extends Processor>> expected =
                 Collections.singletonList(PdfBoxProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("pdf")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("pdf")));
     }
 
     @Test
@@ -40,7 +41,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
 
         List<Class<? extends Processor>> expected =
                 Collections.singletonList(Java2dProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("gif")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("gif")));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
         List<Class<? extends Processor>> expected = List.of(
                 PdfBoxProcessor.class,
                 Java2dProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("pdf")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("pdf")));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
         Configuration config = Configuration.getInstance();
         config.setProperty("processor.ManualSelectionStrategy.jpg", "bogus");
         assertThrows(IllegalArgumentException.class,
-                () -> instance.getPreferredProcessors(Format.get("jpg")));
+                () -> instance.getPreferredProcessors(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
         Configuration config = Configuration.getInstance();
         config.setProperty(Key.PROCESSOR_FALLBACK, "bogus");
         assertThrows(IllegalArgumentException.class,
-                () -> instance.getPreferredProcessors(Format.get("jpg")));
+                () -> instance.getPreferredProcessors(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test
@@ -83,7 +84,7 @@ public class ManualSelectionStrategyTest extends BaseTest {
         List<Class<? extends Processor>> expected = List.of(
                 Java2dProcessor.class,
                 PdfBoxProcessor.class);
-        assertEquals(expected, instance.getPreferredProcessors(Format.get("jpg")));
+        assertEquals(expected, instance.getPreferredProcessors(formatRegistry.formatWithKey("jpg")));
     }
 
     @Test

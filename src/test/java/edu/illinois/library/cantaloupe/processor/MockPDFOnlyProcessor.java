@@ -7,7 +7,7 @@ class MockPDFOnlyProcessor extends MockStreamProcessor {
     @Override
     public void setSourceFormat(Format format)
             throws SourceFormatException {
-        if (Format.get("pdf").equals(format)) {
+        if (formatRegistry.formatWithKey("pdf").equals(format)) {
             super.setSourceFormat(format);
         } else {
             throw new SourceFormatException(format);

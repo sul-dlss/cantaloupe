@@ -1,11 +1,12 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-
 import java.io.OutputStream;
 import java.util.Set;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.OperationList;
 
 /**
  * Abstract base processor from which all processors should inherit.
@@ -13,6 +14,7 @@ import java.util.Set;
 abstract class AbstractProcessor {
 
     private Format sourceFormat;
+    protected FormatRegistry formatRegistry;
 
     abstract public Set<Format> getAvailableOutputFormats();
 

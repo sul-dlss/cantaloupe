@@ -1,15 +1,20 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.test.TestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class OpenJpegProcessorTest extends AbstractProcessorTest {
 
@@ -36,7 +41,7 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
     protected OpenJpegProcessor newInstance() {
         OpenJpegProcessor proc = new OpenJpegProcessor();
         try {
-            proc.setSourceFormat(Format.get("jp2"));
+            proc.setSourceFormat(formatRegistry.formatWithKey("jp2"));
         } catch (SourceFormatException e) {
             fail("Huge bug");
         }
@@ -105,7 +110,7 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
         Info expectedInfo = Info.builder()
                 .withSize(64, 56)
                 .withTileSize(64, 56)
-                .withFormat(Format.get("jp2"))
+                .withFormat(formatRegistry.formatWithKey("jp2"))
                 .withNumResolutions(5)
                 .build();
         assertEquals(expectedInfo, instance.readInfo());
@@ -116,7 +121,7 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
                 .withSize(64, 56)
                 .withTileSize(32, 28)
                 .withNumResolutions(6)
-                .withFormat(Format.get("jp2"))
+                .withFormat(formatRegistry.formatWithKey("jp2"))
                 .build();
         assertEquals(expectedInfo, instance.readInfo());
     }
@@ -124,14 +129,14 @@ public class OpenJpegProcessorTest extends AbstractProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("jp2")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("jp2")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("gif")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("gif")));
         }
     }
 

@@ -78,7 +78,7 @@ public class ImageResource extends IIIF3Resource {
                 args.get(3), args.get(4), args.get(5));
         // Convert it into an OperationList.
         final OperationList ops = params.toOperationList(
-                getRequest().getDelegateProxy(), getMaxScale());
+                getRequest().getDelegateProxy(), getMaxScale(), formatRegistry);
         final int pageIndex = getRequest().getPageIndex();
         ops.setPageIndex(pageIndex);
         ops.getOptions().putAll(getRequest().getReference().getQuery().toMap());
@@ -163,7 +163,7 @@ public class ImageResource extends IIIF3Resource {
         }
         // Content-Type
         queuedHeaders.put("Content-Type",
-                params.getOutputFormat().toFormat().getPreferredMediaType().toString());
+                params.getOutputFormat().toFormat(formatRegistry).getPreferredMediaType().toString());
         // Link
         Parameters paramsCopy = new Parameters(params);
         paramsCopy.setIdentifier(getRequest().getPublicIdentifier());

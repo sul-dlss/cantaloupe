@@ -1,18 +1,5 @@
 package edu.illinois.library.cantaloupe.image;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import edu.illinois.library.cantaloupe.Application;
-import edu.illinois.library.cantaloupe.cache.DerivativeCache;
-import edu.illinois.library.cantaloupe.processor.Processor;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +10,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
+import edu.illinois.library.cantaloupe.Application;
+import edu.illinois.library.cantaloupe.cache.DerivativeCache;
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.processor.Processor;
 
 /**
  * <p>Contains JSON-serializable information about an image, including its
@@ -274,7 +276,10 @@ public final class Info {
         return mapper;
     }
 
+    private FormatRegistry formatRegistry;
     public Info() {
+        // TODO: dependency injection
+        formatRegistry = FormatRegistry.buildFromConfig(Configuration.getInstance());
         images.add(new Image());
     }
 
@@ -420,10 +425,7 @@ public final class Info {
      *         unknown.
      */
     public Format getSourceFormat() {
-        if (mediaType != null) {
-            return mediaType.toFormat();
-        }
-        return Format.UNKNOWN;
+        return formatRegistry.formatForMime(mediaType);
     }
 
     @Override
@@ -469,7 +471,7 @@ public final class Info {
      */
     public boolean isVideo() {
         if (getMediaType() != null) {
-            return getMediaType().toFormat().isVideo();
+            return getSourceFormat().isVideo();
         }
         else {
             return false;

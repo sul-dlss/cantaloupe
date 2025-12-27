@@ -36,7 +36,7 @@ import static edu.illinois.library.cantaloupe.test.PerformanceTestConstants.*;
 @Fork(value = 1, jvmArgs = { "-server", "-Xms128M", "-Xmx128M", "-Dcantaloupe.config=memory" })
 public class Java2dProcessorPerformance {
 
-    private static final Format OUTPUT_FORMAT = Format.get("png");
+    private static final Format OUTPUT_FORMAT = formatRegistry.formatWithKey("png");
 
     private FileProcessor processor;
 
@@ -44,7 +44,7 @@ public class Java2dProcessorPerformance {
     public void setUp() throws Exception {
         Configuration config = Configuration.getInstance();
         config.setProperty(Key.PROCESSOR_FALLBACK, "Java2dProcessor");
-        processor = (FileProcessor) new ProcessorFactory().newProcessor(Format.get("bmp"));
+        processor = (FileProcessor) new ProcessorFactory().newProcessor(formatRegistry.formatWithKey("bmp"));
     }
 
     @TearDown
@@ -54,7 +54,7 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void processWithBMP() throws Exception {
-        processor.setSourceFormat(Format.get("bmp"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("bmp"));
         processor.setSourceFile(TestUtil.getImage("bmp-rgb-64x56x8.bmp"));
         processor.process(
                 OperationList.builder().withOperations(new Encode(OUTPUT_FORMAT)).build(),
@@ -64,7 +64,7 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void processWithGIF() throws Exception {
-        processor.setSourceFormat(Format.get("gif"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("gif"));
         processor.setSourceFile(TestUtil.getImage("gif-rgb-64x56x8.gif"));
         processor.process(
                 OperationList.builder().withOperations(new Encode(OUTPUT_FORMAT)).build(),
@@ -74,7 +74,7 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void processWithJPG() throws Exception {
-        processor.setSourceFormat(Format.get("jpg"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("jpg"));
         processor.setSourceFile(TestUtil.getImage("jpg-rgb-64x56x8-line.jpg"));
         processor.process(
                 OperationList.builder().withOperations(new Encode(OUTPUT_FORMAT)).build(),
@@ -84,7 +84,7 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void processWithPNG() throws Exception {
-        processor.setSourceFormat(Format.get("png"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("png"));
         processor.setSourceFile(TestUtil.getImage("png-rgb-64x56x8.png"));
         processor.process(
                 OperationList.builder().withOperations(new Encode(OUTPUT_FORMAT)).build(),
@@ -94,7 +94,7 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void processWithTIF() throws Exception {
-        processor.setSourceFormat(Format.get("tif"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("tif"));
         processor.setSourceFile(TestUtil.getImage("tif-rgb-1res-64x56x8-striped-lzw.tif"));
         processor.process(
                 OperationList.builder().withOperations(new Encode(OUTPUT_FORMAT)).build(),
@@ -104,35 +104,35 @@ public class Java2dProcessorPerformance {
 
     @Benchmark
     public void readInfoWithBMP() throws Exception {
-        processor.setSourceFormat(Format.get("bmp"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("bmp"));
         processor.setSourceFile(TestUtil.getImage("bmp-rgb-64x56x8.bmp"));
         processor.readInfo();
     }
 
     @Benchmark
     public void readInfoWithGIF() throws Exception {
-        processor.setSourceFormat(Format.get("gif"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("gif"));
         processor.setSourceFile(TestUtil.getImage("gif-rgb-64x56x8.gif"));
         processor.readInfo();
     }
 
     @Benchmark
     public void readInfoWithJPG() throws Exception {
-        processor.setSourceFormat(Format.get("jpg"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("jpg"));
         processor.setSourceFile(TestUtil.getImage("jpg-rgb-64x56x8-line.jpg"));
         processor.readInfo();
     }
 
     @Benchmark
     public void readInfoWithPNG() throws Exception {
-        processor.setSourceFormat(Format.get("png"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("png"));
         processor.setSourceFile(TestUtil.getImage("png-rgb-64x56x8.png"));
         processor.readInfo();
     }
 
     @Benchmark
     public void readInfoWithTIF() throws Exception {
-        processor.setSourceFormat(Format.get("tif"));
+        processor.setSourceFormat(formatRegistry.formatWithKey("tif"));
         processor.setSourceFile(TestUtil.getImage("tif-rgb-1res-64x56x8-striped-lzw.tif"));
         processor.readInfo();
     }

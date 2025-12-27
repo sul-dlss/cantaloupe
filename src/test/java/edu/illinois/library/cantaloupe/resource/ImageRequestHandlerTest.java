@@ -93,7 +93,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -119,7 +119,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -145,7 +145,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -175,7 +175,7 @@ class ImageRequestHandlerTest extends BaseTest {
         final Identifier identifier = new Identifier("jpg-rgb-64x48x8.jpg");
         final Metadata metadata     = new Metadata();
         opList.setIdentifier(identifier);
-        Encode encode = new Encode(Format.get("jpg"));
+        Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
         encode.setCompression(Compression.JPEG);
         encode.setQuality(80);
         encode.setMetadata(metadata);
@@ -186,7 +186,7 @@ class ImageRequestHandlerTest extends BaseTest {
         DerivativeCache cache = facade.getDerivativeCache().orElseThrow();
         Info info = Info.builder()
                 .withSize(64, 48)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withIdentifier(identifier)
                 .withMetadata(metadata)
                 .build();
@@ -223,7 +223,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -249,7 +249,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -274,7 +274,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
         try (ImageRequestHandler handler = new ImageRequestHandler(
@@ -304,7 +304,7 @@ class ImageRequestHandlerTest extends BaseTest {
         final Identifier identifier = new Identifier("jpg-rgb-64x48x8.jpg");
         final Metadata metadata     = new Metadata();
         opList.setIdentifier(identifier);
-        Encode encode = new Encode(Format.get("jpg"));
+        Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
         encode.setCompression(Compression.JPEG);
         encode.setQuality(80);
         encode.setMetadata(metadata);
@@ -315,7 +315,7 @@ class ImageRequestHandlerTest extends BaseTest {
         DerivativeCache cache = facade.getDerivativeCache().orElseThrow();
         Info info = Info.builder()
                 .withSize(64, 48)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withIdentifier(identifier)
                 .withMetadata(metadata)
                 .build();
@@ -352,7 +352,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         try (ImageRequestHandler handler = new ImageRequestHandler(
                 opList,
@@ -397,7 +397,7 @@ class ImageRequestHandlerTest extends BaseTest {
         // Configure the request.
         final OperationList opList  = new OperationList();
         opList.setIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"));
-        opList.add(new Encode(Format.get("jpg")));
+        opList.add(new Encode(formatRegistry.formatWithKey("jpg")));
 
         try (ImageRequestHandler handler = new ImageRequestHandler(
                 opList,
@@ -443,7 +443,7 @@ class ImageRequestHandlerTest extends BaseTest {
         final OperationList opList = OperationList.builder()
                 .withIdentifier(new Identifier("jpg-rgb-64x48x8.jpg"))
                 .withPageIndex(9999)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
 
         final IntrospectiveCallback callback = new IntrospectiveCallback();
@@ -510,7 +510,7 @@ class ImageRequestHandlerTest extends BaseTest {
             final Identifier identifier = new Identifier("jpg-rgb-64x48x8.jpg");
             final Metadata metadata = new Metadata();
             opList.setIdentifier(identifier);
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             encode.setCompression(Compression.JPEG);
             encode.setQuality(80);
             encode.setMetadata(metadata);
@@ -592,7 +592,7 @@ class ImageRequestHandlerTest extends BaseTest {
             final Identifier identifier = new Identifier("jpg-rgb-64x48x8.jpg");
             final Metadata metadata = new Metadata();
             opList.setIdentifier(identifier);
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             encode.setCompression(Compression.JPEG);
             encode.setQuality(80);
             encode.setMetadata(metadata);

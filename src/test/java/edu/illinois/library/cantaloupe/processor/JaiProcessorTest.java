@@ -18,7 +18,7 @@ public class JaiProcessorTest extends AbstractImageIOProcessorTest {
     @Test
     void testIsSeekingWithNonSeekableSource() throws Exception {
         try (StreamProcessor instance = newInstance()) {
-            instance.setSourceFormat(Format.get("bmp"));
+            instance.setSourceFormat(formatRegistry.formatWithKey("bmp"));
             instance.setStreamFactory(new PathStreamFactory(TestUtil.getImage("bmp")));
             assertFalse(instance.isSeeking());
         }
@@ -27,7 +27,7 @@ public class JaiProcessorTest extends AbstractImageIOProcessorTest {
     @Test
     void testIsSeekingWithSeekableSource() throws Exception {
         try (StreamProcessor instance = newInstance()) {
-            instance.setSourceFormat(Format.get("tif"));
+            instance.setSourceFormat(formatRegistry.formatWithKey("tif"));
             instance.setStreamFactory(new PathStreamFactory(TestUtil.getImage("tif-rgb-1res-64x56x8-tiled-jpeg.tif")));
             assertTrue(instance.isSeeking());
         }
@@ -48,14 +48,14 @@ public class JaiProcessorTest extends AbstractImageIOProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("jpg")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("jpg")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("mp4")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("mp4")));
         }
     }
 

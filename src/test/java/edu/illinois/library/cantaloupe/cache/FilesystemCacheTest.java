@@ -1,25 +1,18 @@
 package edu.illinois.library.cantaloupe.cache;
 
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.operation.ColorTransform;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.operation.CropToSquare;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.Rotate;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
-import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import edu.illinois.library.cantaloupe.util.DeletingFileVisitor;
-import edu.illinois.library.cantaloupe.util.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.derivativeImageFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.derivativeImageTempFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.hashedPathFragment;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.infoFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.infoTempFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.sourceImageFile;
+import static edu.illinois.library.cantaloupe.cache.FilesystemCache.sourceImageTempFile;
+import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.assertRecursiveFileCount;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +24,26 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static edu.illinois.library.cantaloupe.cache.FilesystemCache.*;
-import static edu.illinois.library.cantaloupe.test.Assert.PathAssert.assertRecursiveFileCount;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.operation.ColorTransform;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.CropToSquare;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.Rotate;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.ScaleByPercent;
+import edu.illinois.library.cantaloupe.test.ConcurrentReaderWriter;
+import edu.illinois.library.cantaloupe.test.TestUtil;
+import edu.illinois.library.cantaloupe.util.DeletingFileVisitor;
+import edu.illinois.library.cantaloupe.util.StringUtils;
 
 public class FilesystemCacheTest extends AbstractCacheTest {
 
@@ -115,7 +124,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
                 .withIdentifier(identifier)
                 .withOperations(
                         new ScaleByPercent(0.905),
-                        new Encode(Format.get("tif")))
+                        new Encode(formatRegistry.formatWithKey("tif")))
                 .build();
 
         final Path expected = Paths.get(
@@ -136,7 +145,7 @@ public class FilesystemCacheTest extends AbstractCacheTest {
         Scale scale              = new ScaleByPercent(0.905);
         Rotate rotate            = new Rotate(10);
         ColorTransform transform = ColorTransform.BITONAL;
-        Encode encode            = new Encode(Format.get("tif"));
+        Encode encode            = new Encode(formatRegistry.formatWithKey("tif"));
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(identifier)

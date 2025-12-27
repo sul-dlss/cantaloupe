@@ -1,23 +1,25 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.config.Key;
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Identifier;
-import edu.illinois.library.cantaloupe.image.Info;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.ValidationException;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.config.Key;
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.Identifier;
+import edu.illinois.library.cantaloupe.image.Info;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class PdfBoxProcessorTest extends AbstractProcessorTest {
 
@@ -44,7 +46,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
     protected PdfBoxProcessor newInstance() {
         PdfBoxProcessor proc = new PdfBoxProcessor();
         try {
-            proc.setSourceFormat(Format.get("pdf"));
+            proc.setSourceFormat(formatRegistry.formatWithKey("pdf"));
         } catch (SourceFormatException e) {
             fail("Huge bug");
         }
@@ -64,7 +66,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
         // page index missing
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         instance.process(ops, imageInfo, outputStream);
         final byte[] page1 = outputStream.toByteArray();
@@ -105,14 +107,14 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("pdf")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("pdf")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("gif")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("gif")));
         }
     }
 
@@ -122,7 +124,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
 
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Dimension fullSize = new Dimension(100, 88);
         instance.validate(ops, fullSize);
@@ -135,7 +137,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withPageIndex(0)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Dimension fullSize = new Dimension(100, 88);
 
@@ -149,7 +151,7 @@ public class PdfBoxProcessorTest extends AbstractProcessorTest {
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withPageIndex(2)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Dimension fullSize = new Dimension(100, 88);
 

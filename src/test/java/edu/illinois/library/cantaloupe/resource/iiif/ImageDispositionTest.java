@@ -26,7 +26,7 @@ public class ImageDispositionTest {
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG);
         String disposition = ImageDisposition.getRepresentationDisposition(
             request,
-                "cats?/\\dogs", Format.get("jpg"));
+                "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertNull(disposition);
     }
 
@@ -38,7 +38,7 @@ public class ImageDispositionTest {
                 "inline");
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("inline; filename=\"cats___dogs.jpg\"", disposition);
     }
 
@@ -51,7 +51,7 @@ public class ImageDispositionTest {
                 "attachment");
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"cats___dogs.jpg\"", disposition);
     }
 
@@ -65,7 +65,7 @@ public class ImageDispositionTest {
 
         String disposition = ImageDisposition.getRepresentationDisposition(
             request,
-                "cats?/\\dogs", Format.get("jpg"));
+                "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"dogs.jpg\"", disposition);
     }
 
@@ -78,7 +78,7 @@ public class ImageDispositionTest {
 
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"unsafe_path.jpg\"",
                 disposition);
 
@@ -89,7 +89,7 @@ public class ImageDispositionTest {
                 "attachment; filename=\"unsafe_injection_.....//./.jpg\"");
 
         disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"unsafe_injection_.jpg\"",
                 disposition);
     }
@@ -103,7 +103,7 @@ public class ImageDispositionTest {
                 "attachment; filename*= UTF-8''dogs.jpg");
         String disposition = ImageDisposition.getRepresentationDisposition(
             request,
-                "cats?/\\dogs", Format.get("jpg"));
+                "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"cats___dogs.jpg\"; filename*= UTF-8''dogs.jpg",
                 disposition);
     }
@@ -116,7 +116,7 @@ public class ImageDispositionTest {
                 "attachment; filename*=UTF-8''unsafe_path../\\.jpg");
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"cats___dogs.jpg\"; filename*= UTF-8''unsafe_path.jpg",
                 disposition);
 
@@ -126,7 +126,7 @@ public class ImageDispositionTest {
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG,
                 "attachment; filename*= utf-8''unsafe_injection_.....//./.jpg");
         disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"cats___dogs.jpg\"; filename*= UTF-8''unsafe_injection_.jpg",
                 disposition);
     }
@@ -139,7 +139,7 @@ public class ImageDispositionTest {
                 "attachment; filename=\"dogs.jpg\"; filename*= UTF-8''dogs.jpg");
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertEquals("attachment; filename=\"dogs.jpg\"; filename*= UTF-8''dogs.jpg",
                 disposition);
     }
@@ -152,7 +152,7 @@ public class ImageDispositionTest {
                 ImageDisposition.RESPONSE_CONTENT_DISPOSITION_QUERY_ARG);
 
         String disposition = ImageDisposition.getRepresentationDisposition(
-            request, "cats?/\\dogs", Format.get("jpg"));
+            request, "cats?/\\dogs", formatRegistry.formatWithKey("jpg"));
         assertNull(disposition);
     }
 

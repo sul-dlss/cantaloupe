@@ -12,7 +12,7 @@ class IdentifierFormatCheckerTest extends BaseTest {
     @Test
     void testCheckWithKnownFormat() {
         var instance = new IdentifierFormatChecker(new Identifier("cats.jpg"));
-        assertEquals(Format.get("jpg"), instance.check());
+        assertEquals(formatRegistry.formatWithKey("jpg"), instance.check());
     }
 
     @Test

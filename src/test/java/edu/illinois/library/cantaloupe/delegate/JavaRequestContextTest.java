@@ -35,7 +35,7 @@ class JavaRequestContextTest extends BaseTest {
         Dimension fullSize    = new Dimension(200, 200);
         OperationList opList  = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("gif")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("gif")))
                 .build();
         context.setOperationList(opList, fullSize);
         // page count

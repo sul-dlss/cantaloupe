@@ -1,15 +1,17 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 /**
  * Used to obtain an instance of a {@link Processor} for a given source format,
@@ -34,6 +36,12 @@ public final class ProcessorFactory {
 
     private SelectionStrategy selectionStrategy =
             SelectionStrategy.fromConfiguration();
+
+    private final FormatRegistry formatRegistry;
+
+    public ProcessorFactory(FormatRegistry formatRegistry) {
+        this.formatRegistry = formatRegistry;
+    }
 
     public static synchronized Set<Processor> getAllProcessors() {
         if (ALL_PROCESSORS.isEmpty()) {
@@ -78,7 +86,7 @@ public final class ProcessorFactory {
             InvocationTargetException {
         String qualifiedName = getQualifiedName(name);
         Class<?> implClass = Class.forName(qualifiedName);
-        return (Processor) implClass.getDeclaredConstructor().newInstance();
+        return (Processor) implClass.getDeclaredConstructor(FormatRegistry.class).newInstance(formatRegistry);
     }
 
     /**

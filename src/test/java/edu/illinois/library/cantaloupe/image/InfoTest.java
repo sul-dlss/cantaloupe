@@ -25,8 +25,8 @@ class InfoTest extends BaseTest {
 
         @Test
         void testWithFormat() {
-            Info info = Info.builder().withFormat(Format.get("png")).build();
-            assertEquals(Format.get("png"), info.getSourceFormat());
+            Info info = Info.builder().withFormat(formatRegistry.formatWithKey("png")).build();
+            assertEquals(formatRegistry.formatWithKey("png"), info.getSourceFormat());
         }
 
         @Test
@@ -187,7 +187,7 @@ class InfoTest extends BaseTest {
                 .withIdentifier(new Identifier("cats"))
                 .withSize(100, 80)
                 .withTileSize(50, 40)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(3)
                 .withMetadata(metadata)
                 .build();
@@ -256,7 +256,7 @@ class InfoTest extends BaseTest {
                 "}";
         Info actual = Info.fromJSON(v2json);
         Info expected = Info.builder()
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withSize(100, 80)
                 .withTileSize(50, 40)
                 .build();
@@ -282,7 +282,7 @@ class InfoTest extends BaseTest {
         Info actual = Info.fromJSON(v3json);
         Info expected = Info.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(3)
                 .withSize(100, 80)
                 .withTileSize(50, 40)
@@ -316,7 +316,7 @@ class InfoTest extends BaseTest {
         metadata.setXMP("<cats/>");
         Info expected = Info.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(3)
                 .withMetadata(metadata)
                 .withSize(100, 80)
@@ -354,7 +354,7 @@ class InfoTest extends BaseTest {
         Info actual = Info.fromJSON(v6json);
         Info expected = Info.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(3)
                 .withMetadata(metadata)
                 .withSize(100, 80)
@@ -531,7 +531,7 @@ class InfoTest extends BaseTest {
                 .withIdentifier(instance.getIdentifier())
                 .withSize(instance.getSize())
                 .withTileSize(instance.getImages().get(0).getTileSize())
-                .withFormat(Format.get("gif"))
+                .withFormat(formatRegistry.formatWithKey("gif"))
                 .withNumResolutions(instance.getNumResolutions())
                 .withMetadata(instance.getMetadata())
                 .build();
@@ -568,7 +568,7 @@ class InfoTest extends BaseTest {
                 .withIdentifier(new Identifier("cats"))
                 .withSize(100, 80)
                 .withTileSize(50, 40)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(1)
                 .build();
         assertEquals(1, instance.getNumPages());
@@ -579,7 +579,7 @@ class InfoTest extends BaseTest {
         instance = Info.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withSize(1000, 800)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(6)
                 .build();
         // level 2
@@ -611,7 +611,7 @@ class InfoTest extends BaseTest {
         instance = Info.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withSize(1000, 800)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(1)
                 .build();
         Info.Image image = new Info.Image();
@@ -667,7 +667,7 @@ class InfoTest extends BaseTest {
 
     @Test
     void testGetSourceFormat() {
-        assertEquals(Format.get("jpg"), instance.getSourceFormat());
+        assertEquals(formatRegistry.formatWithKey("jpg"), instance.getSourceFormat());
 
         instance.setSourceFormat(null);
         assertEquals(Format.UNKNOWN, instance.getSourceFormat());
@@ -808,7 +808,7 @@ class InfoTest extends BaseTest {
                 .withIdentifier(instance.getIdentifier())
                 .withSize(instance.getSize())
                 .withTileSize(instance.getImages().get(0).getTileSize())
-                .withFormat(Format.get("gif"))
+                .withFormat(formatRegistry.formatWithKey("gif"))
                 .withNumResolutions(instance.getNumResolutions())
                 .withMetadata(instance.getMetadata())
                 .build();
@@ -823,7 +823,7 @@ class InfoTest extends BaseTest {
                 .withIdentifier(new Identifier("cats"))
                 .withSize(100, 80)
                 .withTileSize(50, 40)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(1)
                 .build();
         assertFalse(instance.isPyramid());
@@ -834,7 +834,7 @@ class InfoTest extends BaseTest {
         instance = Info.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withSize(1000, 800)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(6)
                 .build();
         // level 2
@@ -866,7 +866,7 @@ class InfoTest extends BaseTest {
         instance = Info.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withSize(1000, 800)
-                .withFormat(Format.get("jpg"))
+                .withFormat(formatRegistry.formatWithKey("jpg"))
                 .withNumResolutions(1)
                 .build();
         Info.Image image = new Info.Image();
@@ -961,7 +961,7 @@ class InfoTest extends BaseTest {
 
     @Test
     void testSetSourceFormat() {
-        Format format = Format.get("png");
+        Format format = formatRegistry.formatWithKey("png");
         instance.setSourceFormat(format);
         assertEquals(format, instance.getSourceFormat());
     }
@@ -971,7 +971,7 @@ class InfoTest extends BaseTest {
 
      @Test
      void testIsVideo() {
-         Format format = Format.get("mov");
+         Format format = formatRegistry.formatWithKey("mov");
          instance.setSourceFormat(format);
          assertTrue(instance.isVideo());
      }
@@ -980,7 +980,7 @@ class InfoTest extends BaseTest {
 
      @Test
      void testIsNotVideo() {
-         Format format = Format.get("png");
+         Format format = formatRegistry.formatWithKey("png");
          instance.setSourceFormat(format);
          assertFalse(instance.isVideo());
      }

@@ -1,5 +1,7 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v1;
 
+import java.util.Set;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Dimension;
@@ -9,8 +11,6 @@ import edu.illinois.library.cantaloupe.image.Metadata;
 import edu.illinois.library.cantaloupe.image.Orientation;
 import edu.illinois.library.cantaloupe.image.ScaleConstraint;
 import edu.illinois.library.cantaloupe.resource.iiif.ImageInfoUtil;
-
-import java.util.Set;
 
 /**
  * Builds new {@link Information} instances.
@@ -33,7 +33,7 @@ final class InformationFactory {
             scaleConstraint = new ScaleConstraint(1, 1);
         }
         final ComplianceLevel complianceLevel = ComplianceLevel.getLevel(
-                availableOutputFormats);
+                availableOutputFormats, formatRegistry);
 
         final int minTileSize = Configuration.getInstance().
                 getInt(Key.IIIF_MIN_TILE_SIZE, DEFAULT_MIN_TILE_SIZE);

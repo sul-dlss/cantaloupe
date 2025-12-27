@@ -53,7 +53,7 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
     protected FfmpegProcessor newInstance() {
         FfmpegProcessor instance = new FfmpegProcessor();
         try {
-            final Format format = Format.get("mpg");
+            final Format format = formatRegistry.formatWithKey("mpg");
             final Path fixture = TestUtil.
                     getFixture("images/" + format.getPreferredExtension());
             instance.setSourceFile(fixture);
@@ -108,7 +108,7 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
         // page index missing
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         OperationList ops = OperationList.builder()
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         instance.process(ops, imageInfo, outputStream);
         final byte[] frame1 = outputStream.toByteArray();
@@ -131,14 +131,14 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
     @Test
     void testSupportsSourceFormatWithSupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertTrue(instance.supportsSourceFormat(Format.get("mp4")));
+            assertTrue(instance.supportsSourceFormat(formatRegistry.formatWithKey("mp4")));
         }
     }
 
     @Test
     void testSupportsSourceFormatWithUnsupportedFormat() {
         try (Processor instance = newInstance()) {
-            assertFalse(instance.supportsSourceFormat(Format.get("gif")));
+            assertFalse(instance.supportsSourceFormat(formatRegistry.formatWithKey("gif")));
         }
     }
 
@@ -147,7 +147,7 @@ public class FfmpegProcessorTest extends AbstractProcessorTest {
         OperationList ops = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
                 .withPageIndex(9999999)
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         Dimension fullSize = new Dimension(1000, 1000);
 

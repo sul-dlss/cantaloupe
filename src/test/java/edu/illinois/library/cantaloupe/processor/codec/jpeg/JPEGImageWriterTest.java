@@ -1,13 +1,13 @@
 package edu.illinois.library.cantaloupe.processor.codec.jpeg;
 
-import edu.illinois.library.cantaloupe.config.Configuration;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.image.Metadata;
-import edu.illinois.library.cantaloupe.operation.Encode;
-import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
-import edu.illinois.library.cantaloupe.test.TestUtil;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.NodeList;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -15,19 +15,22 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.PlanarImage;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.NodeList;
+
+import edu.illinois.library.cantaloupe.config.Configuration;
+import edu.illinois.library.cantaloupe.image.Metadata;
+import edu.illinois.library.cantaloupe.operation.Encode;
+import edu.illinois.library.cantaloupe.processor.codec.AbstractImageWriterTest;
+import edu.illinois.library.cantaloupe.test.TestUtil;
 
 public class JPEGImageWriterTest extends AbstractImageWriterTest {
 
     @Override
     protected JPEGImageWriter newInstance() {
         JPEGImageWriter writer = new JPEGImageWriter();
-        writer.setEncode(new Encode(Format.get("jpg")));
+        writer.setEncode(new Encode(formatRegistry.formatWithKey("jpg")));
         return writer;
     }
 
@@ -79,7 +82,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
             final BufferedImage image = reader.read(0);
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             Metadata outMetadata = new Metadata();
             outMetadata.setXMP(metadata.getXMP().orElseThrow());
             encode.setMetadata(outMetadata);
@@ -101,7 +104,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
             final BufferedImage image = reader.read(0);
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             Metadata outMetadata = new Metadata();
             outMetadata.setXMP(metadata.getXMP().orElseThrow());
             encode.setMetadata(outMetadata);
@@ -124,7 +127,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
                     reader.readRendered());
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             Metadata outMetadata = new Metadata();
             outMetadata.setXMP(metadata.getXMP().orElseThrow());
             encode.setMetadata(outMetadata);
@@ -147,7 +150,7 @@ public class JPEGImageWriterTest extends AbstractImageWriterTest {
                     reader.readRendered());
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            Encode encode = new Encode(Format.get("jpg"));
+            Encode encode = new Encode(formatRegistry.formatWithKey("jpg"));
             Metadata outMetadata = new Metadata();
             outMetadata.setXMP(metadata.getXMP().orElseThrow());
             encode.setMetadata(outMetadata);

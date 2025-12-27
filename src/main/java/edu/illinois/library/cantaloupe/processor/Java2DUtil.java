@@ -1,36 +1,5 @@
 package edu.illinois.library.cantaloupe.processor;
 
-import edu.illinois.library.cantaloupe.image.Dimension;
-import edu.illinois.library.cantaloupe.image.Orientation;
-import edu.illinois.library.cantaloupe.image.Rectangle;
-import edu.illinois.library.cantaloupe.image.ScaleConstraint;
-import edu.illinois.library.cantaloupe.operation.Color;
-import edu.illinois.library.cantaloupe.operation.ColorTransform;
-import edu.illinois.library.cantaloupe.operation.Crop;
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.operation.Operation;
-import edu.illinois.library.cantaloupe.operation.OperationList;
-import edu.illinois.library.cantaloupe.operation.ReductionFactor;
-import edu.illinois.library.cantaloupe.operation.ScaleByPixels;
-import edu.illinois.library.cantaloupe.operation.Sharpen;
-import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
-import edu.illinois.library.cantaloupe.operation.overlay.ImageOverlay;
-import edu.illinois.library.cantaloupe.operation.overlay.Position;
-import edu.illinois.library.cantaloupe.operation.Rotate;
-import edu.illinois.library.cantaloupe.operation.Scale;
-import edu.illinois.library.cantaloupe.operation.Transpose;
-import edu.illinois.library.cantaloupe.operation.overlay.StringOverlay;
-import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
-import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
-import edu.illinois.library.cantaloupe.processor.resample.ResampleFilter;
-import edu.illinois.library.cantaloupe.processor.resample.ResampleOp;
-import edu.illinois.library.cantaloupe.util.Stopwatch;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -53,6 +22,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.illinois.library.cantaloupe.image.Dimension;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
+import edu.illinois.library.cantaloupe.image.Orientation;
+import edu.illinois.library.cantaloupe.image.Rectangle;
+import edu.illinois.library.cantaloupe.image.ScaleConstraint;
+import edu.illinois.library.cantaloupe.operation.Color;
+import edu.illinois.library.cantaloupe.operation.ColorTransform;
+import edu.illinois.library.cantaloupe.operation.Crop;
+import edu.illinois.library.cantaloupe.operation.Operation;
+import edu.illinois.library.cantaloupe.operation.OperationList;
+import edu.illinois.library.cantaloupe.operation.ReductionFactor;
+import edu.illinois.library.cantaloupe.operation.Rotate;
+import edu.illinois.library.cantaloupe.operation.Scale;
+import edu.illinois.library.cantaloupe.operation.ScaleByPixels;
+import edu.illinois.library.cantaloupe.operation.Sharpen;
+import edu.illinois.library.cantaloupe.operation.Transpose;
+import edu.illinois.library.cantaloupe.operation.overlay.ImageOverlay;
+import edu.illinois.library.cantaloupe.operation.overlay.Overlay;
+import edu.illinois.library.cantaloupe.operation.overlay.Position;
+import edu.illinois.library.cantaloupe.operation.overlay.StringOverlay;
+import edu.illinois.library.cantaloupe.operation.redaction.Redaction;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReader;
+import edu.illinois.library.cantaloupe.processor.codec.ImageReaderFactory;
+import edu.illinois.library.cantaloupe.processor.resample.ResampleFilter;
+import edu.illinois.library.cantaloupe.processor.resample.ResampleOp;
+import edu.illinois.library.cantaloupe.util.Stopwatch;
 
 /**
  * <p>Collection of methods for operating on {@link BufferedImage}s.</p>
@@ -154,9 +155,10 @@ public final class Java2DUtil {
      * @param overlay   Overlay to apply to the base image.
      */
     static void applyOverlay(final BufferedImage baseImage,
-                             final Overlay overlay) {
+                             final Overlay overlay,
+                             FormatRegistry formatRegistry) {
         if (overlay instanceof ImageOverlay) {
-            BufferedImage overlayImage = getOverlayImage((ImageOverlay) overlay);
+            BufferedImage overlayImage = getOverlayImage((ImageOverlay) overlay, formatRegistry);
             if (overlayImage != null) {
                 overlayImage(baseImage, overlayImage,
                         overlay.getPosition(), overlay.getInset());
@@ -405,10 +407,10 @@ public final class Java2DUtil {
     /**
      * @return Overlay image.
      */
-    static BufferedImage getOverlayImage(ImageOverlay overlay) {
+    static BufferedImage getOverlayImage(ImageOverlay overlay, FormatRegistry formatRegistry) {
         ImageReader reader = null;
         try (InputStream is = overlay.openStream()) {
-            reader = new ImageReaderFactory().newImageReader(Format.get("png"), is);
+            reader = new ImageReaderFactory(formatRegistry).newImageReader(formatRegistry.formatWithKey("png"), is);
             return reader.read(0);
         } catch (IOException e) {
             LOGGER.warn("{} (skipping overlay)", e.getMessage());

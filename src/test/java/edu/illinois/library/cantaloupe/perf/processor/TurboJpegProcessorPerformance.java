@@ -36,8 +36,8 @@ import static edu.illinois.library.cantaloupe.test.PerformanceTestConstants.*;
 @Fork(value = 1, jvmArgs = { "-server", "-Xms128M", "-Xmx128M", "-Dcantaloupe.config=memory" })
 public class TurboJpegProcessorPerformance {
 
-    private static final Format SOURCE_FORMAT = Format.get("jpg");
-    private static final Format OUTPUT_FORMAT = Format.get("jpg");
+    private static final Format SOURCE_FORMAT = formatRegistry.formatWithKey("jpg");
+    private static final Format OUTPUT_FORMAT = formatRegistry.formatWithKey("jpg");
 
     private FileProcessor processor;
 

@@ -1,10 +1,11 @@
 package edu.illinois.library.cantaloupe.processor;
 
+import java.util.List;
+
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.image.Format;
-
-import java.util.List;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 interface SelectionStrategy {
 
@@ -17,7 +18,7 @@ interface SelectionStrategy {
             case "ManualSelectionStrategy":
                 return new ManualSelectionStrategy();
             default:
-                return new AutomaticSelectionStrategy();
+                return new AutomaticSelectionStrategy(FormatRegistry.buildFromConfig(config));
         }
     }
 

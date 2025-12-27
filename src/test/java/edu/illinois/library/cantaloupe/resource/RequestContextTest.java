@@ -43,7 +43,7 @@ public class RequestContextTest extends BaseTest {
         Dimension fullSize    = new Dimension(200, 200);
         OperationList opList  = OperationList.builder()
                 .withIdentifier(identifier)
-                .withOperations(new Encode(Format.get("gif")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("gif")))
                 .build();
         instance.setOperationList(opList, fullSize);
         // page count
@@ -111,7 +111,7 @@ public class RequestContextTest extends BaseTest {
     void setOperationList() {
         OperationList opList = OperationList.builder()
                 .withIdentifier(new Identifier("cats"))
-                .withOperations(new Encode(Format.get("jpg")))
+                .withOperations(new Encode(formatRegistry.formatWithKey("jpg")))
                 .build();
         instance.setOperationList(opList, new Dimension(5, 5));
         assertNotNull(instance.getFullSize());

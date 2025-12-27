@@ -1,9 +1,10 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v2;
 
-import edu.illinois.library.cantaloupe.image.Format;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import edu.illinois.library.cantaloupe.image.Format;
+import edu.illinois.library.cantaloupe.image.FormatRegistry;
 
 /**
  * IIIF compliance level.
@@ -29,11 +30,9 @@ enum ComplianceLevel {
         LEVEL_1_FEATURES.add(ServiceFeature.BASE_URI_REDIRECT);
         LEVEL_1_FEATURES.add(ServiceFeature.CORS);
         LEVEL_1_FEATURES.add(ServiceFeature.JSON_LD_MEDIA_TYPE);
-        LEVEL_1_OUTPUT_FORMATS.add(Format.get("jpg"));
 
         LEVEL_2_FEATURES.addAll(LEVEL_1_FEATURES);
         LEVEL_2_OUTPUT_FORMATS.addAll(LEVEL_1_OUTPUT_FORMATS);
-        LEVEL_2_OUTPUT_FORMATS.add(Format.get("png"));
     }
 
     /**
@@ -41,15 +40,23 @@ enum ComplianceLevel {
      *         arguments.
      */
     public static ComplianceLevel getLevel(Set<ServiceFeature> serviceFeatures,
-                                           Set<Format> outputFormats) {
+                                           Set<Format> outputFormats, FormatRegistry formatRegistry) {
         Set<Feature> allFeatures = new HashSet<>(serviceFeatures);
 
         ComplianceLevel level = LEVEL_0;
+
+        Set<Format> l1outputFormats = new HashSet<>();
+        l1outputFormats.add(formatRegistry.formatWithKey("jpg"));
+
+        Set<Format> l2outputFormats = new HashSet<>();
+        l2outputFormats.addAll(l1outputFormats);
+        l2outputFormats.add(formatRegistry.formatWithKey("png"));
+
         if (allFeatures.containsAll(LEVEL_1_FEATURES) &&
-                outputFormats.containsAll(LEVEL_1_OUTPUT_FORMATS)) {
+                outputFormats.containsAll(l1outputFormats)) {
             level = LEVEL_1;
             if (allFeatures.containsAll(LEVEL_2_FEATURES) &&
-                    outputFormats.containsAll(LEVEL_2_OUTPUT_FORMATS)) {
+                    outputFormats.containsAll(l2outputFormats)) {
                 level = LEVEL_2;
             }
         }

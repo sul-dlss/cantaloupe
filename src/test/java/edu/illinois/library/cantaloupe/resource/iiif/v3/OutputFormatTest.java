@@ -1,16 +1,15 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v3;
 
-import edu.illinois.library.cantaloupe.image.Format;
-import edu.illinois.library.cantaloupe.test.BaseTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.illinois.library.cantaloupe.test.BaseTest;
 
-class OutputFormatTest extends BaseTest {
-
+class OutputFormatTest extends BaseTest {    
     @Test
     void testToFormat() {
-        assertEquals(Format.get("jpg"), OutputFormat.JPG.toFormat());
+        assertEquals(formatRegistry.formatWithKey("jpg"), OutputFormat.JPG.toFormat());
     }
 
     @Test

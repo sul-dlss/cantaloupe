@@ -752,13 +752,13 @@ public class Version3_0ConformanceTest extends ResourceTest {
      */
     @Test
     void testFormats() throws Exception {
-        testFormat(Format.get("jpg"));
-        testFormat(Format.get("tif"));
-        testFormat(Format.get("png"));
-        testFormat(Format.get("gif"));
-        testFormat(Format.get("jp2"));
-        testFormat(Format.get("pdf"));
-        testFormat(Format.get("webp"));
+        testFormat(formatRegistry.formatWithKey("jpg"));
+        testFormat(formatRegistry.formatWithKey("tif"));
+        testFormat(formatRegistry.formatWithKey("png"));
+        testFormat(formatRegistry.formatWithKey("gif"));
+        testFormat(formatRegistry.formatWithKey("jp2"));
+        testFormat(formatRegistry.formatWithKey("pdf"));
+        testFormat(formatRegistry.formatWithKey("webp"));
     }
 
     private void testFormat(Format outputFormat) throws Exception {
