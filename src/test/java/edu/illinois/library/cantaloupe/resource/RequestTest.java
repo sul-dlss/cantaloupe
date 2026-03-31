@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +69,13 @@ class RequestTest extends BaseTest {
     @Test
     void testGetServletRequest() {
         assertSame(sr, instance.getServletRequest());
+    }
+
+    @Test
+    void testGetCommonTemplateVars() {
+        Map<String,Object> vars = instance.getCommonTemplateVars();
+        assertFalse(((String) vars.get("baseUri")).endsWith("/"));
+        assertNotNull(vars.get("version"));
     }
 
 

@@ -1,5 +1,6 @@
 package edu.illinois.library.cantaloupe.resource;
 
+import edu.illinois.library.cantaloupe.Application;
 import edu.illinois.library.cantaloupe.config.Configuration;
 import edu.illinois.library.cantaloupe.config.Key;
 import edu.illinois.library.cantaloupe.http.Headers;
@@ -13,8 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +88,28 @@ public class Request {
         }
         return headers;
     }
+
+    /**
+     * @return Template variables common to most or all templates, such as
+     *         variables that appear in a common header.
+     */
+    public final Map<String, Object> getCommonTemplateVars() {
+        final Map<String,Object> vars = new HashMap<>();
+        vars.put("version", Application.getVersion());
+        try {
+            String baseURI = getPublicRootReference().toString();
+            // Normalize the base URI. Note that the <base> tag will need it to
+            // have a trailing slash.
+            if (baseURI.endsWith("/")) {
+                baseURI = baseURI.substring(0, baseURI.length() - 2);
+            }
+            vars.put("baseUri", baseURI);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalClientArgumentException(e);
+        }
+        return vars;
+    }
+
 
     /**
      * @return Stream for reading the request entity.

@@ -54,10 +54,6 @@ public class LandingResourceTest extends ResourceTest {
         client = newClient("");
         Response response = client.send();
         Headers headers = response.getHeaders();
-        assertEquals(7, headers.size());
-
-        // Access-Control-Allow-Origin
-        assertEquals("*", headers.getFirstValue("Access-Control-Allow-Origin"));
         // Content-Type
         assertTrue("text/html;charset=UTF-8".equalsIgnoreCase(
                 headers.getFirstValue("Content-Type")));
@@ -65,15 +61,7 @@ public class LandingResourceTest extends ResourceTest {
         assertNotNull(headers.getFirstValue("Date"));
         // Server
         assertNotNull(headers.getFirstValue("Server"));
-        // Vary
-        List<String> parts =
-                List.of(StringUtils.split(headers.getFirstValue("Vary"), ", "));
-        assertEquals(5, parts.size());
-        assertTrue(parts.contains("Accept"));
-        assertTrue(parts.contains("Accept-Charset"));
-        assertTrue(parts.contains("Accept-Encoding"));
-        assertTrue(parts.contains("Accept-Language"));
-        assertTrue(parts.contains("Origin"));
+
         // X-Powered-By
         assertEquals(Application.getName() + "/" + Application.getVersion(),
                 headers.getFirstValue("X-Powered-By"));

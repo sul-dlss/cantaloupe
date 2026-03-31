@@ -1,38 +1,22 @@
 package edu.illinois.library.cantaloupe.resource.iiif.v2;
 
-import edu.illinois.library.cantaloupe.http.Method;
 import edu.illinois.library.cantaloupe.resource.TemplateVariables;
-import edu.illinois.library.cantaloupe.resource.ThymeleafRepresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import edu.illinois.library.cantaloupe.resource.Controller;
+import edu.illinois.library.cantaloupe.resource.Request;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handles the IIIF Image API 2.x landing page.
  */
-public class LandingResource extends IIIF2Resource {
-
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(LandingResource.class);
-
-    private static final Method[] SUPPORTED_METHODS =
-            new Method[] { Method.GET, Method.OPTIONS };
-
-    @Override
-    protected Logger getLogger() {
-        return LOGGER;
+public class LandingResource extends Controller {
+    public LandingResource(HttpServletRequest request, HttpServletResponse response) {
+        super(request, response);
     }
 
     @Override
-    public Method[] getSupportedMethods() {
-        return SUPPORTED_METHODS;
+    public void doGet(Request request) throws Exception {
+        renderHtml("/iiif_2_landing.html", TemplateVariables.getDefault(request));
     }
-
-    @Override
-    public void doGET() throws Exception {
-        getResponse().setHeader("Content-Type", "text/html;charset=UTF-8");
-
-        new ThymeleafRepresentation("/iiif_2_landing.html", TemplateVariables.getDefault(getRequest()))
-                .write(getResponse().getOutputStream());
-    }
-
 }
