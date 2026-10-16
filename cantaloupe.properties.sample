@@ -733,6 +733,14 @@ log.application.SyslogAppender.host =
 log.application.SyslogAppender.port = 514
 log.application.SyslogAppender.facility = LOCAL0
 
+# Reports ERROR-level messages to Honeybadger (https://www.honeybadger.io/).
+# Uncaught exceptions that result in HTTP 5xx responses are only logged (and
+# therefore only reported) when `log_error_responses` is true.
+log.application.HoneybadgerAppender.enabled = false
+log.application.HoneybadgerAppender.api_key =
+# Optional; e.g. `production` or `staging`.
+log.application.HoneybadgerAppender.environment =
+
 #----------------------------------------
 # Error Log
 #----------------------------------------
