@@ -5,10 +5,8 @@ import edu.illinois.library.cantaloupe.http.Response;
 import edu.illinois.library.cantaloupe.source.stream.HTTPImageInputStreamClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.NoSuchFileException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 /**
@@ -92,23 +89,6 @@ class S3HTTPImageInputStreamClient implements HTTPImageInputStreamClient {
             LOGGER.error(e.getMessage(), e);
             throw new IOException(objectInfo.toString(), e);
         }
-    }
-
-    @Override
-    public CompletableFuture<Response> sendGETRequestAsync(Range range) {
-        final S3AsyncClient client = S3Source.getClientInstance(objectInfo);
-        final GetObjectRequest request = GetObjectRequest.builder()
-                .bucket(objectInfo.getBucketName())
-                .key(objectInfo.getKey())
-                .range("bytes=" + range.start + "-" + range.end)
-                .build();
-        return client.getObject(request, AsyncResponseTransformer.toBytes())
-                .thenApply(bytes -> {
-                    final Response response = new Response();
-                    response.setStatus(206);
-                    response.setBody(bytes.asByteArray());
-                    return response;
-                });
     }
 
 }
