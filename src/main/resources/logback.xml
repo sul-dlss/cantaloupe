@@ -13,6 +13,8 @@
   <import class="ch.qos.logback.core.FileAppender"/>
   <import class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"/>
   <import class="ch.qos.logback.core.ConsoleAppender"/>
+  <import class="ch.qos.logback.core.boolex.ExpressionPropertyCondition"/>
+  <import class="edu.illinois.library.cantaloupe.logging.HoneybadgerAppender"/>
   <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
   <appender name="AppStdoutLog" class="ConsoleAppender">
     <target>System.out</target>
@@ -56,7 +58,10 @@
     </encoder>
     <withJansi>false</withJansi>
   </appender>
-  <if condition='property("log.application.FileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.FileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AppFileLog" class="FileAppender">
         <filter class="ApplicationLogFilter"/>
@@ -67,7 +72,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.application.FileAppender.enabled").contains("true")  &amp;&amp; property("log.application.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.FileAppender.enabled", "true") &amp;&amp; propertyContains("log.application.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AppFileLogLogstash" class="FileAppender">
         <filter class="ApplicationLogFilter"/>
@@ -78,7 +86,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.error.FileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.FileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="ErrorFileLog" class="FileAppender">
         <filter class="ApplicationErrorLogFilter"/>
@@ -89,7 +100,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.error.FileAppender.enabled").contains("true")  &amp;&amp; property("log.error.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.FileAppender.enabled", "true") &amp;&amp; propertyContains("log.error.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="ErrorFileLogLogstash" class="FileAppender">
         <filter class="ApplicationErrorLogFilter"/>
@@ -100,7 +114,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.application.RollingFileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.RollingFileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AppRollingFileLog" class="RollingFileAppender">
         <filter class="ApplicationLogFilter"/>
@@ -115,7 +132,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.application.RollingFileAppender.enabled").contains("true")  &amp;&amp; property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.RollingFileAppender.enabled", "true") &amp;&amp; propertyContains("log.application.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AppRollingFileLogLogstash" class="RollingFileAppender">
         <filter class="ApplicationLogFilter"/>
@@ -130,7 +150,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.error.RollingFileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.RollingFileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="ErrorRollingFileLog" class="RollingFileAppender">
         <filter class="ApplicationErrorLogFilter"/>
@@ -145,7 +168,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.error.RollingFileAppender.enabled").contains("true")  &amp;&amp; property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.RollingFileAppender.enabled", "true") &amp;&amp; propertyContains("log.error.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="ErrorRollingFileLogLogstash" class="RollingFileAppender">
         <filter class="ApplicationErrorLogFilter"/>
@@ -160,7 +186,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.application.SyslogAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.SyslogAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AppSyslogLog" class="SyslogAppender">
         <filter class="ApplicationLogFilter"/>
@@ -170,7 +199,22 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.access.FileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.HoneybadgerAppender.enabled", "true")</expression>
+  </condition>
+  <if>
+    <then>
+      <appender name="AppHoneybadger" class="HoneybadgerAppender">
+        <filter class="ApplicationLogFilter"/>
+        <apiKey>${log.application.HoneybadgerAppender.api_key}</apiKey>
+        <environment>${log.application.HoneybadgerAppender.environment:-}</environment>
+      </appender>
+    </then>
+  </if>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.FileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AccessFileLog" class="FileAppender">
         <filter class="AccessLogFilter"/>
@@ -181,7 +225,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.RollingFileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AccessRollingFileLog" class="RollingFileAppender">
         <filter class="AccessLogFilter"/>
@@ -196,7 +243,10 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.SyslogAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="AccessSyslogLog" class="SyslogAppender">
         <filter class="AccessLogFilter"/>
@@ -206,28 +256,40 @@
       </appender>
     </then>
   </if>
-  <if condition='property("log.access.ConsoleAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.ConsoleAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <logger name="edu.illinois.library.cantaloupe.logging.AccessLogService" additivity="false">
         <appender-ref ref="AccessStdoutLog"/>
       </logger>
     </then>
   </if>
-  <if condition='property("log.access.FileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.FileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <logger name="edu.illinois.library.cantaloupe.logging.AccessLogService" additivity="false">
         <appender-ref ref="AccessFileLog"/>
       </logger>
     </then>
   </if>
-  <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.RollingFileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <logger name="edu.illinois.library.cantaloupe.logging.AccessLogService" additivity="false">
         <appender-ref ref="AccessRollingFileLog"/>
       </logger>
     </then>
   </if>
-  <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.SyslogAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <logger name="edu.illinois.library.cantaloupe.logging.AccessLogService" additivity="false">
         <appender-ref ref="AccessSyslogLog"/>
@@ -236,35 +298,50 @@
   </if>
   <root level="${log.application.level}">
   </root>
-  <if condition='property("log.access.ConsoleAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.ConsoleAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AccessStdoutLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.access.FileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.FileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AccessFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.access.RollingFileAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.RollingFileAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AccessRollingFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.access.SyslogAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.access.SyslogAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AccessSyslogLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.application.ConsoleAppender.enabled").contains("true")  &amp;&amp; !property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.ConsoleAppender.enabled", "true") &amp;&amp; !propertyContains("log.application.ConsoleAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppStdoutLog"/>
@@ -272,7 +349,10 @@
       </root>
     </then>
   </if>
-  <if condition='property("log.application.ConsoleAppender.enabled").contains("true")  &amp;&amp; property("log.application.ConsoleAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.ConsoleAppender.enabled", "true") &amp;&amp; propertyContains("log.application.ConsoleAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppStdoutLogLogstash"/>
@@ -280,66 +360,103 @@
       </root>
     </then>
   </if>
-  <if condition='property("log.application.FileAppender.enabled").contains("true")  &amp;&amp; !property("log.application.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.FileAppender.enabled", "true") &amp;&amp; !propertyContains("log.application.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.application.FileAppender.enabled").contains("true")  &amp;&amp; property("log.application.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.FileAppender.enabled", "true") &amp;&amp; propertyContains("log.application.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppFileLogLogstash"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.error.FileAppender.enabled").contains("true")  &amp;&amp; !property("log.error.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.FileAppender.enabled", "true") &amp;&amp; !propertyContains("log.error.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="ErrorFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.error.FileAppender.enabled").contains("true")  &amp;&amp; property("log.error.FileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.FileAppender.enabled", "true") &amp;&amp; propertyContains("log.error.FileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="ErrorFileLogLogstash"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.application.RollingFileAppender.enabled").contains("true")  &amp;&amp; !property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.RollingFileAppender.enabled", "true") &amp;&amp; !propertyContains("log.application.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppRollingFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.application.RollingFileAppender.enabled").contains("true")  &amp;&amp; property("log.application.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.RollingFileAppender.enabled", "true") &amp;&amp; propertyContains("log.application.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppRollingFileLogLogstash"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.error.RollingFileAppender.enabled").contains("true")  &amp;&amp; !property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.RollingFileAppender.enabled", "true") &amp;&amp; !propertyContains("log.error.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="ErrorRollingFileLog"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.error.RollingFileAppender.enabled").contains("true")  &amp;&amp; property("log.error.RollingFileAppender.logstash.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.error.RollingFileAppender.enabled", "true") &amp;&amp; propertyContains("log.error.RollingFileAppender.logstash.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="ErrorRollingFileLogLogstash"/>
       </root>
     </then>
   </if>
-  <if condition='property("log.application.SyslogAppender.enabled").contains("true")'>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.SyslogAppender.enabled", "true")</expression>
+  </condition>
+  <if>
     <then>
       <root level="${log.application.level}">
         <appender-ref ref="AppSyslogLog"/>
+      </root>
+    </then>
+  </if>
+  <condition class="ExpressionPropertyCondition">
+    <expression>propertyContains("log.application.HoneybadgerAppender.enabled", "true")</expression>
+  </condition>
+  <if>
+    <then>
+      <root level="${log.application.level}">
+        <appender-ref ref="AppHoneybadger"/>
       </root>
     </then>
   </if>
