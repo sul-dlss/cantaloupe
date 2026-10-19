@@ -128,4 +128,29 @@ class HoneybadgerAppenderTest extends BaseTest {
         assertEquals("abc123", context.get("request_id"));
     }
 
+    @Test
+    void toNoticeUsesMdcRequestUrl() {
+        LoggingEvent event = new LoggingEvent(Logger.FQCN, logger,
+                Level.ERROR, "message", null, null);
+        event.setMDCPropertyMap(Map.of(HoneybadgerAppender.MDC_REQUEST_URL,
+                "http://example.org/iiif/3/cats/full/max/0/default.jpg"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> request =
+                (Map<String, Object>) instance.toNotice(event).get("request");
+        assertEquals("http://example.org/iiif/3/cats/full/max/0/default.jpg",
+                request.get("url"));
+    }
+
+    @Test
+    void toNoticeUsesMdcIdentifier() {
+        LoggingEvent event = new LoggingEvent(Logger.FQCN, logger,
+                Level.ERROR, "message", null, null);
+        event.setMDCPropertyMap(Map.of(HoneybadgerAppender.MDC_IDENTIFIER,
+                "cats"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> request =
+                (Map<String, Object>) instance.toNotice(event).get("request");
+        assertEquals(Map.of("identifier", "cats"), request.get("params"));
+    }
+
 }
