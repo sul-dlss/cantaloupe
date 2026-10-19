@@ -46,6 +46,18 @@ public class HoneybadgerAppender extends AppenderBase<ILoggingEvent> {
     private static final int QUEUE_SIZE       = 100;
     private static final Duration TIMEOUT     = Duration.ofSeconds(10);
 
+    /**
+     * {@link org.slf4j.MDC} key whose value, if present, is reported as the
+     * notice's request URL.
+     */
+    static final String MDC_REQUEST_URL = "request_url";
+
+    /**
+     * {@link org.slf4j.MDC} key whose value, if present, is reported as the
+     * {@literal identifier} parameter of the notice's request.
+     */
+    static final String MDC_IDENTIFIER = "identifier";
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private String apiKey;
@@ -192,6 +204,14 @@ public class HoneybadgerAppender extends AppenderBase<ILoggingEvent> {
         context.put("thread", event.getThreadName());
         context.putAll(event.getMDCPropertyMap());
         Map<String, Object> request = new LinkedHashMap<>();
+        String url = event.getMDCPropertyMap().get(MDC_REQUEST_URL);
+        if (url != null) {
+            request.put("url", url);
+        }
+        String identifier = event.getMDCPropertyMap().get(MDC_IDENTIFIER);
+        if (identifier != null) {
+            request.put("params", Map.of("identifier", identifier));
+        }
         request.put("context", context);
         notice.put("request", request);
 
