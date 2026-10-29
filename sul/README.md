@@ -22,8 +22,7 @@ git remote add community https://github.com/cantaloupe-project/cantaloupe.git
 ## Cutting a release
 
 ```sh
-git fetch origin
-git switch --detach origin/sul-patches
+git switch sul-patches && git pull
 sul/rebuild-release-branch.sh 5.0.9-sul-2026-q4-2
 mvn verify
 git push --force-with-lease origin sul-2026-q4
