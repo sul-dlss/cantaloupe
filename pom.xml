@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath />
     </parent>
 
@@ -30,13 +30,16 @@
         <azure-core.version>1.61.0</azure-core.version>
         <azure-core-http-jdk-httpclient.version>1.3.0</azure-core-http-jdk-httpclient.version>
         <azure-storage-blob.version>12.35.1</azure-storage-blob.version>
-        <jackson.version>2.22.3</jackson.version>
+        <!-- The following override versions managed by
+             spring-boot-starter-parent, so that every module of each
+             library is aligned. -->
+        <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
         <jena.version>6.2.0</jena.version>
         <jruby.version>10.1.2.0</jruby.version>
         <surefire.version>3.6.0</surefire.version>
-        <seleniumhq.version>4.51.0</seleniumhq.version>
-        <!-- htmlunit3-driver needs a newer HtmlUnit than the version managed
-             by spring-boot-starter-parent. -->
+        <selenium.version>4.51.0</selenium.version>
+        <selenium-htmlunit.version>4.51.0</selenium-htmlunit.version>
+        <!-- htmlunit3-driver 4.51.0 requires HtmlUnit 5.x. -->
         <htmlunit.version>5.6.0</htmlunit.version>
     </properties>
 
@@ -306,13 +309,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <!-- Provides the Jdk8Module that Info uses to serialize Optionals -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Selenium is used to test the control panel, using a headless HtmlUnit
@@ -320,19 +321,16 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit3-driver</artifactId>
-            <version>4.51.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>${seleniumhq.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>${seleniumhq.version}</version>
             <scope>test</scope>
         </dependency>
 
