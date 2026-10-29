@@ -1,0 +1,6 @@
+# Open upstream pull requests merged into the Stanford release branch, in
+# merge order. Delete a line once that PR has been merged into develop.
+982  # Upgrade to Jackson 3
+998  # Add Mapped Diagnostic Context (MDC) logging
+992  # Avoid affine transformation for right angle rotation
+1001 # Allow rotate to 360 degrees
