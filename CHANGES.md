@@ -37,6 +37,8 @@
 * Rotations by multiples of 90 degrees (including EXIF orientation
   corrections) copy pixels directly rather than resampling, which is lossless,
   faster, and preserves the source image's color model and bit depth.
+* KakaduNativeProcessor responds with an error instead of a partially decoded
+  (and probably blank) image when it encounters a corrupted codestream.
 
 ### Delegate Script
 
