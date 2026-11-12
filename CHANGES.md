@@ -39,6 +39,9 @@
   faster, and preserves the source image's color model and bit depth.
 * KakaduNativeProcessor responds with an error instead of a partially decoded
   (and probably blank) image when it encounters a corrupted codestream.
+* Updated imageio-ext to 2.1.4, with a patched LZW decompressor that fixes
+  corruption of 8-bit, multi-strip LZW TIFFs that use a horizontal predictor.
+  (#879)
 
 ### Delegate Script
 
