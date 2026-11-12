@@ -1,6 +1,9 @@
 # Open upstream pull requests merged into the Stanford release branch, in
 # merge order. Delete a line once that PR has been merged into develop.
-982  # Upgrade to Jackson 3
 998  # Add Mapped Diagnostic Context (MDC) logging
 992  # Avoid affine transformation for right angle rotation
 1001 # Allow rotate to 360 degrees
+1025 # Update dependencies
+1022 # Don't let Jena log XMP parse errors at ERROR level
+1018 # Fail instead of returning a partial image on a Kakadu decode error
+1012 # Upgrade imageio-ext to 2.1.4 and patch its LZW decompressor
